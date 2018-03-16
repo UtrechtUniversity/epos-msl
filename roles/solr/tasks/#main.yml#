@@ -1,0 +1,66 @@
+---
+# copyright Utrecht University
+
+- name: Ensure Solr dependencies are installed
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - java-1.8.0-openjdk
+    - java-1.8.0-openjdk-devel
+
+
+- name: Check if Solr is installed
+  stat:
+    path: /opt/solr
+  register: solr_installed
+
+
+- name: Download Solr archive
+  get_url:
+    url: http://apache.org/dist/lucene/solr/6.6.3/solr-6.6.3.tgz
+    dest: ~/solr-6.6.3.tgz
+    force: no
+  when: solr_installed.stat.isdir is not defined
+  register: solr_downloaded
+
+
+- name: Expand Solr archive
+  unarchive:
+    src: ~/solr-6.6.3.tgz
+    dest: ~/
+    copy: no
+  when: solr_downloaded.changed
+
+
+- name: Run Solr installation script
+  shell: ~/solr-6.6.3/bin/install_solr_service.sh ~/solr-6.6.3.tgz
+    creates=/opt/solr/bin/solr
+  register: solr_installed
+
+
+- name: Run Solr installation script
+  become_user: solr
+  shell: >
+    
+    creates=/var/solr/data/ckan/conf/solrconfig.xml
+  when: solr_installed.changed
+
+
+- name: Ensure managed-schema is absent
+  file:
+    path: '/var/solr/data/ckan/conf/managed-schema'
+    state: absent
+
+
+- name: Ensure solrconfig.xml for CKAN is present
+  template:
+    src: "solrconfig.xml.j2"
+    dest: "/var/solr/data/ckan/conf/solrconfig.xml"
+
+
+# - name: Ensure solr is started and enabled on boot
+#   service:
+#     name: solr
+#     enabled: yes
+#     state: started

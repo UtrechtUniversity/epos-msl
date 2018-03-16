@@ -1,0 +1,7 @@
+---
+# copyright Utrecht University
+
+- name: Enable EPEL repository
+  package:
+    name: epel-release
+    state: present

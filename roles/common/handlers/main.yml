@@ -1,0 +1,7 @@
+---
+# copyright Utrecht University
+
+- name: Restart firewall
+  service:
+    name: firewalld
+    state: restarted

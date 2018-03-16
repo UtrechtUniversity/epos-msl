@@ -1,0 +1,55 @@
+---
+# copyright Utrecht University
+
+- name: Ensure Apache webserver is installed
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+  - httpd
+  - mod_ssl
+  - openssl
+
+
+- name: Allow public to ports for Apache in firewall
+  firewalld:
+    port: '{{ item }}'
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+    - 80/tcp
+    - 443/tcp
+  notify: Restart firewall
+
+
+- name: Ensure customized httpd config is present
+  template:
+    src: 'httpd.conf.j2'
+    dest: '/etc/httpd/conf/httpd.conf'
+    mode: 0600
+  notify: Restart Apache webserver
+
+
+- name: Ensure customized SSL config is present
+  template:
+    src: 'ssl.conf.j2'
+    dest: '/etc/httpd/conf.d/ssl.conf'
+    mode: 0600
+  notify: Restart Apache webserver
+
+
+- name: Ensure autoindex.conf is absent
+  file:
+    path: '{{ item }}'
+    state: absent
+  notify: Restart Apache webserver
+  with_items:
+  - /etc/httpd/conf.d/autoindex.conf
+
+
+- name: Ensure Apache is running and enabled
+  service:
+    name: httpd
+    state: started
+    enabled: yes
