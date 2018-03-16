@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Provision controller for Ansible on Windows host.
- #if Vagrant::Util::Platform.windows? then
+  if Vagrant::Util::Platform.windows? then
     config.vm.define "epos-msl-controller" do |controller|
       controller.vm.provider "virtualbox" do |vbox|
         vbox.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
@@ -57,6 +57,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       controller.vm.provision "shell", privileged: false, path: "vagrant/provision_controller.sh"
       controller.vm.provision "shell",
         inline: "sudo timedatectl set-timezone Europe/Amsterdam"
-    #end
+    end
   end
 end
