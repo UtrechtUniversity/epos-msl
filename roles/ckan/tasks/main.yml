@@ -86,6 +86,13 @@
     persistent: yes
 
 
+- name: Allow Apache to connect to Redis in SELinux config
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+
+
 - file:
     path: /usr/lib/ckan
     state: directory
@@ -137,6 +144,7 @@
   shell: |
     ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan/conf/schema.xml
     semanage port -a -t http_port_t -p tcp 8983
+    semanage port -a -t http_port_t -p tcp 6379
     service solr restart
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
