@@ -130,11 +130,19 @@
     dest: "/etc/ckan/default/development.ini"
 
 
+- name: Ensure CKAN schema is symlinked in Solr
+  become_user: root
+  become: yes
+  file:
+    src: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
+    dest: /var/solr/data/ckan/conf/schema.xml
+    state: link
+
+
 - name: Run CKAN post installation scripts
   become_user: root
   become: yes
   shell: |
-    ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan/conf/schema.xml
     semanage port -a -t http_port_t -p tcp 8983
     semanage port -a -t http_port_t -p tcp 6379
     service solr restart
