@@ -151,7 +151,7 @@
   when: link_schema.changed
 
 
-- name: Run CKAN post installation scripts
+- name: Initialize CKAN database
   become_user: root
   become: yes
   shell: |
@@ -160,9 +160,17 @@
     . default/bin/activate
     cd default/src/ckan
     paster db init -c /etc/ckan/default/development.ini
-    ln -s /usr/lib/ckan/default/src/ckan/who.ini /etc/ckan/default/who.ini
     exit
   when: ckan_installed.changed
+
+
+- name: Ensure CKAN who.ini is symlinked
+  become_user: root
+  become: yes
+  file:
+    src: /usr/lib/ckan/default/src/ckan/who.ini
+    dest: /etc/ckan/default/who.ini
+    state: link
 
 
 - name: Ensure WSGI specification for CKAN is present
