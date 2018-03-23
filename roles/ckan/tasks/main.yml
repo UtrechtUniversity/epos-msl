@@ -132,6 +132,7 @@
   template:
     src: "development.ini.j2"
     dest: "/etc/ckan/default/development.ini"
+  notify: Restart Apache webserver
 
 
 - name: Ensure CKAN schema is symlinked in Solr
