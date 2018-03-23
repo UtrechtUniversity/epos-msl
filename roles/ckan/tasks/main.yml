@@ -121,7 +121,7 @@
     . default/bin/activate
     pip install --upgrade pip
     pip install -U setuptools
-    pip install --ignore-installed -e git+https://github.com/okfn/ckan.git@ckan-2.7.2#egg=ckan
+    pip install --ignore-installed -e git+https://github.com/okfn/ckan.git@ckan-2.7.3#egg=ckan
     pip install --ignore-installed -r default/src/ckan/pip-requirements-docs.txt
     exit
     creates=/usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
@@ -144,11 +144,11 @@
   register: link_schema
 
 
-- name: Ensure Solr is restarted
-  service:
-    name: solr
-    state: restarted
-  when: link_schema.changed
+#- name: Ensure Solr is restarted
+#  service:
+#    name: solr
+#    state: restarted
+#  when: link_schema.changed
 
 
 - name: Initialize CKAN database

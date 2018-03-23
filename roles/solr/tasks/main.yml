@@ -9,6 +9,7 @@
     - java-1.8.0-openjdk
     - java-1.8.0-openjdk-devel
     - unzip
+    - lsof
 
 - name: Check if Solr is installed
   stat:
@@ -58,8 +59,7 @@
     dest: "/var/solr/data/ckan/conf/solrconfig.xml"
 
 
-- name: Ensure Solr is started and enabled on boot
-  service:
-    name: solr
-    enabled: yes
-    state: started
+#- name: Ensure Solr is enabled on boot
+#  service:
+#    name: solr
+#    enabled: yes
