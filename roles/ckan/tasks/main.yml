@@ -85,6 +85,22 @@
     persistent: yes
 
 
+- name: Allow Apache to listen on port 8983 for Solr
+  seport:
+    ports: 8888
+    proto: tcp
+    setype: http_port_t
+    state: present
+
+
+- name: Allow Apache to listen on port 6379 for Redis
+- seport:
+    ports: 6379
+    proto: tcp
+    setype: http_port_t
+    state: present
+
+
 - file:
     path: /usr/lib/ckan
     state: directory
@@ -143,8 +159,6 @@
   become_user: root
   become: yes
   shell: |
-    semanage port -a -t http_port_t -p tcp 8983
-    semanage port -a -t http_port_t -p tcp 6379
     service solr restart
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
