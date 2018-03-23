@@ -141,13 +141,20 @@
     src: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
     dest: /var/solr/data/ckan/conf/schema.xml
     state: link
+  register: link_schema
+
+
+- name: Ensure Solr is restarted
+  service:
+    name: solr
+    state: restarted
+  when: link_schema.changed
 
 
 - name: Run CKAN post installation scripts
   become_user: root
   become: yes
   shell: |
-    service solr restart
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
