@@ -20,4 +20,5 @@
     - apache
     - postgresql
     - solr
+    - redis
     - ckan

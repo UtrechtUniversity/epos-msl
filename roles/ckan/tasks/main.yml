@@ -24,14 +24,6 @@
     - policycoreutils-python
     - mod_wsgi
     - httpd
-    - redis
-
-
-- name: Ensure Redis is running and enabled
-  service:
-    name: redis
-    state: started
-    enabled: yes
 
 
 - name: Make sure we have a 'wheel' group
@@ -154,7 +146,7 @@
     ln -s /usr/lib/ckan/default/src/ckan/who.ini /etc/ckan/default/who.ini
     exit
   when: ckan_installed.changed
-  
+
 
 - name: Ensure WSGI specification for CKAN is present
   template:

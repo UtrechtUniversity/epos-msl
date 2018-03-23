@@ -1,0 +1,14 @@
+---
+# copyright Utrecht University
+
+- name: Ensure Redis is installed
+  package:
+    name: redis
+    state: present
+
+
+- name: Ensure Redis is running and enabled
+  service:
+    name: redis
+    state: started
+    enabled: yes
