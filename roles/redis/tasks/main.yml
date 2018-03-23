@@ -7,7 +7,7 @@
     state: present
 
 
-- name: Ensure Redis is running and enabled
+- name: Ensure Redis is running and enabled on boot
   service:
     name: redis
     state: started

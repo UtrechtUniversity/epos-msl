@@ -58,8 +58,8 @@
     dest: "/var/solr/data/ckan/conf/solrconfig.xml"
 
 
-# - name: Ensure solr is started and enabled on boot
-#   service:
-#     name: solr
-#     enabled: yes
-#     state: started
+- name: Ensure Solr is started and enabled on boot
+  service:
+    name: solr
+    enabled: yes
+    state: started

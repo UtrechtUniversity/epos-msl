@@ -71,14 +71,14 @@
     priv: ALL
 
 
-- name: Allow Apache to connect to Postgresql in SELinux config
+- name: Allow Apache to connect to Postgresql
   seboolean:
     name: httpd_can_network_connect_db
     state: yes
     persistent: yes
 
 
-- name: Allow Apache to connect to Redis in SELinux config
+- name: Allow Apache to connect to Redis and SOLR
   seboolean:
     name: httpd_can_network_connect
     state: yes
@@ -94,36 +94,24 @@
 
 
 - name: Allow Apache to listen on port 6379 for Redis
-- seport:
+  seport:
     ports: 6379
     proto: tcp
     setype: http_port_t
     state: present
 
 
-- file:
-    path: /usr/lib/ckan
+- name: Ensure CKAN directories exist
+  file:
+    path: "{{ item }}"
     state: directory
     mode: 0755
     owner: ckan
-
-- file:
-    path: /usr/lib/ckan/default
-    state: directory
-    mode: 0755
-    owner: ckan
-
-- file:
-    path: /etc/ckan
-    state: directory
-    mode: 0755
-    owner: ckan
-
-- file:
-    path: /etc/ckan/default
-    state: directory
-    mode: 0755
-    owner: ckan
+  with_items:
+    - /usr/lib/ckan
+    - /usr/lib/ckan/default
+    - /etc/ckan
+    - /etc/ckan/default
 
 
 - name: Run CKAN installation script
