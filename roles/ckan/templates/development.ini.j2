@@ -102,7 +102,7 @@ ckan.redis.url = redis://localhost:6379/0
 #       Add ``datapusher`` to enable DataPusher
 #		Add ``resource_proxy`` to enable resorce proxying and get around the
 #		same origin policy
-ckan.plugins = stats text_view image_view recline_view
+ckan.plugins = stats text_view image_view recline_view harvest ckan_harvester ckanext-oaipmh
 
 # Define which views should be created by default
 # (plugins must be loaded in ckan.plugins)
@@ -188,6 +188,9 @@ ckan.hide_activity_from_users = %(ckan.site_id)s
 #smtp.password = your_password
 #smtp.mail_from =
 
+
+## Remote harvesting settings
+ckan.harvest.mq.type = redis
 
 ## Logging configuration
 [loggers]

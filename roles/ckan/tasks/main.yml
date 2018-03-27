@@ -186,3 +186,34 @@
     src: "epos-msl-vhost.conf.j2"
     dest: "/etc/httpd/conf.d/epos-msl-vhost.conf"
   notify: Restart Apache webserver
+
+
+- name: Install CKAN harvest extension
+  become_user: root
+  become: yes
+  shell: |
+    su -s /bin/bash - ckan
+    cd /usr/lib/ckan
+    . default/bin/activate
+    pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+    cd /usr/lib/ckan/default/src/ckanext-harvest/
+    pip install -r pip-requirements.txt
+    paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/development.ini
+    exit
+    creates=/usr/lib/ckan/default/src/ckanext-harvest/
+  notify: Restart Apache webserver
+
+
+- name: Install CKAN OAI-PMH extension
+  become_user: root
+  become: yes
+  shell: |
+    su -s /bin/bash - ckan
+    cd /usr/lib/ckan
+    . default/bin/activate
+    pip install -e git+https://github.com/kata-csc/ckanext-oaipmh.git#egg=ckanext-oaipmh
+    cd /usr/lib/ckan/default/src/ckanext-oaipmh/
+    pip install -r requirements.txt
+    exit
+    creates=/usr/lib/ckan/default/src/ckanext-oaipmh/
+  notify: Restart Apache webserver
