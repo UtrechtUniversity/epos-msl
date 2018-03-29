@@ -152,19 +152,6 @@
 #  when: link_schema.changed
 
 
-- name: Initialize CKAN database
-  become_user: root
-  become: yes
-  shell: |
-    su -s /bin/bash - ckan
-    cd /usr/lib/ckan
-    . default/bin/activate
-    cd default/src/ckan
-    paster db init -c /etc/ckan/default/development.ini
-    exit
-  when: ckan_installed.changed
-
-
 - name: Ensure CKAN who.ini is symlinked
   become_user: root
   become: yes
@@ -172,20 +159,6 @@
     src: /usr/lib/ckan/default/src/ckan/who.ini
     dest: /etc/ckan/default/who.ini
     state: link
-
-
-- name: Ensure WSGI specification for CKAN is present
-  template:
-    src: "apache.wsgi.j2"
-    dest: "/etc/ckan/default/apache.wsgi"
-  notify: Restart Apache webserver
-
-
-- name: Ensure EPOS-MSL virtual host config for Apache is present
-  template:
-    src: "epos-msl-vhost.conf.j2"
-    dest: "/etc/httpd/conf.d/epos-msl-vhost.conf"
-  notify: Restart Apache webserver
 
 
 - name: Install CKAN harvest extension
@@ -198,7 +171,6 @@
     pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
     cd /usr/lib/ckan/default/src/ckanext-harvest/
     pip install -r pip-requirements.txt
-    paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/development.ini
     exit
     creates=/usr/lib/ckan/default/src/ckanext-harvest/
   notify: Restart Apache webserver
@@ -216,4 +188,32 @@
     pip install -r requirements.txt
     exit
     creates=/usr/lib/ckan/default/src/ckanext-oaipmh/
+  notify: Restart Apache webserver
+
+
+- name: Initialize CKAN database
+  become_user: root
+  become: yes
+  shell: |
+    su -s /bin/bash - ckan
+    cd /usr/lib/ckan
+    . default/bin/activate
+    cd default/src/ckan
+    paster db init -c /etc/ckan/default/development.ini
+    paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/development.ini
+    exit
+  when: ckan_installed.changed
+
+
+- name: Ensure WSGI specification for CKAN is present
+  template:
+    src: "apache.wsgi.j2"
+    dest: "/etc/ckan/default/apache.wsgi"
+  notify: Restart Apache webserver
+
+
+- name: Ensure EPOS-MSL virtual host config for Apache is present
+  template:
+    src: "epos-msl-vhost.conf.j2"
+    dest: "/etc/httpd/conf.d/epos-msl-vhost.conf"
   notify: Restart Apache webserver
