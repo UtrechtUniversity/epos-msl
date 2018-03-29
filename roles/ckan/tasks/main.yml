@@ -145,13 +145,6 @@
   register: link_schema
 
 
-#- name: Ensure Solr is restarted
-#  service:
-#    name: solr
-#    state: restarted
-#  when: link_schema.changed
-
-
 - name: Ensure CKAN who.ini is symlinked
   become_user: root
   become: yes
