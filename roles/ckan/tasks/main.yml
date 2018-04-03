@@ -209,6 +209,7 @@
     paster user add ckanadmin password=test email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/development.ini
     paster sysadmin add ckanadmin -c /etc/ckan/default/development.ini
     exit
+  when: ckan_installed.changed
 
 
 - name: Add CKAN harvest user
@@ -221,6 +222,7 @@
     paster user add harvest password=test email=harvest@localhost name=harvest -c /etc/ckan/default/development.ini
     paster sysadmin add harvest -c /etc/ckan/default/development.ini
     exit
+  when: ckan_installed.changed
 
 
 - name: Ensure WSGI specification for CKAN is present
