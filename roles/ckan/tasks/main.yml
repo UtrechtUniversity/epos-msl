@@ -176,9 +176,10 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/kata-csc/ckanext-oaipmh.git#egg=ckanext-oaipmh
+    pip install -e git+https://github.com/openresearchdata/ckanext-oaipmh.git#egg=ckanext-oaipmh
     cd /usr/lib/ckan/default/src/ckanext-oaipmh/
     pip install -r requirements.txt
+    python setup.py develop
     exit
     creates=/usr/lib/ckan/default/src/ckanext-oaipmh/
   notify: Restart Apache webserver
@@ -196,6 +197,30 @@
     paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/development.ini
     exit
   when: ckan_installed.changed
+
+
+- name: Add CKAN admin user
+  become_user: ckan
+  become: yes
+  shell: |
+    cd /usr/lib/ckan
+    . default/bin/activate
+    cd default/src/ckan
+    paster user add ckanadmin password=test email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/development.ini
+    paster sysadmin add ckanadmin -c /etc/ckan/default/development.ini
+    exit
+
+
+- name: Add CKAN harvest user
+  become_user: root
+  become: yes
+  shell: |
+    cd /usr/lib/ckan
+    . default/bin/activate
+    cd default/src/ckan
+    paster user add harvest password=test email=harvest@localhost name=harvest -c /etc/ckan/default/development.ini
+    paster sysadmin add harvest -c /etc/ckan/default/development.ini
+    exit
 
 
 - name: Ensure WSGI specification for CKAN is present
