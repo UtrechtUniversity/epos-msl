@@ -1,6 +1,18 @@
 ---
-ansible_host: 192.168.60.10
+# copyright Utrecht University
+
+########################
+# Ansible configuration
+########################
 ansible_user: vagrant                             # Administrative user on instance for Ansible
 ansible_ssh_private_key_file: vagrant/ssh/vagrant # Path to private key file of administrative user
 
-epos_msl_fqdn: epos-msl.ckan.test
+#########################
+# EPOS-MSL configuration
+#########################
+ansible_host: 192.168.60.10                    # EPOS-MSL host
+epos_msl_fqdn: epos-msl.ckan.test              # EPOS-MSL fully qualified domain name (FQDN)
+
+ckan_database_password: rPb7YNYxdWYzK8e9       # CKAN Postgresql database password
+ckan_admin_password: 8cmQE68zcHiaLWAx          # CKAN admin user ('ckanadmin') password
+ckan_harvest_password: duCiHQuZ7DLsKbUn        # CKAN harvest user ('harvest') password

@@ -67,7 +67,7 @@
   postgresql_user:
     db: "ckan_default"
     name: "ckan_default"
-    password: "pass"
+    password: "{{ ckan_database_password }}"
     priv: ALL
 
 
@@ -206,7 +206,7 @@
     cd /usr/lib/ckan
     . default/bin/activate
     cd default/src/ckan
-    paster user add ckanadmin password=test email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/development.ini
+    paster user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/development.ini
     paster sysadmin add ckanadmin -c /etc/ckan/default/development.ini
     exit
   when: ckan_installed.changed
@@ -219,7 +219,7 @@
     cd /usr/lib/ckan
     . default/bin/activate
     cd default/src/ckan
-    paster user add harvest password=test email=harvest@localhost name=harvest -c /etc/ckan/default/development.ini
+    paster user add harvest password="{{ ckan_harvest_password }}" email=harvest@localhost name=harvest -c /etc/ckan/default/development.ini
     paster sysadmin add harvest -c /etc/ckan/default/development.ini
     exit
   when: ckan_installed.changed
