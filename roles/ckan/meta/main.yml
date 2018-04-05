@@ -5,3 +5,5 @@ dependencies:
 - common
 - certificates
 - apache
+- solr
+- redis

@@ -1,0 +1,7 @@
+---
+# copyright Utrecht University
+
+- name: Restart Solr
+  service:
+    name: solr
+    state: restarted
