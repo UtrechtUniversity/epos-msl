@@ -93,14 +93,6 @@
     state: present
 
 
-- name: Allow Apache to listen on port 6379 for Redis
-  seport:
-    ports: 6379
-    proto: tcp
-    setype: http_port_t
-    state: present
-
-
 - name: Ensure CKAN directories exist
   file:
     path: "{{ item }}"
