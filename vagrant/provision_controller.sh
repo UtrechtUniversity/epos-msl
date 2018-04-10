@@ -21,4 +21,4 @@ rm -rf ~/epos-msl
 git clone https://github.com/UtrechtUniversity/epos-msl.git
 
 # Set file permissions on SSH key to 0600.
-chmod 0600 ~/yoda-ansible/vagrant/ssh/vagrant
+chmod 0600 ~/epos-msl/vagrant/ssh/vagrant
