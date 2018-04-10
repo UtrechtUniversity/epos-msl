@@ -14,8 +14,11 @@ if ! command -v ansible >/dev/null; then
     sudo yum install ansible -y
 fi
 
-# Run EPOS-MSL playbook.
-#cd /vagrant
-#sudo chmod 0644 /vagrant/vagrant/ssh/vagrant
+# Remove current version.
+rm -rf ~/epos-msl
 
-#ansible-playbook playbook.yml
+# Clone epos-msl repository.
+git clone https://github.com/UtrechtUniversity/epos-msl.git
+
+# Set file permissions on SSH key to 0600.
+chmod 0600 ~/yoda-ansible/vagrant/ssh/vagrant
