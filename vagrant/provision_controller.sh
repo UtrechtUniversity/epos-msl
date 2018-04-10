@@ -15,7 +15,7 @@ if ! command -v ansible >/dev/null; then
 fi
 
 # Run EPOS-MSL playbook.
-cd /vagrant
-sudo chmod 0644 /vagrant/vagrant/ssh/vagrant
+#cd /vagrant
+#sudo chmod 0644 /vagrant/vagrant/ssh/vagrant
 
-ansible-playbook playbook.yml
+#ansible-playbook playbook.yml
