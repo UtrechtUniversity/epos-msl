@@ -184,7 +184,7 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/andrmos/ckanext-oaipmh.git#egg=ckanext-oaipmh
+    pip install -e git+https://github.com/UtrechtUniversity/ckanext-oaipmh.git#egg=ckanext-oaipmh
     cd /usr/lib/ckan/default/src/ckanext-oaipmh/
     pip install -r requirements.txt
     python setup.py develop
