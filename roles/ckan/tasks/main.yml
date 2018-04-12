@@ -170,12 +170,22 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+    pip install -e git+https://github.com/ckan/ckanext-harvest.git@master#egg=ckanext-harvest
     cd /usr/lib/ckan/default/src/ckanext-harvest/
     pip install -r pip-requirements.txt
     exit
     creates=/usr/lib/ckan/default/src/ckanext-harvest/
   notify: Restart Apache webserver
+
+
+- name: Ensure latest version of CKAN harvest extension is installed
+  become_user: root
+  become: yes
+  git:
+    repo: "https://github.com/ckan/ckanext-harvest.git"
+    dest: "/usr/lib/ckan/default/src/ckanext-harvest/"
+    version: "master"
+    update: "yes"
 
 
 - name: Install CKAN OAI-PMH extension
@@ -192,6 +202,16 @@
     exit
     creates=/usr/lib/ckan/default/src/ckanext-oaipmh/
   notify: Restart Apache webserver
+
+
+- name: Ensure latest version of CKAN OAI-PMH extension is installed
+  become_user: root
+  become: yes
+  git:
+    repo: "https://github.com/UtrechtUniversity/ckanext-oaipmh.git"
+    dest: "/usr/lib/ckan/default/src/ckanext-oaipmh"
+    version: "development"
+    update: "yes"
 
 
 - name: Initialize CKAN database
