@@ -214,6 +214,29 @@
     update: "yes"
 
 
+- name: Install EPOS-MSL custom CKAN theme
+  become_user: root
+  become: yes
+  shell: |
+    su -s /bin/bash - ckan
+    cd /usr/lib/ckan
+    . default/bin/activate
+    pip install -e git+https://github.com/UtrechtUniversity/epos-msl-theme.git@master#egg=ckanext-custom_theme
+    exit
+    creates=/usr/lib/ckan/default/src/ckanext-custom-theme/
+  notify: Restart Apache webserver
+
+
+- name: Ensure latest version of EPOS-MSL custom CKAN theme is installed
+  become_user: root
+  become: yes
+  git:
+    repo: "https://github.com/UtrechtUniversity/epos-msl-theme.git"
+    dest: "/usr/lib/ckan/default/src/ckanext-custom-theme/"
+    version: "master"
+    update: "yes"
+
+
 - name: Initialize CKAN database
   become_user: ckan
   become: yes
