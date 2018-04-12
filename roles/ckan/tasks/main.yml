@@ -26,7 +26,7 @@
     - httpd
 
 
-- name: Make sure we have a 'wheel' group
+- name: Ensure a 'wheel' group exists
   group:
     name: wheel
     state: present
@@ -41,7 +41,8 @@
     validate: visudo -cf %s
 
 
-- user:
+- name: Ensure CKAN user exists
+  user:
     name: ckan
     comment: "CKAN User"
     home: /usr/lib/ckan
@@ -50,7 +51,7 @@
     append: yes
 
 
-- name: Create CKAN database
+- name: Ensure CKAN database exists
   become_user: postgres
   become: yes
   postgresql_db:
@@ -61,7 +62,7 @@
     template: template0
 
 
-- name: Create CKAN database user
+- name: Ensure CKAN database user exists
   become_user: postgres
   become: yes
   postgresql_user:
@@ -184,7 +185,7 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/UtrechtUniversity/ckanext-oaipmh.git#egg=ckanext-oaipmh
+    pip install -e git+https://github.com/UtrechtUniversity/ckanext-oaipmh.git@development#egg=ckanext-oaipmh
     cd /usr/lib/ckan/default/src/ckanext-oaipmh/
     pip install -r requirements.txt
     python setup.py develop
@@ -194,43 +195,63 @@
 
 
 - name: Initialize CKAN database
-  become_user: root
+  become_user: ckan
   become: yes
   shell: |
-    su -s /bin/bash - ckan
-    cd /usr/lib/ckan
-    . default/bin/activate
-    cd default/src/ckan
+    . /usr/lib/ckan/default/bin/activate
+    cd /usr/lib/ckan/default/src/ckan
     paster db init -c /etc/ckan/default/development.ini
     paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/development.ini
     exit
   when: ckan_installed.changed
 
 
+- name: Check if CKAN admin user exists
+  become_user: ckan
+  become: yes
+  shell: |
+    . /usr/lib/ckan/default/bin/activate
+    cd /usr/lib/ckan/default/src/ckan
+    paster --plugin=ckan user list -c /etc/ckan/default/development.ini
+    exit
+  changed_when: False    
+  register: ckan_admin_user
+
+
 - name: Add CKAN admin user
   become_user: ckan
   become: yes
   shell: |
-    cd /usr/lib/ckan
-    . default/bin/activate
-    cd default/src/ckan
+    . /usr/lib/ckan/default/bin/activate
+    cd /usr/lib/ckan/default/src/ckan
     paster user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/development.ini
     paster sysadmin add ckanadmin -c /etc/ckan/default/development.ini
     exit
-  when: ckan_installed.changed
+  when: '"name=ckanadmin" not in ckan_admin_user.stdout'
+
+
+- name: Check if CKAN harvest user exists
+  become_user: ckan
+  become: yes
+  shell: |
+    . /usr/lib/ckan/default/bin/activate
+    cd /usr/lib/ckan/default/src/ckan
+    paster --plugin=ckan user list -c /etc/ckan/default/development.ini
+    exit
+  changed_when: False    
+  register: ckan_harvest_user
 
 
 - name: Add CKAN harvest user
   become_user: root
   become: yes
   shell: |
-    cd /usr/lib/ckan
-    . default/bin/activate
-    cd default/src/ckan
+    . /usr/lib/ckan/default/bin/activate
+    cd /usr/lib/ckan/default/src/ckan
     paster user add harvest password="{{ ckan_harvest_password }}" email=harvest@localhost name=harvest -c /etc/ckan/default/development.ini
     paster sysadmin add harvest -c /etc/ckan/default/development.ini
     exit
-  when: ckan_installed.changed
+  when: '"name=harvest" not in ckan_admin_user.stdout'
 
 
 - name: Ensure WSGI specification for CKAN is present
