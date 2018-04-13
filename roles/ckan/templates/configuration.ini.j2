@@ -32,11 +32,11 @@ beaker.session.key = ckan
 # This is the secret token that the beaker library uses to hash the cookie sent
 # to the client. `paster make-config` generates a unique value for this each
 # time it generates a config file.
-beaker.session.secret = 9FHn09BaH6dokeH6zMqcCMLhE
+beaker.session.secret = {{ session_secret.stdout }}
 
 # `paster make-config` generates a unique value for this each time it generates
 # a config file.
-app_instance_uuid = e82dd347-adc6-481a-9934-1f054f805fd0
+app_instance_uuid = {{ app_instance_uuid.stdout }}
 
 # repoze.who config
 who.config_file = %(here)s/who.ini
@@ -126,6 +126,7 @@ ckan.preview.direct = png jpg gif
 ckan.preview.loadable = html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json
 ckan.display_timezone = server
 
+ckan.main_css = /base/css/green.css
 ckan.site_intro_text = TCS Multi-scale laboratories includes a wide range of world-class experimental laboratory infrastructures: from high pressure-temperature rock and fault mechanics and rock physics facilities, to electron microscopy, micro-beam analysis, analogue modelling and paleomagnetic laboratories. More information can be found [here](https://epos-ip.org/tcs/multi-scale-laboratories).
 ckan.site_about = TCS Multi-scale laboratories includes a wide range of world-class experimental laboratory infrastructures: from high pressure-temperature rock and fault mechanics and rock physics facilities, to electron microscopy, micro-beam analysis, analogue modelling and paleomagnetic laboratories. More information can be found [here](https://epos-ip.org/tcs/multi-scale-laboratories).
 ckan.homepage_style = 3

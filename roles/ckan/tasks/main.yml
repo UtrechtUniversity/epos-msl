@@ -121,6 +121,30 @@
   register: ckan_installed
 
 
+- name: Generate session secret
+  shell: openssl rand -base64 32 > /etc/ckan/default/session_secret
+    creates=/etc/ckan/default/session_secret
+  when: not ansible_check_mode
+
+
+- name: Read session secret
+  command: cat /etc/ckan/default/session_secret
+  register: session_secret
+  changed_when: false
+  
+
+- name: Generate unique application instance identifier
+  shell: 'echo {{ hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
+    creates=/etc/ckan/default/app_instance_uuid'
+  when: not ansible_check_mode
+
+
+- name: Read unique application instance identifier
+  command: cat /etc/ckan/default/app_instance_uuid
+  register: app_instance_uuid
+  changed_when: false
+
+
 - name: Ensure CKAN config is present
   template:
     src: "configuration.ini.j2"
