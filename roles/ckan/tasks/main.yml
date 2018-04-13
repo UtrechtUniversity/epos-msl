@@ -123,8 +123,8 @@
 
 - name: Ensure CKAN config is present
   template:
-    src: "development.ini.j2"
-    dest: "/etc/ckan/default/development.ini"
+    src: "configuration.ini.j2"
+    dest: "/etc/ckan/default/{{ epos_msl_environment }}.ini"
   notify: Restart Apache webserver
 
 
@@ -243,8 +243,8 @@
   shell: |
     . /usr/lib/ckan/default/bin/activate
     cd /usr/lib/ckan/default/src/ckan
-    paster db init -c /etc/ckan/default/development.ini
-    paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/development.ini
+    paster db init -c /etc/ckan/default/{{ epos_msl_environment }}.ini
+    paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
   when: ckan_installed.changed
 
@@ -255,7 +255,7 @@
   shell: |
     . /usr/lib/ckan/default/bin/activate
     cd /usr/lib/ckan/default/src/ckan
-    paster --plugin=ckan user list -c /etc/ckan/default/development.ini
+    paster --plugin=ckan user list -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
   changed_when: False    
   register: ckan_admin_user
@@ -267,8 +267,8 @@
   shell: |
     . /usr/lib/ckan/default/bin/activate
     cd /usr/lib/ckan/default/src/ckan
-    paster user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/development.ini
-    paster sysadmin add ckanadmin -c /etc/ckan/default/development.ini
+    paster user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/{{ epos_msl_environment }}.ini
+    paster sysadmin add ckanadmin -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
   when: '"name=ckanadmin" not in ckan_admin_user.stdout'
 
@@ -279,7 +279,7 @@
   shell: |
     . /usr/lib/ckan/default/bin/activate
     cd /usr/lib/ckan/default/src/ckan
-    paster --plugin=ckan user list -c /etc/ckan/default/development.ini
+    paster --plugin=ckan user list -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
   changed_when: False    
   register: ckan_harvest_user
@@ -291,8 +291,8 @@
   shell: |
     . /usr/lib/ckan/default/bin/activate
     cd /usr/lib/ckan/default/src/ckan
-    paster user add harvest password="{{ ckan_harvest_password }}" email=harvest@localhost name=harvest -c /etc/ckan/default/development.ini
-    paster sysadmin add harvest -c /etc/ckan/default/development.ini
+    paster user add harvest password="{{ ckan_harvest_password }}" email=harvest@localhost name=harvest -c /etc/ckan/default/{{ epos_msl_environment }}.ini
+    paster sysadmin add harvest -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
   when: '"name=harvest" not in ckan_admin_user.stdout'
 
