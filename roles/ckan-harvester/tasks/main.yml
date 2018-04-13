@@ -1,0 +1,43 @@
+---
+# copyright Utrecht University
+
+- name: Ensure Supervisor is installed
+  package:
+    name: supervisor
+    state: present
+
+
+- name: Ensure Supervisor configuration for CKAN harvesting is present
+  template:
+    src: "ckan_harvesting.ini.j2"
+    dest: "/etc/supervisord.d/ckan_harvesting.ini"
+
+
+- name: Ensure CKAN log directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: ckan
+  with_items:
+    - /var/log/ckan
+    - /var/log/ckan/std
+
+
+- name: Ensure Supervisor is started and enabled on boot
+  service:
+    name: supervisord
+    state: started
+    enabled: yes
+
+
+- name: Add Supervisor ckan_gather_consumer task
+  supervisorctl:
+    name: ckan_gather_consumer
+    state: present
+
+
+- name: Add Supervisor ckan_fetch_consumer task
+  supervisorctl:
+    name: ckan_fetch_consumer
+    state: present
