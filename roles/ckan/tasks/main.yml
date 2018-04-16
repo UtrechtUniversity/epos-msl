@@ -131,7 +131,7 @@
   command: cat /etc/ckan/default/session_secret
   register: session_secret
   changed_when: false
-  
+
 
 - name: Generate unique application instance identifier
   shell: 'echo {{ hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
@@ -265,7 +265,7 @@
     cd /usr/lib/ckan/default/src/ckan
     paster --plugin=ckan user list -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
-  changed_when: False    
+  changed_when: False
   register: ckan_admin_user
 
 
@@ -289,7 +289,7 @@
     cd /usr/lib/ckan/default/src/ckan
     paster --plugin=ckan user list -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
-  changed_when: False    
+  changed_when: False
   register: ckan_harvest_user
 
 
@@ -317,3 +317,24 @@
     src: "epos-msl-vhost.conf.j2"
     dest: "/etc/httpd/conf.d/epos-msl-vhost.conf"
   notify: Restart Apache webserver
+
+
+- name: Ensure EPOS-MSL CKAN custom translation is present
+  become_user: ckan
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: 0644
+  with_items:
+    - src: 'ckan.po'
+      dest: '/usr/lib/ckan/default/src/ckan/ckan/i18n/en_GB/LC_MESSAGES/ckan.po'
+    - src: 'ckan.mo'
+      dest: '/usr/lib/ckan/default/src/ckan/ckan/i18n/en_GB/LC_MESSAGES/ckan.mo'
+  register: custom_translation
+  notify: Restart Apache webserver
+
+
+- name: Workaround translation problem
+  command: cp /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/en.js /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/en_GB.js
+  when: custom_translation is changed
+  

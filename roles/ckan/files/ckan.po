@@ -359,7 +359,7 @@ msgstr "Country Code"
 
 #: ckanext/example_idatasetform/templates/package/snippets/resource_form.html:6
 msgid "custom resource text"
-msgstr "custom resource text"
+msgstr "custom resource text" 
 
 #: ckanext/example_itranslation/templates/home/index.html:4
 msgid "This is an untranslated string"
@@ -368,7 +368,7 @@ msgstr "This is an untranslated string"
 #: ckanext/example_theme_docs/v10_custom_snippet/templates/snippets/example_theme_most_popular_groups.html:20
 #: ckanext/example_theme_docs/v11_HTML_and_CSS/templates/snippets/example_theme_most_popular_groups.html:19
 msgid "This group has no description"
-msgstr "This group has no description"
+msgstr "This subdomain has no description"
 
 #: ckan/templates/group/snippets/group_item.html:32
 #: ckan/templates/organization/snippets/organization_item.html:31
@@ -493,7 +493,7 @@ msgstr "Graph type"
 
 #: ckanext/reclineview/theme/templates/recline_graph_form.html:7
 msgid "Group (Axis 1)"
-msgstr "Group (Axis 1)"
+msgstr "Subdomain (Axis 1)"
 
 #: ckanext/reclineview/theme/templates/recline_graph_form.html:8
 msgid "Series (Axis 2)"
@@ -588,12 +588,12 @@ msgstr "No edited datasets"
 #: ckanext/stats/templates/ckanext/stats/index.html:108
 #: ckanext/stats/templates/ckanext/stats/index.html:182
 msgid "Largest Groups"
-msgstr "Largest Groups"
+msgstr "Largest Subdomains"
 
 #: ckan/logic/converters.py:171 ckan/logic/validators.py:244
 #: ckanext/stats/templates/ckanext/stats/index.html:113
 msgid "Group"
-msgstr "Group"
+msgstr "Subdomain"
 
 #: ckanext/stats/templates/ckanext/stats/index.html:114
 msgid "Number of datasets"
@@ -601,16 +601,16 @@ msgstr "Number of datasets"
 
 #: ckanext/stats/templates/ckanext/stats/index.html:127
 msgid "No groups"
-msgstr "No groups"
+msgstr "No subdomains"
 
 #: ckanext/stats/templates/ckanext/stats/index.html:132
 #: ckanext/stats/templates/ckanext/stats/index.html:183
 msgid "Top Tags"
-msgstr "Top Tags"
+msgstr "Top Keywords"
 
 #: ckanext/stats/templates/ckanext/stats/index.html:136
 msgid "Tag Name"
-msgstr "Tag Name"
+msgstr "Keyword Name"
 
 #: ckanext/stats/templates/ckanext/stats/index.html:137
 #: ckanext/stats/templates/ckanext/stats/index.html:157
@@ -867,7 +867,7 @@ msgstr "Request params must be in form of a json encoded dictionary."
 #: ckan/controllers/group.py:926 ckan/controllers/package.py:1243
 #: ckan/controllers/package.py:1258 ckan/logic/action/create.py:1396
 msgid "Group not found"
-msgstr "Group not found"
+msgstr "Subdomain not found"
 
 #: ckan/controllers/feed.py:244 ckan/logic/action/create.py:1396
 msgid "Organization not found"
@@ -875,7 +875,7 @@ msgstr "Lab not found"
 
 #: ckan/controllers/group.py:139 ckan/controllers/group.py:580
 msgid "Incorrect group type"
-msgstr "Incorrect group type"
+msgstr "Incorrect subdomain type"
 
 #: ckan/controllers/group.py:305 ckan/controllers/home.py:61
 #: ckan/controllers/package.py:240 ckan/lib/helpers.py:833
@@ -902,7 +902,7 @@ msgstr "Labs"
 #: ckan/templates/package/read_base.html:20
 #: ckan/templates/revision/diff.html:16 ckan/templates/revision/read.html:84
 msgid "Groups"
-msgstr "Groups"
+msgstr "Subdomains"
 
 #: ckan/controllers/group.py:307 ckan/controllers/home.py:63
 #: ckan/controllers/package.py:242 ckan/lib/helpers.py:835
@@ -912,7 +912,7 @@ msgstr "Groups"
 #: ckan/templates/tag/index.html:3 ckan/templates/tag/index.html:6
 #: ckan/templates/tag/index.html:12
 msgid "Tags"
-msgstr "Tags"
+msgstr "Keywords"
 
 #: ckan/controllers/group.py:308 ckan/controllers/home.py:64
 #: ckan/controllers/package.py:243 ckan/lib/helpers.py:836
@@ -937,7 +937,7 @@ msgstr "Not authorised to perform bulk update"
 
 #: ckan/controllers/group.py:460
 msgid "Unauthorized to create a group"
-msgstr "Unauthorised to create a group"
+msgstr "Unauthorised to create a subdomain"
 
 #: ckan/controllers/group.py:538 ckan/controllers/group.py:568
 #: ckan/controllers/package.py:922 ckan/controllers/package.py:970
@@ -954,7 +954,7 @@ msgstr "User %r not authorised to edit %s authorisations"
 #: ckan/controllers/group.py:614 ckan/controllers/group.py:629
 #, python-format
 msgid "Unauthorized to delete group %s"
-msgstr "Unauthorised to delete group %s"
+msgstr "Unauthorised to delete subdomain %s"
 
 #: ckan/controllers/group.py:620
 msgid "Organization has been deleted."
@@ -962,7 +962,7 @@ msgstr "Lab has been deleted."
 
 #: ckan/controllers/group.py:622
 msgid "Group has been deleted."
-msgstr "Group has been deleted."
+msgstr "Subdomain has been deleted."
 
 #: ckan/controllers/group.py:624
 #, python-format
@@ -977,16 +977,16 @@ msgstr "User %r not authorised to edit members of %s"
 #: ckan/controllers/group.py:705
 #, python-format
 msgid "Unauthorized to add member to group %s"
-msgstr "Unauthorised to add member to group %s"
+msgstr "Unauthorised to add member to subdomain %s"
 
 #: ckan/controllers/group.py:724 ckan/controllers/group.py:737
 #, python-format
 msgid "Unauthorized to delete group %s members"
-msgstr "Unauthorised to delete group %s members"
+msgstr "Unauthorised to delete subdomain %s members"
 
 #: ckan/controllers/group.py:731
 msgid "Group member has been deleted."
-msgstr "Group member has been deleted."
+msgstr "Subdomain member has been deleted."
 
 #: ckan/controllers/group.py:755 ckan/controllers/package.py:417
 msgid "Select two revisions before doing the comparison."
@@ -994,11 +994,11 @@ msgstr "Select two revisions before doing the comparison."
 
 #: ckan/controllers/group.py:779
 msgid "CKAN Group Revision History"
-msgstr "CKAN Group Revision History"
+msgstr "CKAN Subdomain Revision History"
 
 #: ckan/controllers/group.py:783
 msgid "Recent changes to CKAN Group: "
-msgstr "Recent changes to CKAN Group: "
+msgstr "Recent changes to CKAN Subdomain: "
 
 #: ckan/controllers/group.py:804 ckan/controllers/package.py:468
 msgid "Log message: "
@@ -1203,7 +1203,7 @@ msgstr "Other"
 
 #: ckan/controllers/tag.py:74
 msgid "Tag not found"
-msgstr "Tag not found"
+msgstr "Keyword not found"
 
 #: ckan/controllers/user.py:161
 msgid "Unauthorized to register as a user."
@@ -1354,11 +1354,11 @@ msgstr "{actor} added the tag {tag} to the dataset {dataset}"
 
 #: ckan/lib/activity_streams.py:63
 msgid "{actor} updated the group {group}"
-msgstr "{actor} updated the group {group}"
+msgstr "{actor} updated the subdomain {group}"
 
 #: ckan/lib/activity_streams.py:66
 msgid "{actor} updated the organization {organization}"
-msgstr "{actor} updated the organisation {organization}"
+msgstr "{actor} updated the lab {organization}"
 
 #: ckan/lib/activity_streams.py:69
 msgid "{actor} updated the dataset {dataset}"
@@ -1378,11 +1378,11 @@ msgstr "{actor} updated their profile"
 
 #: ckan/lib/activity_streams.py:81
 msgid "{actor} deleted the group {group}"
-msgstr "{actor} deleted the group {group}"
+msgstr "{actor} deleted the subdomain {group}"
 
 #: ckan/lib/activity_streams.py:84
 msgid "{actor} deleted the organization {organization}"
-msgstr "{actor} deleted the organisation {organization}"
+msgstr "{actor} deleted the lab {organization}"
 
 #: ckan/lib/activity_streams.py:87
 msgid "{actor} deleted the dataset {dataset}"
@@ -1398,11 +1398,11 @@ msgstr "{actor} deleted the resource {resource} from the dataset {dataset}"
 
 #: ckan/lib/activity_streams.py:97
 msgid "{actor} created the group {group}"
-msgstr "{actor} created the group {group}"
+msgstr "{actor} created the subdomain {group}"
 
 #: ckan/lib/activity_streams.py:100
 msgid "{actor} created the organization {organization}"
-msgstr "{actor} created the organisation {organization}"
+msgstr "{actor} created the lab {organization}"
 
 #: ckan/lib/activity_streams.py:103
 msgid "{actor} created the dataset {dataset}"
@@ -1642,7 +1642,7 @@ msgstr "No recipient email address available!"
 
 #: ckan/lib/mailer.py:127 ckan/templates/home/snippets/stats.html:17
 msgid "organization"
-msgstr "organisation"
+msgstr "lab"
 
 #: ckan/lib/mailer.py:128 ckan/templates/home/snippets/stats.html:23
 msgid "group"
@@ -1687,7 +1687,7 @@ msgstr "Extras"
 #: ckan/logic/converters.py:74 ckan/logic/converters.py:89
 #, python-format
 msgid "Tag vocabulary \"%s\" does not exist"
-msgstr "Tag vocabulary \"%s\" does not exist"
+msgstr "Keyword vocabulary \"%s\" does not exist"
 
 #: ckan/logic/converters.py:180
 msgid "Could not parse as valid JSON"
@@ -1695,7 +1695,7 @@ msgstr "Could not parse as valid JSON"
 
 #: ckan/logic/validators.py:33 ckan/logic/validators.py:42
 msgid "An organization must be provided"
-msgstr "An organisation must be provided"
+msgstr "An lab must be provided"
 
 #: ckan/logic/validators.py:47
 msgid "Organization does not exist"
@@ -1703,7 +1703,7 @@ msgstr "Lab does not exist"
 
 #: ckan/logic/validators.py:52
 msgid "You cannot add a dataset to this organization"
-msgstr "You cannot add a dataset to this organisation"
+msgstr "You cannot add a dataset to this lab"
 
 #: ckan/logic/validators.py:92
 msgid "Invalid integer"
@@ -1735,7 +1735,7 @@ msgstr "Resource"
 
 #: ckan/logic/validators.py:254
 msgid "That group name or ID does not exist."
-msgstr "That group name or ID does not exist."
+msgstr "That subdomain name or ID does not exist."
 
 #: ckan/logic/validators.py:268
 msgid "Activity type"
@@ -1793,27 +1793,27 @@ msgstr "Duplicate key \"%s\""
 
 #: ckan/logic/validators.py:410
 msgid "Group name already exists in database"
-msgstr "Group name already exists in database"
+msgstr "Subdomain name already exists in database"
 
 #: ckan/logic/validators.py:416
 #, python-format
 msgid "Tag \"%s\" length is less than minimum %s"
-msgstr "Tag \"%s\" length is less than minimum %s"
+msgstr "Keyword \"%s\" length is less than minimum %s"
 
 #: ckan/logic/validators.py:420
 #, python-format
 msgid "Tag \"%s\" length is more than maximum %i"
-msgstr "Tag \"%s\" length is more than maximum %i"
+msgstr "Keyword \"%s\" length is more than maximum %i"
 
 #: ckan/logic/validators.py:428
 #, python-format
 msgid "Tag \"%s\" must be alphanumeric characters or symbols: -_."
-msgstr "Tag \"%s\" must be alphanumeric characters or symbols: -_."
+msgstr "Keyword \"%s\" must be alphanumeric characters or symbols: -_."
 
 #: ckan/logic/validators.py:436
 #, python-format
 msgid "Tag \"%s\" must not be uppercase"
-msgstr "Tag \"%s\" must not be uppercase"
+msgstr "Keyword \"%s\" must not be uppercase"
 
 #: ckan/logic/validators.py:545
 msgid "User names must be strings"
@@ -1863,12 +1863,12 @@ msgstr "Cannot change value of key from %s to %s. This key is read-only"
 
 #: ckan/logic/validators.py:643
 msgid "Tag vocabulary was not found."
-msgstr "Tag vocabulary was not found."
+msgstr "Keyword vocabulary was not found."
 
 #: ckan/logic/validators.py:656
 #, python-format
 msgid "Tag %s does not belong to vocabulary %s"
-msgstr "Tag %s does not belong to vocabulary %s"
+msgstr "Keyword %s does not belong to vocabulary %s"
 
 #: ckan/logic/validators.py:662
 msgid "No tag name"
@@ -1877,7 +1877,7 @@ msgstr "No tag name"
 #: ckan/logic/validators.py:675
 #, python-format
 msgid "Tag %s already belongs to vocabulary %s"
-msgstr "Tag %s already belongs to vocabulary %s"
+msgstr "Keyword %s already belongs to vocabulary %s"
 
 #: ckan/logic/validators.py:698
 msgid "Please provide a valid URL"
@@ -1889,7 +1889,7 @@ msgstr "role does not exist."
 
 #: ckan/logic/validators.py:741
 msgid "Datasets with no organization can't be private."
-msgstr "Datasets with no organisation can't be private."
+msgstr "Datasets with no lab can't be private."
 
 #: ckan/logic/validators.py:747
 msgid "Not a list"
@@ -1940,7 +1940,7 @@ msgstr "REST API: Create member object %s"
 
 #: ckan/logic/action/create.py:804
 msgid "Trying to create an organization as a group"
-msgstr "Trying to create an organisation as a group"
+msgstr "Trying to create an lab as a subdomain"
 
 #: ckan/logic/action/create.py:893
 msgid "You must supply a package id or name (parameter \"package\")."
@@ -1986,7 +1986,7 @@ msgstr "User {username} does not exist."
 
 #: ckan/logic/action/create.py:1477 ckan/logic/action/create.py:1485
 msgid "You must be logged in to follow a group."
-msgstr "You must be logged in to follow a group."
+msgstr "You must be logged in to follow a subdomain."
 
 #: ckan/logic/action/delete.py:54
 msgid " Delete User: {0}"
@@ -2079,12 +2079,12 @@ msgstr "User %s not authorised to create packages"
 #: ckan/logic/auth/create.py:31 ckan/logic/auth/update.py:45
 #, python-format
 msgid "User %s not authorized to edit these groups"
-msgstr "User %s not authorised to edit these groups"
+msgstr "User %s not authorised to edit these subdomains"
 
 #: ckan/logic/auth/create.py:38
 #, python-format
 msgid "User %s not authorized to add dataset to this organization"
-msgstr "User %s not authorised to add dataset to this organisation"
+msgstr "User %s not authorised to add dataset to this lab"
 
 #: ckan/logic/auth/create.py:61
 msgid "No dataset id provided, cannot check auth."
@@ -2108,12 +2108,12 @@ msgstr "User %s not authorised to edit these packages"
 #: ckan/logic/auth/create.py:119
 #, python-format
 msgid "User %s not authorized to create groups"
-msgstr "User %s not authorised to create groups"
+msgstr "User %s not authorised to create subdomains"
 
 #: ckan/logic/auth/create.py:129
 #, python-format
 msgid "User %s not authorized to create organizations"
-msgstr "User %s not authorised to create organisations"
+msgstr "User %s not authorised to create labs"
 
 #: ckan/logic/auth/create.py:145
 msgid "User {user} not authorized to create users via the API"
@@ -2125,7 +2125,7 @@ msgstr "Not authorised to create users"
 
 #: ckan/logic/auth/create.py:189
 msgid "Group was not found."
-msgstr "Group was not found."
+msgstr "Subdomain was not found."
 
 #: ckan/logic/auth/create.py:209
 msgid "Valid API key needed to create a package"
@@ -2133,7 +2133,7 @@ msgstr "Valid API key needed to create a package"
 
 #: ckan/logic/auth/create.py:217
 msgid "Valid API key needed to create a group"
-msgstr "Valid API key needed to create a group"
+msgstr "Valid API key needed to create a subdomain"
 
 #: ckan/logic/auth/create.py:237
 #, python-format
@@ -2143,7 +2143,7 @@ msgstr "User %s not authorised to add members"
 #: ckan/logic/auth/create.py:261 ckan/logic/auth/update.py:115
 #, python-format
 msgid "User %s not authorized to edit group %s"
-msgstr "User %s not authorised to edit group %s"
+msgstr "User %s not authorised to edit subdomain %s"
 
 #: ckan/logic/auth/delete.py:40
 #, python-format
@@ -2162,22 +2162,22 @@ msgstr "User %s not authorised to delete relationship %s"
 #: ckan/logic/auth/delete.py:82
 #, python-format
 msgid "User %s not authorized to delete groups"
-msgstr "User %s not authorised to delete groups"
+msgstr "User %s not authorised to delete subdomains"
 
 #: ckan/logic/auth/delete.py:86
 #, python-format
 msgid "User %s not authorized to delete group %s"
-msgstr "User %s not authorised to delete group %s"
+msgstr "User %s not authorised to delete subdomain %s"
 
 #: ckan/logic/auth/delete.py:103
 #, python-format
 msgid "User %s not authorized to delete organizations"
-msgstr "User %s not authorised to delete organisations"
+msgstr "User %s not authorised to delete labs"
 
 #: ckan/logic/auth/delete.py:107
 #, python-format
 msgid "User %s not authorized to delete organization %s"
-msgstr "User %s not authorised to delete organisation %s"
+msgstr "User %s not authorised to delete lab %s"
 
 #: ckan/logic/auth/delete.py:120
 #, python-format
@@ -2206,7 +2206,7 @@ msgstr "User %s not authorised to read resource %s"
 #: ckan/logic/auth/get.py:170
 #, python-format
 msgid "User %s not authorized to read group %s"
-msgstr "User %s not authorised to read group %s"
+msgstr "User %s not authorised to read subdomain %s"
 
 #: ckan/logic/auth/get.py:252
 msgid "You must be logged in to access your dashboard."
@@ -2230,17 +2230,17 @@ msgstr "User %s not authorised to change state of package %s"
 #: ckan/logic/auth/update.py:128
 #, python-format
 msgid "User %s not authorized to edit organization %s"
-msgstr "User %s not authorised to edit organisation %s"
+msgstr "User %s not authorised to edit lab %s"
 
 #: ckan/logic/auth/update.py:145
 #, python-format
 msgid "User %s not authorized to change state of group %s"
-msgstr "User %s not authorised to change state of group %s"
+msgstr "User %s not authorised to change state of subdomain %s"
 
 #: ckan/logic/auth/update.py:162
 #, python-format
 msgid "User %s not authorized to edit permissions of group %s"
-msgstr "User %s not authorised to edit permissions of group %s"
+msgstr "User %s not authorised to edit permissions of subdomain %s"
 
 #: ckan/logic/auth/update.py:190
 msgid "Have to be logged in to edit user"
@@ -2276,7 +2276,7 @@ msgstr "Valid API key needed to edit a package"
 
 #: ckan/logic/auth/update.py:272
 msgid "Valid API key needed to edit a group"
-msgstr "Valid API key needed to edit a group"
+msgstr "Valid API key needed to edit a subdomain"
 
 #: ckan/model/license.py:222
 msgid "License not specified"
@@ -2878,11 +2878,11 @@ msgstr "Administrators"
 
 #: ckan/templates/group/base_form_page.html:7
 msgid "Add a Group"
-msgstr "Add a Group"
+msgstr "Add a Subdomain"
 
 #: ckan/templates/group/base_form_page.html:11
 msgid "Group Form"
-msgstr "Group Form"
+msgstr "Subdomain Form"
 
 #: ckan/templates/group/confirm_delete.html:3
 #: ckan/templates/group/confirm_delete.html:15
@@ -2901,7 +2901,7 @@ msgstr "Confirm Delete"
 
 #: ckan/templates/group/confirm_delete.html:11
 msgid "Are you sure you want to delete group - {name}?"
-msgstr "Are you sure you want to delete group - {name}?"
+msgstr "Are you sure you want to delete subdomain - {name}?"
 
 #: ckan/templates/group/confirm_delete_member.html:11
 #: ckan/templates/organization/confirm_delete_member.html:11
@@ -2922,7 +2922,7 @@ msgstr "Manage"
 
 #: ckan/templates/group/edit.html:12
 msgid "Edit Group"
-msgstr "Edit Group"
+msgstr "Edit Subdomain"
 
 #: ckan/templates/group/edit_base.html:23 ckan/templates/group/members.html:3
 #: ckan/templates/organization/edit_base.html:24
@@ -2938,15 +2938,15 @@ msgstr "History"
 #: ckan/templates/group/index.html:13
 #: ckan/templates/user/dashboard_groups.html:7
 msgid "Add Group"
-msgstr "Add Group"
+msgstr "Add Subdomain"
 
 #: ckan/templates/group/index.html:20
 msgid "Search groups..."
-msgstr "Search groups..."
+msgstr "Search subdomains..."
 
 #: ckan/templates/group/index.html:29
 msgid "There are currently no groups for this site"
-msgstr "There are currently no groups for this site"
+msgstr "There are currently no subdomains for this site"
 
 #: ckan/templates/group/index.html:31
 #: ckan/templates/organization/index.html:31
@@ -3038,22 +3038,22 @@ msgid ""
 "organization members.</p> <p><strong>Member:</strong> Can add/remove "
 "datasets from groups</p> "
 msgstr ""
-" <p><strong>Admin:</strong> Can edit group information, as well as manage "
-"organisation members.</p> <p><strong>Member:</strong> Can add/remove "
-"datasets from groups</p> "
+" <p><strong>Admin:</strong> Can edit subdomain information, as well as manage "
+"lab members.</p> <p><strong>Member:</strong> Can add/remove "
+"datasets from subdomains</p> "
 
 #: ckan/templates/group/new.html:3 ckan/templates/group/new.html:5
 #: ckan/templates/group/new.html:7
 msgid "Create a Group"
-msgstr "Create a Group"
+msgstr "Create a Subdomain"
 
 #: ckan/templates/group/new_group_form.html:17
 msgid "Update Group"
-msgstr "Update Group"
+msgstr "Update Subdomain"
 
 #: ckan/templates/group/new_group_form.html:19
 msgid "Create Group"
-msgstr "Create Group"
+msgstr "Create Subdomain"
 
 #: ckan/templates/group/read.html:21 ckan/templates/organization/read.html:25
 #: ckan/templates/snippets/search_form.html:3
@@ -3062,7 +3062,7 @@ msgstr "Search datasets..."
 
 #: ckan/templates/group/snippets/feeds.html:3
 msgid "Datasets in group: {group}"
-msgstr "Datasets in group: {group}"
+msgstr "Datasets in subdomain: {group}"
 
 #: ckan/templates/group/snippets/feeds.html:4
 #: ckan/templates/organization/snippets/feeds.html:4
@@ -3077,7 +3077,7 @@ msgstr "Name"
 
 #: ckan/templates/group/snippets/group_form.html:10
 msgid "My Group"
-msgstr "My Group"
+msgstr "My Subdomain"
 
 #: ckan/templates/group/snippets/group_form.html:18
 msgid "my-group"
@@ -3085,15 +3085,15 @@ msgstr "my-group"
 
 #: ckan/templates/group/snippets/group_form.html:20
 msgid "A little information about my group..."
-msgstr "A little information about my group..."
+msgstr "A little information about my subdomain..."
 
 #: ckan/templates/group/snippets/group_form.html:60
 msgid "Are you sure you want to delete this Group?"
-msgstr "Are you sure you want to delete this Group?"
+msgstr "Are you sure you want to delete this Subdomain?"
 
 #: ckan/templates/group/snippets/group_form.html:63
 msgid "Save Group"
-msgstr "Save Group"
+msgstr "Save Subdomain"
 
 #: ckan/templates/group/snippets/group_item.html:38
 #: ckan/templates/group/snippets/group_item.html:39
@@ -3102,11 +3102,11 @@ msgstr "View {name}"
 
 #: ckan/templates/group/snippets/group_item.html:43
 msgid "Remove dataset from this group"
-msgstr "Remove dataset from this group"
+msgstr "Remove dataset from this subdomain"
 
 #: ckan/templates/group/snippets/helper.html:4
 msgid "What are Groups?"
-msgstr "What are Groups?"
+msgstr "What are Subdomains?"
 
 #: ckan/templates/group/snippets/helper.html:8
 msgid ""
@@ -3115,7 +3115,7 @@ msgid ""
 "particular theme, or as a very simple way to help people find and search "
 "your own published datasets. "
 msgstr ""
-"You can use CKAN Groups to create and manage collections of datasets. This "
+"You can use CKAN Subdomains to create and manage collections of datasets. This "
 "could be to catalogue datasets for a particular project or team, or on a "
 "particular theme, or as a very simple way to help people find and search "
 "your own published datasets. "
@@ -3202,8 +3202,8 @@ msgstr ""
 "accessible and usable – by providing tools to streamline publishing, "
 "sharing, finding and using data (including storage of data and provision of "
 "robust data APIs). CKAN is aimed at data publishers (national and regional "
-"governments, companies and organisations) wanting to make their data open "
-"and available.</p> <p>CKAN is used by governments and user groups worldwide "
+"governments, companies and labs) wanting to make their data open "
+"and available.</p> <p>CKAN is used by governments and user subdomains worldwide "
 "and powers a variety of official and community data portals including "
 "portals for local, national and international government, such as the UK’s "
 "<a href=\"http://data.gov.uk\">data.gov.uk</a> and the European Union’s <a "
@@ -3242,7 +3242,7 @@ msgstr "Search data"
 
 #: ckan/templates/home/snippets/search.html:16
 msgid "Popular tags"
-msgstr "Popular tags"
+msgstr "Popular keywords"
 
 #: ckan/templates/home/snippets/stats.html:5
 msgid "{0} statistics"
@@ -3258,7 +3258,7 @@ msgstr "datasets"
 
 #: ckan/templates/home/snippets/stats.html:17
 msgid "organizations"
-msgstr "organisations"
+msgstr "labs"
 
 #: ckan/templates/home/snippets/stats.html:23
 msgid "groups"
@@ -3353,11 +3353,11 @@ msgstr "Private"
 
 #: ckan/templates/organization/bulk_process.html:88
 msgid "This organization has no datasets associated to it"
-msgstr "This organisation has no datasets associated to it"
+msgstr "This lab has no datasets associated to it"
 
 #: ckan/templates/organization/confirm_delete.html:11
 msgid "Are you sure you want to delete organization - {name}?"
-msgstr "Are you sure you want to delete organisation - {name}?"
+msgstr "Are you sure you want to delete lab - {name}?"
 
 #: ckan/templates/organization/edit.html:6
 #: ckan/templates/organization/snippets/info.html:13
@@ -3372,11 +3372,11 @@ msgstr "Add Lab"
 
 #: ckan/templates/organization/index.html:20
 msgid "Search organizations..."
-msgstr "Search organisations..."
+msgstr "Search labs..."
 
 #: ckan/templates/organization/index.html:29
 msgid "There are currently no organizations for this site"
-msgstr "There are currently no organisations for this site"
+msgstr "There are currently no labs for this site"
 
 #: ckan/templates/organization/member_new.html:32
 #: ckan/templates/user/edit_user_form.html:8
@@ -3405,9 +3405,9 @@ msgid ""
 "but not add new datasets.</p> "
 msgstr ""
 " <p><strong>Admin:</strong> Can add/edit and delete datasets, as well as "
-"manage organisation members.</p> <p><strong>Editor:</strong> Can add and "
-"edit datasets, but not manage organisation members.</p> "
-"<p><strong>Member:</strong> Can view the organisation's private datasets, "
+"manage lab members.</p> <p><strong>Editor:</strong> Can add and "
+"edit datasets, but not manage lab members.</p> "
+"<p><strong>Member:</strong> Can view the lab's private datasets, "
 "but not add new datasets.</p> "
 
 #: ckan/templates/organization/members.html:14
@@ -3439,7 +3439,7 @@ msgstr "Add Dataset"
 
 #: ckan/templates/organization/snippets/feeds.html:3
 msgid "Datasets in organization: {group}"
-msgstr "Datasets in organisation: {group}"
+msgstr "Datasets in lab: {group}"
 
 #: ckan/templates/organization/snippets/help.html:4
 #: ckan/templates/organization/snippets/helper.html:4
@@ -3453,14 +3453,14 @@ msgid ""
 " belong to a department instead of an individual user.</p> <p>Within "
 "organizations, admins can assign roles and authorise its members, giving "
 "individual users the right to publish datasets from that particular "
-"organisation (e.g. Office of National Statistics).</p> "
+"lab (e.g. Office of National Statistics).</p> "
 msgstr ""
 " <p>Labs act like publishing departments for datasets (for example,"
 " the Department of Health). This means that datasets can be published by and"
 " belong to a department instead of an individual user.</p> <p>Within "
-"organisations, admins can assign roles and authorise its members, giving "
+"labs, admins can assign roles and authorise its members, giving "
 "individual users the right to publish datasets from that particular "
-"organisation (e.g. Office of National Statistics).</p> "
+"lab (e.g. Office of National Statistics).</p> "
 
 #: ckan/templates/organization/snippets/helper.html:8
 msgid ""
@@ -3478,11 +3478,11 @@ msgstr "My Lab"
 
 #: ckan/templates/organization/snippets/organization_form.html:18
 msgid "my-organization"
-msgstr "my-organisation"
+msgstr "my-lab"
 
 #: ckan/templates/organization/snippets/organization_form.html:20
 msgid "A little information about my organization..."
-msgstr "A little information about my organisation..."
+msgstr "A little information about my lab..."
 
 #: ckan/templates/organization/snippets/organization_form.html:60
 msgid ""
@@ -3490,7 +3490,7 @@ msgid ""
 "public and private datasets belonging to this organization."
 msgstr ""
 "Are you sure you want to delete this Lab? This will delete all the "
-"public and private datasets belonging to this organisation."
+"public and private datasets belonging to this lab."
 
 #: ckan/templates/organization/snippets/organization_form.html:63
 msgid "Save Organization"
@@ -3556,15 +3556,15 @@ msgstr "Update"
 
 #: ckan/templates/package/group_list.html:14
 msgid "Associate this group with this dataset"
-msgstr "Associate this group with this dataset"
+msgstr "Associate this subdomain with this dataset"
 
 #: ckan/templates/package/group_list.html:14
 msgid "Add to group"
-msgstr "Add to group"
+msgstr "Add to subdomain"
 
 #: ckan/templates/package/group_list.html:23
 msgid "There are no groups associated with this dataset"
-msgstr "There are no groups associated with this dataset"
+msgstr "There are no subdomains associated with this dataset"
 
 #: ckan/templates/package/new_package_form.html:15
 msgid "Update Dataset"
@@ -3845,22 +3845,22 @@ msgstr "Last Updated"
 
 #: ckan/templates/package/snippets/cannot_create_package.html:10
 msgid "Before you can create a dataset you need to create an organization."
-msgstr "Before you can create a dataset you need to create an organisation."
+msgstr "Before you can create a dataset you need to create an lab."
 
 #: ckan/templates/package/snippets/cannot_create_package.html:13
 msgid "Create a new organization"
-msgstr "Create a new organisation"
+msgstr "Create a new lab"
 
 #: ckan/templates/package/snippets/cannot_create_package.html:18
 msgid "There are no organizations to which you can assign this dataset."
-msgstr "There are no organisations to which you can assign this dataset."
+msgstr "There are no labs to which you can assign this dataset."
 
 #: ckan/templates/package/snippets/cannot_create_package.html:19
 msgid ""
 "Ask a system administrator to create an organization before you can "
 "continue."
 msgstr ""
-"Ask a system administrator to create an organisation before you can "
+"Ask a system administrator to create an lab before you can "
 "continue."
 
 #: ckan/templates/package/snippets/package_basic_fields.html:4
@@ -3899,7 +3899,7 @@ msgstr "Lab"
 
 #: ckan/templates/package/snippets/package_basic_fields.html:74
 msgid "No organization"
-msgstr "No organisation"
+msgstr "No lab"
 
 #: ckan/templates/package/snippets/package_basic_fields.html:89
 msgid "Visibility"
@@ -4161,7 +4161,7 @@ msgstr "Changes"
 
 #: ckan/templates/revision/read.html:74
 msgid "Datasets' Tags"
-msgstr "Datasets' Tags"
+msgstr "Datasets' Keywords"
 
 #: ckan/templates/revision/snippets/revisions_list.html:7
 msgid "Entity"
@@ -4236,7 +4236,7 @@ msgstr "This dataset satisfies the Open Definition."
 
 #: ckan/templates/snippets/organization.html:48
 msgid "There is no description for this organization"
-msgstr "There is no description for this organisation"
+msgstr "There is no description for this lab"
 
 #: ckan/templates/snippets/package_item.html:57
 msgid "This dataset has no description"
@@ -4291,42 +4291,42 @@ msgstr "No datasets found"
 #: ckan/templates/snippets/search_result_text.html:21
 msgid "{number} group found for \"{query}\""
 msgid_plural "{number} groups found for \"{query}\""
-msgstr[0] "{number} group found for \"{query}\""
-msgstr[1] "{number} groups found for \"{query}\""
+msgstr[0] "{number} subdomain found for \"{query}\""
+msgstr[1] "{number} subdomains found for \"{query}\""
 
 #: ckan/templates/snippets/search_result_text.html:22
 msgid "No groups found for \"{query}\""
-msgstr "No groups found for \"{query}\""
+msgstr "No subdomains found for \"{query}\""
 
 #: ckan/templates/snippets/search_result_text.html:23
 msgid "{number} group found"
 msgid_plural "{number} groups found"
-msgstr[0] "{number} group found"
-msgstr[1] "{number} groups found"
+msgstr[0] "{number} subdomain found"
+msgstr[1] "{number} subdomains found"
 
 #: ckan/templates/snippets/search_result_text.html:24
 msgid "No groups found"
-msgstr "No groups found"
+msgstr "No subdomains found"
 
 #: ckan/templates/snippets/search_result_text.html:27
 msgid "{number} organization found for \"{query}\""
 msgid_plural "{number} organizations found for \"{query}\""
 msgstr[0] "{number} organization found for \"{query}\""
-msgstr[1] "{number} organisations found for \"{query}\""
+msgstr[1] "{number} labs found for \"{query}\""
 
 #: ckan/templates/snippets/search_result_text.html:28
 msgid "No organizations found for \"{query}\""
-msgstr "No organisations found for \"{query}\""
+msgstr "No labs found for \"{query}\""
 
 #: ckan/templates/snippets/search_result_text.html:29
 msgid "{number} organization found"
 msgid_plural "{number} organizations found"
 msgstr[0] "{number} organization found"
-msgstr[1] "{number} organisations found"
+msgstr[1] "{number} labs found"
 
 #: ckan/templates/snippets/search_result_text.html:30
 msgid "No organizations found"
-msgstr "No organisations found"
+msgstr "No labs found"
 
 #: ckan/templates/snippets/social.html:5
 msgid "Social"
@@ -4354,7 +4354,7 @@ msgstr "Edits"
 
 #: ckan/templates/tag/index.html:33 ckan/templates/tag/index.html:34
 msgid "Search Tags"
-msgstr "Search Tags"
+msgstr "Search Keywords"
 
 #: ckan/templates/user/dashboard.html:19 ckan/templates/user/dashboard.html:37
 msgid "News feed"
@@ -4373,7 +4373,7 @@ msgstr "My Labs"
 #: ckan/templates/user/dashboard.html:22
 #: ckan/templates/user/dashboard_groups.html:12
 msgid "My Groups"
-msgstr "My Groups"
+msgstr "My Subdomains"
 
 #: ckan/templates/user/dashboard.html:39
 msgid "Activity from items that I'm following"
@@ -4393,11 +4393,11 @@ msgstr "Create one now?"
 
 #: ckan/templates/user/dashboard_groups.html:20
 msgid "You are not a member of any groups."
-msgstr "You are not a member of any groups."
+msgstr "You are not a member of any subdomains."
 
 #: ckan/templates/user/dashboard_organizations.html:21
 msgid "You are not a member of any organizations."
-msgstr "You are not a member of any organisations."
+msgstr "You are not a member of any labs."
 
 #: ckan/templates/user/edit.html:6 ckan/templates/user/edit_base.html:3
 #: ckan/templates/user/list.html:6 ckan/templates/user/list.html:13
@@ -4558,7 +4558,7 @@ msgstr "Why Sign Up?"
 
 #: ckan/templates/user/new.html:28
 msgid "Create datasets, groups and other exciting things"
-msgstr "Create datasets, groups and other exciting things"
+msgstr "Create datasets, subdomains and other exciting things"
 
 #: ckan/templates/user/new_user_form.html:5
 msgid "username"
