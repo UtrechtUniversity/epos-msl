@@ -17,11 +17,11 @@
   register: solr_installed
 
 
-- name: Download Solr archive
+- name: Download Solr 6.5.1 archive
   get_url:
-    url: http://apache.org/dist/lucene/solr/6.6.3/solr-6.6.3.tgz
-    dest: ~/solr-6.6.3.tgz
-    checksum: sha256:326ad83d479d78a8bd72b69110073a6012c81dcb708164ec61e2816321f777f3
+    url: https://archive.apache.org/dist/lucene/solr/6.5.1/solr-6.5.1.tgz
+    dest: ~/solr-6.5.1.tgz
+    checksum: sha256:7c6a7d4474d5e847a8ddd0a4717d33bf5db07adf17c3d36ad1532c72885bd5d3
     force: no
   when: solr_installed.stat.isdir is not defined
   register: solr_downloaded
@@ -29,19 +29,19 @@
 
 - name: Expand Solr archive
   unarchive:
-    src: ~/solr-6.6.3.tgz
+    src: ~/solr-6.5.1.tgz
     dest: ~/
     copy: no
   when: solr_downloaded.changed
 
 
 - name: Run Solr installation script
-  shell: ~/solr-6.6.3/bin/install_solr_service.sh ~/solr-6.6.3.tgz
+  shell: ~/solr-6.5.1/bin/install_solr_service.sh ~/solr-6.5.1.tgz
     creates=/opt/solr/bin/solr
   register: solr_installed
 
 
-- name: Run Solr installation script
+- name: Create Solr CKAN configuration
   become_user: solr
   shell: /opt/solr/bin/solr create -c ckan
     creates=/var/solr/data/ckan/conf/solrconfig.xml

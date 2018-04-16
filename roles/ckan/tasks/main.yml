@@ -162,22 +162,6 @@
   register: link_schema
 
 
-- name: Ensure defaultSearchField is not in Solr schema
-  lineinfile:
-    path: /var/solr/data/ckan/conf/schema.xml
-    state: absent
-    regexp: '^<defaultSearchField>text</defaultSearchField>$'
-  notify: Restart Solr
-
-
-- name: Ensure defaultOperator AND is not in Solr schema
-  lineinfile:
-    path: /var/solr/data/ckan/conf/schema.xml
-    state: absent
-    regexp: '^<solrQueryParser defaultOperator="AND"/>$'
-  notify: Restart Solr
-
-
 - name: Ensure CKAN who.ini is symlinked
   become_user: root
   become: yes
