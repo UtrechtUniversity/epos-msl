@@ -336,4 +336,4 @@
 
 - name: Workaround translation problem
   command: cp /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/en_AU.js /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/en_GB.js
-  
+  when: custom_translation is changed
