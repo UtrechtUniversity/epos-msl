@@ -41,6 +41,15 @@
   register: solr_installed
 
 
+- name: Remove the Solr installation files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - ~/solr-6.5.1.tgz
+    - ~/solr-6.5.1/
+
+
 - name: Create Solr CKAN configuration
   become_user: solr
   shell: /opt/solr/bin/solr create -c ckan
@@ -60,7 +69,21 @@
     dest: "/var/solr/data/ckan/conf/solrconfig.xml"
 
 
-#- name: Ensure Solr is enabled on boot
-#  service:
-#    name: solr
-#    enabled: yes
+- name: Ensure Solr is stopped
+  service:
+    name: solr
+    state: stopped
+  when: solr_installed.changed
+
+
+- name: Ensure Solr deamon is reloaded
+  systemd:
+    name: solr
+    daemon_reload: yes
+  when: solr_installed.changed
+
+
+- name: Ensure Solr is enabled on boot
+  service:
+    name: solr
+    enabled: yes

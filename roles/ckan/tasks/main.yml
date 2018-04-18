@@ -160,6 +160,7 @@
     dest: /var/solr/data/ckan/conf/schema.xml
     state: link
   register: link_schema
+  notify: Restart Solr
 
 
 - name: Ensure CKAN who.ini is symlinked
@@ -194,6 +195,7 @@
     dest: "/usr/lib/ckan/default/src/ckanext-harvest/"
     version: "master"
     update: "yes"
+  notify: Restart Apache webserver
 
 
 - name: Install CKAN OAI-PMH extension
@@ -220,6 +222,7 @@
     dest: "/usr/lib/ckan/default/src/ckanext-oaipmh"
     version: "development"
     update: "yes"
+  notify: Restart Apache webserver
 
 
 - name: Install EPOS-MSL custom CKAN theme
