@@ -179,7 +179,7 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/ckan/ckanext-harvest.git@master#egg=ckanext-harvest
+    pip install -e git+https://github.com/ckan/ckanext-harvest.git@{{ ckanext_harvest_version }}#egg=ckanext-harvest
     cd /usr/lib/ckan/default/src/ckanext-harvest/
     pip install -r pip-requirements.txt
     exit
@@ -193,7 +193,7 @@
   git:
     repo: "https://github.com/ckan/ckanext-harvest.git"
     dest: "/usr/lib/ckan/default/src/ckanext-harvest/"
-    version: "master"
+    version: "{{ ckanext_harvest_version }}"
     update: "yes"
   notify: Restart Apache webserver
 
@@ -205,7 +205,7 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/UtrechtUniversity/ckanext-oaipmh.git@development#egg=ckanext-oaipmh
+    pip install -e git+https://github.com/UtrechtUniversity/ckanext-oaipmh.git@{{ ckanext_oaipmh_version }}#egg=ckanext-oaipmh
     cd /usr/lib/ckan/default/src/ckanext-oaipmh/
     pip install -r requirements.txt
     python setup.py develop
@@ -220,7 +220,7 @@
   git:
     repo: "https://github.com/UtrechtUniversity/ckanext-oaipmh.git"
     dest: "/usr/lib/ckan/default/src/ckanext-oaipmh"
-    version: "development"
+    version: "{{ ckanext_oaipmh_version }}"
     update: "yes"
   notify: Restart Apache webserver
 
@@ -232,7 +232,7 @@
     su -s /bin/bash - ckan
     cd /usr/lib/ckan
     . default/bin/activate
-    pip install -e git+https://github.com/UtrechtUniversity/epos-msl-theme.git@master#egg=ckanext-custom_theme
+    pip install -e git+https://github.com/UtrechtUniversity/epos-msl-theme.git@{{ ckanext_custom_theme_version }}#egg=ckanext-custom_theme
     exit
     creates=/usr/lib/ckan/default/src/ckanext-custom-theme/
   notify: Restart Apache webserver
@@ -244,7 +244,7 @@
   git:
     repo: "https://github.com/UtrechtUniversity/epos-msl-theme.git"
     dest: "/usr/lib/ckan/default/src/ckanext-custom-theme/"
-    version: "master"
+    version: "{{ ckanext_custom_theme_version }}"
     update: "yes"
 
 
