@@ -117,7 +117,9 @@
     pip install --ignore-installed -e git+https://github.com/okfn/ckan.git@ckan-2.7.3#egg=ckan
     pip install --ignore-installed -r default/src/ckan/pip-requirements-docs.txt
     exit
-    creates=/usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
+  args:
+    chdir: /usr/lib/ckan
+    creates: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
   register: ckan_installed
 
 
