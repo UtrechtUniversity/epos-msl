@@ -152,6 +152,7 @@
     src: "configuration.ini.j2"
     dest: "/etc/ckan/default/{{ epos_msl_environment }}.ini"
   notify: Restart Apache webserver
+  when: not ansible_check_mode
 
 
 - name: Ensure CKAN schema is symlinked in Solr
@@ -283,7 +284,7 @@
     paster user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     paster sysadmin add ckanadmin -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
-  when: '"name=ckanadmin" not in ckan_admin_user.stdout'
+  when: ('"name=ckanadmin" not in ckan_admin_user.stdout') and not ansible_check_mode
 
 
 - name: Check if CKAN harvest user exists
@@ -307,7 +308,7 @@
     paster user add harvest password="{{ ckan_harvest_password }}" email=harvest@localhost name=harvest -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     paster sysadmin add harvest -c /etc/ckan/default/{{ epos_msl_environment }}.ini
     exit
-  when: '"name=harvest" not in ckan_admin_user.stdout'
+  when: ('"name=harvest" not in ckan_admin_user.stdout') and not ansible_check_mode
 
 
 - name: Ensure WSGI specification for CKAN is present
