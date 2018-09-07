@@ -1,0 +1,40 @@
+---
+# copyright Utrecht University
+
+- name: Ensure PHP is installed
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+  - php
+  - php-xml
+  - php-mcrypt
+  notify: Restart Apache webserver
+
+
+- name: Allow PHP to open TCP sockets in SELinux config
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+  when: ansible_selinux
+
+
+- name: Ensure PHP is configured
+  ini_file:
+    path: /etc/php.ini
+    section: '{{ item.section }}'
+    option: '{{ item.option }}'
+    value: '{{ item.value }}'
+    mode: 0600
+  with_items:
+    - section: PHP
+      option: expose_php
+      value: Off
+    - section: PHP
+      option: max_execution_time
+      value: 120
+    - section: Date
+      option: date.timezone
+      value: '{{ timezone }}'
+  notify: Restart Apache webserver

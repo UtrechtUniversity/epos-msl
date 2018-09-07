@@ -3,15 +3,22 @@
 
 <VirtualHost *:80>
     ServerName {{ epos_msl_fqdn }}
-    ServerAlias {{ epos_msl_fqdn }}
 
+    # Always redirect to https.
     Redirect / https://{{ epos_msl_fqdn }}
 </VirtualHost>
 
 <VirtualHost *:443>
     ServerName {{ epos_msl_fqdn }}
-    ServerAlias {{ epos_msl_fqdn }}
     WSGIScriptAlias / /etc/ckan/default/apache.wsgi
+
+    # PHP EPOS ICS API
+    Alias /ics "/var/www/api/"
+
+    <Directory "/var/www/api/">
+        AllowOverride All
+        Require all granted
+    </Directory>
 
     # Pass authorization info on (needed for rest api).
     WSGIPassAuthorization On
@@ -34,8 +41,8 @@
     SSLCertificateFile      {{ openssl_certs_dir }}/{{ openssl_crt_signed }}
     SSLCertificateKeyFile   {{ openssl_private_dir }}/{{ openssl_key_signed }}
 
-    # HSTS (mod_headers is required) (15768000 seconds = 6 months)
-    Header always set Strict-Transport-Security "max-age=15768000"
+    # HSTS (mod_headers is required) (31536000 seconds = 1 year)
+    Header always set Strict-Transport-Security "max-age=31536000"
 </VirtualHost>
 
 # modern configuration
