@@ -13,5 +13,5 @@ openssl_crt_signed: localhost.crt
 
 # CKAN extension verions
 ckanext_harvest_version: 7dd82a0e01ba85b7f2f4cc02b66dd4948ed7093e
-ckanext_oaipmh_version: '{{ epos_msl_version }}'
+ckanext_oaipmh_version: d207b0186e12b021c4b1f533f185d62b702d5eaa
 ckanext_custom_theme_version: '{{ epos_msl_version }}'
