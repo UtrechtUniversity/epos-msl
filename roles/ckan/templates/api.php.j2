@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * - Author
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(author:%22brown%22)
+ *
+ * - Keyword
+ * https://epos-msl.ckan.test/api/3/action/package_search?fq=(tags:%22FAULT%20MOVEMENT%22)
+ *
+ * - Title
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(title:%22compilation%22)
+ *
+ * - Description
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(notes:%22earthquake%22)
+ *
+ * - Lab
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(organization:"other-lab")
+ *
+ * - Contact
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(extras_Datasetcontact:%22korte%22)
+ *
+ * - References
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(extras_References:%22marone%22)
+ *
+ * - SupplementTo
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(extras_Issupplementto:%22Gori%22)
+ *
+ * - Cites
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(extras_Cites:%22Gori%22)
+ *
+ * - Publisher
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(extras_Publisher:%22gfz%22)
+ *
+ * - PublicationYear
+ * https://epos-msl.ckan.test/api/3/action/package_search?q=(extras_Publicationdate:%222017%22)
+ *
+ * Later:
+ * - DOI
+ * - Institution
+**/
+
+parse_str($_SERVER['QUERY_STRING'], $querystring);
+
+$fieldMapping = array(
+	'Author' 			      => 'q=author',
+	'Keywords'  	    	=> 'fq=tags',
+	'Title' 			      => 'q=title',
+	'Description' 	  	=> 'q=notes',
+	'Lab'				        => 'q=organization',
+	'Dataset_contact'   => 'q=extras_Datasetcontact',
+	'References' 		    => 'q=extras_References',
+	'Is_Supplement_To'	=> 'q=extras_Issupplementto',
+	'Cites'				      => 'q=extras_Cites',
+	'Publisher' 		    => 'q=extras_Publisher',
+	'PublicationYear'	  => 'q=extras_Publicationdate'
+);
+
+$solrQuery = '';
+
+foreach ($querystring as $param => $value) {
+    if (array_key_exists($param, $fieldMapping)) {
+        $paramBase = $fieldMapping[$param];
+
+		//print_r($paramBase);
+
+
+		// eg. 'q=extras_Publicationdate'
+		// split into 'q' and 'extras_Publicationdate'
+		// based upon fieldmapping
+
+		$solrQueryParts = explode('=', $paramBase);
+
+		// q=(extras_Publicationdate:"2017")
+		$solrQuery = $solrQueryParts[0] . '=(' . $solrQueryParts[1] . ':' . '"' . $value . '")';
+
+		break; // For now stop after first hit - one search item in each API call
+    }
+}
+
+$api_url = 'https://{{ epos_msl_fqdn }}/api/3/action/package_search?' . $solrQuery ;
+
+header(sprintf('Location: %s', $api_url));

@@ -3,8 +3,4 @@
 
 dependencies:
 - common
-- certificates
 - apache
-- php
-- solr
-- redis
