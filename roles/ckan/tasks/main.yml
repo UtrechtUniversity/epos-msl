@@ -136,7 +136,7 @@
 
 
 - name: Generate unique application instance identifier
-  shell: 'echo {{ hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
+  shell: 'echo {{ ansible_hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
     creates=/etc/ckan/default/app_instance_uuid'
   when: not ansible_check_mode
 
