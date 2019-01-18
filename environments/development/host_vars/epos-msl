@@ -11,7 +11,7 @@ ansible_ssh_private_key_file: vagrant/ssh/vagrant # Path to private key file of 
 #########################
 # EPOS-MSL configuration
 #########################
-epos_msl_version: v0.3.0                   # EPOS-MSL version to install (v0.2.0 or development)
+epos_msl_version: v0.4.0                   # EPOS-MSL version to install (v0.2.0 or development)
 epos_msl_fqdn: epos-msl.ckan.test          # EPOS-MSL fully qualified domain name (FQDN)
 epos_msl_environment: development          # EPOS-MSL environment: development, testing, acceptance or production
 ckan_database_password: test               # CKAN Postgresql database password
