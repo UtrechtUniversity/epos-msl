@@ -1,0 +1,2 @@
+zabbix ALL=NOPASSWD: /etc/zabbix/zabbix_agentd.d/dailyFetchLogErrors.sh
+zabbix ALL=NOPASSWD: /etc/zabbix/zabbix_agentd.d/dailyGatherLogErrors.sh
