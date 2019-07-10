@@ -1,5 +1,4 @@
 <?php
-
 /**
  * - Author
  * https://epos-msl.ckan.test/api/3/action/package_search?q=(author:%22brown%22)
@@ -79,16 +78,9 @@ $api_url = sprintf(
 
 $s = file_get_contents(str_replace(' ', '%20', $api_url));
 
-//echo '<pre>';
 $response = json_decode($s, JSON_OBJECT_AS_ARRAY);
-
-
 $countDPs = 0;
 $totalDPs = array();
-
-//print_r($response);
-//echo '</pre>';
-//exit;
 
 if ($response['success'] == 1){
 	if ($response['result']['count']>0) {
@@ -167,15 +159,6 @@ if ($response['success'] == 1){
 		}
 	}
 }
-//echo $countDPs; exit;
-//print_r(json_encode($totalDPs));
 
 echo json_encode($totalDPs);
-
 exit;
-
-				
-				
-				
-				
-				
