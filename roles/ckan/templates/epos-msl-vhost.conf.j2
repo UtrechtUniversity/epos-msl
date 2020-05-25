@@ -10,6 +10,10 @@
 
 <VirtualHost *:443>
     ServerName {{ epos_msl_fqdn }}
+
+    RequestHeader set Host '{{ epos_msl_fqdn }}'
+    RequestHeader unset X-Forwarded-Host
+
     WSGIScriptAlias / /etc/ckan/default/apache.wsgi
 
     # PHP EPOS ICS API
