@@ -1,19 +1,45 @@
 ---
 # copyright Utrecht University
+#
 
-- name: Ensure dependencies for Ansible OpenSSL module are installed
+- name: Check that cert_mode is set to valid mode
+  fail:
+    msg: "cert_mode should be set to either selfsigned, ignore or static"
+  when: cert_mode not in ["selfsigned", "ignore", "static"]
+
+
+- name: Ensure dependencies of Ansible OpenSSL are installed
   package:
     name: pyOpenSSL
     state: present
+  when: cert_mode != "ignore"
 
 
-- name: Ensure OpenSSL 4096 bits RSA private key is present
+- name: Ensure an OpenSSL 4096 bits RSA private key is present
   openssl_privatekey:
     path: '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
     size: 4096
     type: RSA
-    force: False
+    force: no
     state: present
+  when: cert_mode == "selfsigned"
+
+
+- name: Upload private key of certificate
+  copy:
+    dest: '{{ openssl_private_dir }}/{{ openssl_key_signed }}'
+    content: '{{ static_cert_key }}'
+    owner: root
+    group: root
+    mode: '0600'
+  when: cert_mode == "static"
+
+
+- name: Create file with certificate and chain
+  template:
+    src: cert-and-chain.j2
+    dest: '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
+  when: cert_mode == "static"
 
 
 - name: Ensure OpenSSL certificate signing request is present
@@ -26,6 +52,7 @@
   args:
     chdir: '{{ openssl_certs_dir }}'
     creates: '{{ openssl_csr_selfsigned }}'
+  when: cert_mode == "selfsigned"
 
 
 - name: Ensure OpenSSL self signed certificate is present
@@ -37,26 +64,76 @@
   args:
     chdir: '{{ openssl_certs_dir }}'
     creates: '{{ openssl_crt_selfsigned }}'
+  when: cert_mode == "selfsigned"
 
 
-- name: Ensure OpenSSL signed private key is present
+- name: Ensure signed private key is present
   command: >
     cp '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
     '{{ openssl_private_dir }}/{{ openssl_key_signed }}'
   args:
     creates: '{{ openssl_private_dir }}/{{ openssl_key_signed }}'
+  when: cert_mode == "selfsigned"
 
 
-- name: Ensure OpenSSL signed certificate is present
+- name: Ensure signed certificate is present
   command: >
     cp '{{ openssl_certs_dir }}/{{ openssl_crt_selfsigned }}'
     '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
   args:
     creates: '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
+  when: cert_mode == "selfsigned"
 
 
-- name: Ensure Diffie-Hellman parameters are generated
+- name: Upload contents of certificate file
+  copy:
+    dest: '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
+    content: '{{ static_cert_crt }}'
+  when: cert_mode == "static"
+
+
+- name: Upload contents of chain file
+  copy:
+    dest: '{{ openssl_certs_dir }}/{{ openssl_chain }}'
+    content: '{{ static_cert_chain }}'
+  when: cert_mode == "static"
+
+
+- name: Ensure CA chain is present
+  command: >
+    cp '{{ openssl_certs_dir }}/{{ openssl_crt_selfsigned }}'
+    '{{ openssl_certs_dir }}/{{ openssl_chain }}'
+  args:
+    creates: '{{ openssl_certs_dir }}/{{ openssl_chain }}'
+  when: cert_mode == "selfsigned"
+
+
+- name: Ensure CA chain with signed certificate is present
+  command: >
+    cp '{{ openssl_certs_dir }}/{{ openssl_crt_selfsigned }}'
+    '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
+  args:
+    creates: '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
+  when: cert_mode == "selfsigned"
+
+
+- name: Ensure Diffie-Hellman parameters (2048 bits) are present
   command: openssl dhparam -2 -out {{ openssl_dhparams }} 2048
   args:
     chdir: '{{ openssl_private_dir }}'
     creates: '{{ openssl_private_dir }}/{{ openssl_dhparams }}'
+  when: cert_mode != "ignore"
+
+
+- name: Ensure certificate files have correct permissions
+  file:
+    path: '{{ item }}'
+    mode: 0644
+    group: 'root'
+    owner: 'root'
+    state: file
+  with_items:
+    - '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
+    - '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
+    - '{{ openssl_certs_dir }}/{{ openssl_chain }}'
+  when: not ansible_check_mode and cert_mode != "ignore"

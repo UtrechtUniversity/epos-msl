@@ -18,7 +18,7 @@
 - name: Set Linux kernel setting to improve Redis performance
   sysctl:
     name: vm.overcommit_memory
-    value: 1
+    value: "1"
     state: present
   notify: Restart Redis
 

@@ -56,9 +56,9 @@
   become: yes
   postgresql_db:
     name: "ckan_default"
-    encoding: UTF-8
-    lc_collate: en_US.utf8
-    lc_ctype: en_US.utf8
+    encoding: "{{ ckan_db_encoding }}"
+    lc_collate: "{{ ckan_db_lc_collate }}"
+    lc_ctype: "{{ ckan_db_lc_ctype }}"
     template: template0
 
 
@@ -114,7 +114,7 @@
     . default/bin/activate
     pip install --upgrade pip
     pip install -U setuptools
-    pip install --ignore-installed -e git+https://github.com/okfn/ckan.git@ckan-2.7.3#egg=ckan
+    pip install --ignore-installed -e git+https://github.com/ckan/ckan.git@ckan-{{ ckan_version }}#egg=ckan
     pip install --ignore-installed -r default/src/ckan/pip-requirements-docs.txt
     exit
   args:
