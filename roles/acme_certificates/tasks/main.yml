@@ -1,0 +1,59 @@
+---
+# copyright Utrecht University
+
+- name: Ensure Certbot for Let's Encrypt is installed
+  package:
+    name: python-certbot-apache
+    state: present
+
+
+- name: Check if certificate already exists
+  stat:
+    path: "/etc/letsencrypt/live/{{ epos_msl_fqdn }}/fullchain.pem"
+  register: letsencrypt_fullchain
+
+
+- name: Ensure Apache is stopped
+  service:
+    name: httpd
+    state: stopped
+  when: not letsencrypt_fullchain.stat.exists
+
+
+- name: Generate certificate if it  doesn't exist yet
+  command: "certbot certonly --standalone --noninteractive --agree-tos --email l.r.westerhof@uu.nl -d {{ epos_msl_fqdn }}"
+  when: not letsencrypt_fullchain.stat.exists
+
+
+- name: Ensure Apache is started
+  service:
+    name: httpd
+    state: started
+  when: not letsencrypt_fullchain.stat.exists
+
+
+- name: Add cronjob for Certbot renewal
+  cron:
+    name: Certbot automatic renewal
+    job: "sudo certbot renew --quiet --pre-hook 'systemctl stop httpd' --post-hook 'systemctl start httpd'"
+    minute: 25
+    hour: 0,12
+
+
+- name: Ensure new certificate is used
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '{{ item.mode }}'
+    remote_src: yes
+  with_items:
+    - src: '/etc/letsencrypt/live/{{ epos_msl_fqdn }}/fullchain.pem'
+      dest: '/etc/pki/tls/certs/localhost_and_chain.crt'
+      mode: '0644'
+    - src: '/etc/letsencrypt/live/{{ epos_msl_fqdn }}/fullchain.pem'
+      dest: '/etc/pki/tls/certs/localhost.crt'
+      mode: '0644'
+    - src: '/etc/letsencrypt/live/{{ epos_msl_fqdn }}/privkey.pem'
+      dest: '/etc/pki/tls/private/localhost.key'
+      mode: '0600'
+  when: not ansible_check_mode
