@@ -40,7 +40,7 @@
   selinux_permissive:
     name: zabbix_agent_t
     permissive: true
-  when: ansible_selinux
+  when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled' # noqa 601
 
 
 - name: Generate Zabbix agent PSK

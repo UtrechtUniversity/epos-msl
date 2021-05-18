@@ -17,6 +17,7 @@
   become: yes
   roles:
     - common
+    - { role: acme_certificates, when: epos_msl_environment == "testing" }
     - certificates
     - apache
     - php

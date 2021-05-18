@@ -17,7 +17,7 @@
     name: httpd_can_network_connect
     state: yes
     persistent: yes
-  when: ansible_selinux
+  when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled' # noqa 601
 
 
 - name: Ensure PHP is configured
@@ -30,7 +30,7 @@
   with_items:
     - section: PHP
       option: expose_php
-      value: Off
+      value: "Off"
     - section: PHP
       option: max_execution_time
       value: 120
