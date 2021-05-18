@@ -30,7 +30,7 @@
   with_items:
     - section: PHP
       option: expose_php
-      value: Off
+      value: "Off"
     - section: PHP
       option: max_execution_time
       value: 120
