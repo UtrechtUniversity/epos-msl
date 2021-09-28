@@ -19,6 +19,8 @@ openssl_crt_signed: localhost.crt
 # - Any specific upgrade instructions as per the release notes
 ckan_version: 2.7.3
 
+ckan_session_timeout: 3600
+
 # CKAN Database settings
 ckan_db_encoding: UTF-8
 ckan_db_lc_collate: en_US.utf8
