@@ -5,5 +5,6 @@
 *.retry
 .vaultpw
 
-# Vagrant stuff
+# Vagrant / VirtualBox stuff
 /.vagrant
+*.log
