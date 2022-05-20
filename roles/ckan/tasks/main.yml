@@ -6,24 +6,28 @@
     name: '{{ item }}'
     state: present
   with_items:
-    - xml-commons
-    - postgresql-server
-    - postgresql-devel
-    - postgresql
-    - python-devel
-    - libxslt
-    - libxslt-devel
-    - libxml2
-    - libxml2-devel
-    - python-virtualenv
     - gcc
-    - gcc-c++
     - make
-    - xalan-j2
-    - unzip
-    - policycoreutils-python
-    - mod_wsgi
-    - httpd
+    - libpq5
+    - python3-pastescript
+    - python3-virtualenv
+    - python3-distutils
+    - python3-pip
+    - supervisor
+
+
+- name: Ensure CKAN storage path is present
+  file:
+    path: "{{ ckan_storage_path }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775
+
+
+- name: Install CKAN package
+  apt:
+    deb: '{{ ckan_package_url }}'
 
 
 - name: Ensure a 'wheel' group exists
@@ -60,6 +64,9 @@
     lc_collate: "{{ ckan_db_lc_collate }}"
     lc_ctype: "{{ ckan_db_lc_ctype }}"
     template: template0
+  vars:
+    # Pipelininig is needed for internal temporary files in postgresl module
+    ansible_ssh_pipelining: true
 
 
 - name: Ensure CKAN database user exists
@@ -70,28 +77,9 @@
     name: "ckan_default"
     password: "{{ ckan_database_password }}"
     priv: ALL
-
-
-- name: Allow Apache to connect to Postgresql
-  seboolean:
-    name: httpd_can_network_connect_db
-    state: yes
-    persistent: yes
-
-
-- name: Allow Apache to connect to Redis and SOLR
-  seboolean:
-    name: httpd_can_network_connect
-    state: yes
-    persistent: yes
-
-
-- name: Allow Apache to listen on port 8983 for Solr
-  seport:
-    ports: 8888
-    proto: tcp
-    setype: http_port_t
-    state: present
+  vars:
+    # Pipelininig is needed for internal temporary files in postgresl module
+    ansible_ssh_pipelining: true
 
 
 - name: Ensure CKAN directories exist
@@ -99,28 +87,12 @@
     path: "{{ item }}"
     state: directory
     mode: 0755
-    owner: ckan
+    owner: root
   with_items:
     - /usr/lib/ckan
     - /usr/lib/ckan/default
     - /etc/ckan
     - /etc/ckan/default
-
-
-- name: Run CKAN installation script
-  become_user: ckan
-  shell: |
-    virtualenv --no-site-packages default
-    . default/bin/activate
-    pip install --upgrade pip
-    pip install -U setuptools
-    pip install --ignore-installed -e git+https://github.com/ckan/ckan.git@ckan-{{ ckan_version }}#egg=ckan
-    pip install --ignore-installed -r default/src/ckan/pip-requirements-docs.txt
-    exit
-  args:
-    chdir: /usr/lib/ckan
-    creates: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
-  register: ckan_installed
 
 
 - name: Generate session secret
@@ -147,23 +119,48 @@
   changed_when: false
 
 
-- name: Ensure CKAN config is present
+- name: Configure CKAN
   template:
-    src: "configuration.ini.j2"
-    dest: "/etc/ckan/default/{{ epos_msl_environment }}.ini"
-  notify: Restart Apache webserver
+    src: "ckan.ini.j2"
+    dest: "{{ ckan_ini_file }}"
+    owner: www-data
+    group: www-data
+    mode: 0644
   when: not ansible_check_mode
 
 
-- name: Ensure CKAN schema is symlinked in Solr
+- name: Check Solr schema
+  ansible.builtin.stat:
+    path: /etc/solr/conf/schema.xml
+  register: solrschema
+
+
+- name: Ensure default schema has been backed up
+  command: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
+  when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
+
+
+- name: Use custom Solr scheme for EPOS-MSL
   become_user: root
   become: yes
-  file:
-    src: /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
-    dest: /var/solr/data/ckan/conf/schema.xml
-    state: link
-  register: link_schema
+  copy:
+    src: solrschema.xml
+    dest: /etc/solr/conf/schema.xml
+    owner: root
+    group: root
+    mode: 0644
   notify: Restart Solr
+
+
+- name: Check who.ini
+  ansible.builtin.stat:
+    path: /etc/ckan/default/who.ini
+  register: whoini
+
+
+- name: Ensure who.ini has been backed up
+  command: "mv /etc/ckan/default/who.ini /etc/ckan/default/who.ini.orig"
+  when: whoini.stat.exists and whoini.stat.isreg is defined and whoini.stat.isreg
 
 
 - name: Ensure CKAN who.ini is symlinked
@@ -175,184 +172,118 @@
     state: link
 
 
-- name: Install CKAN harvest extension
-  become_user: root
+# Needed for preventing warnings/error when installing MSL plugins
+- name: Install wheel package
+  pip:
+    name: wheel
+    virtualenv: /usr/lib/ckan/default
+
+
+- name: Install CKAN scheming plugin
+  pip:
+    name: "https://github.com/ckan/ckanext-scheming/archive/{{ ckanext_scheming_version }}.tar.gz"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+
+
+- name: Install CKAN MSL Core plugin
+  pip: 
+    name: "git+https://github.com/UtrechtUniversity/msl_ckan_core@{{ ckan_msl_core_plugin_branch }}"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+   
+
+- name: Clone CKAN MSL Core plugin for copying images
+  ansible.builtin.git:
+    repo: "https://github.com/UtrechtUniversity/msl_ckan_core"
+    dest: /usr/lib/ckan/msl_ckan_core
+    version: "{{ ckan_msl_core_plugin_branch }}"
+
+
+# Workaround for issue where pip doesn't install static images in MSL core plugin
+- name: Synchronize MSL Core plugin images
+  synchronize:
+    src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/public/
+    dest: /usr/lib/ckan/default/lib/python3.8/site-packages/ckanext/msl_ckan/public/
+  delegate_to: "{{ inventory_hostname }}"
+
+
+- name: Install CKAN MSL Util plugin
+  pip: 
+    name: "git+https://github.com/UtrechtUniversity/msl_ckan_util@{{ ckan_msl_util_plugin_branch }}"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+
+
+- name: Check CKAN database initialized
   become: yes
-  shell: |
-    su -s /bin/bash - ckan
-    cd /usr/lib/ckan
-    . default/bin/activate
-    pip install -e git+https://github.com/ckan/ckanext-harvest.git@{{ ckanext_harvest_version }}#egg=ckanext-harvest
-    cd /usr/lib/ckan/default/src/ckanext-harvest/
-    pip install -r pip-requirements.txt
-    exit
-    creates=/usr/lib/ckan/default/src/ckanext-harvest/
-  notify: Restart Apache webserver
-
-
-- name: Ensure latest version of CKAN harvest extension is installed
-  become_user: root
-  become: yes
-  git:
-    repo: "https://github.com/ckan/ckanext-harvest.git"
-    dest: "/usr/lib/ckan/default/src/ckanext-harvest/"
-    version: "{{ ckanext_harvest_version }}"
-    update: "yes"
-  notify: Restart Apache webserver
-
-
-- name: Install CKAN OAI-PMH extension
-  become_user: root
-  become: yes
-  shell: |
-    su -s /bin/bash - ckan
-    cd /usr/lib/ckan
-    . default/bin/activate
-    pip install -e git+https://github.com/UtrechtUniversity/ckanext-oaipmh.git@{{ ckanext_oaipmh_version }}#egg=ckanext-oaipmh
-    cd /usr/lib/ckan/default/src/ckanext-oaipmh/
-    pip install -r requirements.txt
-    python setup.py develop
-    exit
-    creates=/usr/lib/ckan/default/src/ckanext-oaipmh/
-  notify: Restart Apache webserver
-
-
-- name: Ensure latest version of CKAN OAI-PMH extension is installed
-  become_user: root
-  become: yes
-  git:
-    repo: "https://github.com/UtrechtUniversity/ckanext-oaipmh.git"
-    dest: "/usr/lib/ckan/default/src/ckanext-oaipmh"
-    version: "{{ ckanext_oaipmh_version }}"
-    update: "yes"
-  notify: Restart Apache webserver
-
-
-- name: Install EPOS-MSL custom CKAN theme
-  become_user: root
-  become: yes
-  shell: |
-    su -s /bin/bash - ckan
-    cd /usr/lib/ckan
-    . default/bin/activate
-    pip install -e git+https://github.com/UtrechtUniversity/epos-msl-theme.git@{{ ckanext_custom_theme_version }}#egg=ckanext-custom_theme
-    exit
-    creates=/usr/lib/ckan/default/src/ckanext-custom-theme/
-  notify: Restart Apache webserver
-
-
-- name: Ensure latest version of EPOS-MSL custom CKAN theme is installed
-  become_user: root
-  become: yes
-  git:
-    repo: "https://github.com/UtrechtUniversity/epos-msl-theme.git"
-    dest: "/usr/lib/ckan/default/src/ckanext-custom-theme/"
-    version: "{{ ckanext_custom_theme_version }}"
-    update: "yes"
+  become_user: postgres
+  command: 'psql -d ckan_default -c "select * from public.user"'
+  ignore_errors: true
+  register: userlist
+  changed_when: False
+  vars:
+    ansible_ssh_pipelining: true
 
 
 - name: Initialize CKAN database
-  become_user: ckan
+  become_user: root
   become: yes
-  shell: |
-    . /usr/lib/ckan/default/bin/activate
-    cd /usr/lib/ckan/default/src/ckan
-    paster db init -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    paster --plugin=ckanext-harvest harvester initdb --config=/etc/ckan/default/{{ epos_msl_environment }}.ini
-    exit
-  when: ckan_installed.changed
+  command: "/usr/bin/ckan --config {{ ckan_ini_file }} db init"
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
+  notify: Restart Supervisor
 
 
 - name: Check if CKAN admin user exists
-  become_user: ckan
+  become_user: root
   become: yes
-  shell: |
-    . /usr/lib/ckan/default/bin/activate
-    cd /usr/lib/ckan/default/src/ckan
-    paster --plugin=ckan user list -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    exit
+  command: "/usr/bin/ckan -c {{ ckan_ini_file }} user list"
   changed_when: False
   register: ckan_admin_user
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
 
 
 - name: Add CKAN admin user
-  become_user: ckan
-  become: yes
-  shell: |
-    . /usr/lib/ckan/default/bin/activate
-    cd /usr/lib/ckan/default/src/ckan
-    paster user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    paster sysadmin add ckanadmin -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    exit
-  when: ('"name=ckanadmin" not in ckan_admin_user.stdout') and not ansible_check_mode
-
-
-- name: Check if CKAN harvest user exists
-  become_user: ckan
-  become: yes
-  shell: |
-    . /usr/lib/ckan/default/bin/activate
-    cd /usr/lib/ckan/default/src/ckan
-    paster --plugin=ckan user list -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    exit
-  changed_when: False
-  register: ckan_harvest_user
-
-
-- name: Add CKAN harvest user
   become_user: root
   become: yes
-  shell: |
-    . /usr/lib/ckan/default/bin/activate
-    cd /usr/lib/ckan/default/src/ckan
-    paster user add harvest password="{{ ckan_harvest_password }}" email=harvest@localhost name=harvest -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    paster sysadmin add harvest -c /etc/ckan/default/{{ epos_msl_environment }}.ini
-    exit
-  when: ('"name=harvest" not in ckan_admin_user.stdout') and not ansible_check_mode
+  expect:
+    command: '/usr/bin/ckan -c {{ ckan_ini_file }} user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin'
+    responses:
+      user: y
+  when: not ansible_check_mode and "name=ckanadmin" not in ckan_admin_user.stdout
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
 
 
-- name: Ensure WSGI specification for CKAN is present
+- name: Convert CKAN admin user to sysadmin
+  become_user: root
+  become: yes 
+  command: "/usr/bin/ckan -c {{ ckan_ini_file }} sysadmin add ckanadmin"
+  when: ('"name=ckanadmin" not in ckan_admin_user.stdout') and not ansible_check_mode
+  vars:
+    # Pipelininig is needed for internal temporary files
+    ansible_ssh_pipelining: true
+
+
+- name: Ensure reverse proxy config for Nginx is present
   template:
-    src: "apache.wsgi.j2"
-    dest: "/etc/ckan/default/apache.wsgi"
-  notify: Restart Apache webserver
-
-
-- name: Ensure EPOS-MSL virtual host config for Apache is present
-  template:
-    src: "epos-msl-vhost.conf.j2"
-    dest: "/etc/httpd/conf.d/epos-msl-vhost.conf"
-  notify: Restart Apache webserver
-
-
-- name: Ensure EPOS-MSL CKAN custom translation is present
-  become_user: ckan
-  copy:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
+    src: "nginx-ckan.j2"
+    dest: "/etc/nginx/sites-available/ckan"
+    owner: root
+    group: root
     mode: 0644
-  with_items:
-    - src: 'ckan.po'
-      dest: '/usr/lib/ckan/default/src/ckan/ckan/i18n/en_GB/LC_MESSAGES/ckan.po'
-    - src: 'ckan.mo'
-      dest: '/usr/lib/ckan/default/src/ckan/ckan/i18n/en_GB/LC_MESSAGES/ckan.mo'
-  register: custom_translation
-  notify: Restart Apache webserver
+  notify: Restart Nginx webserver
 
 
-- name: Workaround translation problem
-  command: cp /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/en_AU.js /usr/lib/ckan/default/src/ckan/ckan/public/base/i18n/en_GB.js
-  when: custom_translation is changed
-
-
-- name: Ensure CKAN ICS API directory is present
+- name: Activate Nginx reverse proxy
   file:
-    path: /var/www/api
-    state: directory
-    mode: 0711
-
-
-- name: Ensure CKAN ICS API is present
-  template:
-    src: "api.php.j2"
-    dest: "/var/www/api/api.php"
+    dest: "/etc/nginx/sites-enabled/ckan"
+    src: "/etc/nginx/sites-available/ckan"
+    state: link
+  notify: Restart Nginx webserver

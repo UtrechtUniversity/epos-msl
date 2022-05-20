@@ -1,0 +1,13 @@
+---
+# copyright Utrecht University
+
+# Call command, rather than module, because module doesn't work
+# right on Ubuntu 20.04
+- name: Reload Supervisor # noqa command-instead-of-module
+  command: supervisorctl reload
+
+
+- name: Restart Nginx webserver
+  service:
+    name: nginx
+    state: restarted

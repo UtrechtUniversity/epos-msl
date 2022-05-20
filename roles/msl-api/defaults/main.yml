@@ -1,0 +1,15 @@
+---
+# copyright Utrecht University
+
+msl_api_database: mslapi
+msl_api_database_user: msl
+msl_api_user: www-data
+msl_api_worker_logdir: /var/www/msl_api
+
+# Parameters without default value
+#msl_api_database_password: msl
+#msl_api_ckan_url: https://ckan.uu.nl
+#msl_api_app_key
+#msl_api_app_url
+#msl_api_asset_url
+#ckan_api_token

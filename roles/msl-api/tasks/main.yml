@@ -1,0 +1,8 @@
+---
+# copyright Utrecht University
+
+- import_tasks: prerequisites.yml
+- import_tasks: database.yml
+- import_tasks: application.yml
+- import_tasks: storage.yml
+- import_tasks: config.yml

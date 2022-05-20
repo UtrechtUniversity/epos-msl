@@ -19,10 +19,9 @@
     - common
     - { role: acme_certificates, when: epos_msl_environment == "testing" }
     - certificates
-    - apache
-    - php
+    - nginx
     - postgresql
     - solr
     - redis
     - ckan
-    - ckan-harvester
+    - msl-api

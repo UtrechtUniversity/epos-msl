@@ -23,15 +23,6 @@
   notify: Restart Redis
 
 
-- name: Allow Redis to listen on port 6379
-  seport:
-    ports: 6379
-    proto: tcp
-    setype: redis_port_t
-    state: present
-  notify: Restart Redis
-
-
 - name: Ensure Redis is running and enabled on boot
   service:
     name: redis

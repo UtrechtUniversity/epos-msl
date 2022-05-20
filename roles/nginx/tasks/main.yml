@@ -1,0 +1,19 @@
+---
+# copyright Utrecht University
+
+- name: Ensure CKAN prerequisites are installed
+  package:
+    name: nginx
+    state: present
+
+
+- name: Allow public to ports for Apache in firewall
+  firewalld:
+    port: '{{ item }}'
+    permanent: true
+    state: enabled
+    immediate: yes 
+  with_items:
+    - 80/tcp
+    - 443/tcp
+  notify: Restart firewall

@@ -3,5 +3,5 @@
 
 - name: Restart Solr
   service:
-    name: solr
+    name: tomcat9
     state: restarted

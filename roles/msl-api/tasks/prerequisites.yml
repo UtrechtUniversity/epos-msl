@@ -1,0 +1,24 @@
+---
+# copyright Utrecht University
+
+- name: Add Ondrej PHP repository for old versions of PHP
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+
+
+- name: Ensure MSL API prerequisites are installed
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - composer
+    - php8.0
+    - php8.0-bcmath
+    - php8.0-common
+    - php8.0-curl
+    - php8.0-fpm
+    - php8.0-gd
+    - php8.0-mbstring
+    - php8.0-mysql
+    - php8.0-xml
+    - php8.0-zip

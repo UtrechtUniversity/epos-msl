@@ -1,5 +1,4 @@
 # {{ ansible_managed }}
-# {{ epos_msl_environment }}.ini
 #
 # CKAN - Pylons configuration
 #
@@ -15,26 +14,28 @@
 
 [DEFAULT]
 
-# WARNING: *THIS SETTING MUST BE SET TO FALSE ON A PRODUCTION ENVIRONMENT*
+# WARNING: *THIS SETTING MUST BE SET TO FALSE ON A PUBLIC ENVIRONMENT*
+# With debug mode enabled, a visitor to your site could execute malicious commands.
 debug = false
-
-[server:main]
-use = egg:Paste#http
-host = 0.0.0.0
-port = 5000
 
 [app:main]
 use = egg:ckan
-full_stack = true
+
+## Development settings
+ckan.devserver.host = localhost
+ckan.devserver.port = 5000
+
+
+## Session settings
 cache_dir = /tmp/%(ckan.site_id)s/
 beaker.session.key = ckan
 
 # This is the secret token that the beaker library uses to hash the cookie sent
-# to the client. `paster make-config` generates a unique value for this each
+# to the client. `ckan generate config` generates a unique value for this each
 # time it generates a config file.
 beaker.session.secret = {{ session_secret.stdout }}
 
-# `paster make-config` generates a unique value for this each time it generates
+# `ckan generate config` generates a unique value for this each time it generates
 # a config file.
 app_instance_uuid = {{ app_instance_uuid.stdout }}
 
@@ -56,10 +57,15 @@ sqlalchemy.url = postgresql://ckan_default:{{ ckan_database_password }}@localhos
 ckan.datastore.default_fts_lang = english
 ckan.datastore.default_fts_index_method = gist
 
+
 ## Site Settings
 
 ckan.site_url = https://{{ epos_msl_fqdn }}/
 #ckan.use_pylons_response_cleanup_middleware = true
+
+# Default timeout for Requests
+#ckan.requests.timeout = 10
+
 
 ## Authorization Settings
 
@@ -73,17 +79,30 @@ ckan.auth.user_delete_organizations = true
 ckan.auth.create_user_via_api = false
 ckan.auth.create_user_via_web = false
 ckan.auth.roles_that_cascade_to_sub_groups = admin
+ckan.auth.public_user_details = false
+ckan.auth.public_activity_stream_detail = false
+ckan.auth.allow_dataset_collaborators = false
+ckan.auth.create_default_api_keys = false
+
+## API Token Settings
+api_token.nbytes = 60
+api_token.jwt.encode.secret = string:HvlXPoquK7PcVZ1eMo7Lwf_Rs
+api_token.jwt.decode.secret = string:HvlXPoquK7PcVZ1eMo7Lwf_Rs
+api_token.jwt.algorithm = HS256
+
+## API Token: expire_api_token plugin
+expire_api_token.default_lifetime = 3600
 
 ## Search Settings
 
 ckan.site_id = default
-solr_url = http://127.0.0.1:8983/solr/ckan
+solr_url = http://127.0.0.1:{{ solr_port }}/solr
 
 
 ## Redis Settings
 
 # URL to your Redis instance, including the database to be used.
-ckan.redis.url = redis://localhost:6379/0
+#ckan.redis.url = redis://localhost:6379/0
 
 
 ## CORS Settings
@@ -101,7 +120,16 @@ ckan.redis.url = redis://localhost:6379/0
 #       Add ``datapusher`` to enable DataPusher
 #		Add ``resource_proxy`` to enable resorce proxying and get around the
 #		same origin policy
-ckan.plugins = text_view image_view recline_view harvest ckan_harvester oaipmh_harvester custom_theme
+#ckan.plugins = stats text_view image_view recline_view
+ckan.plugins = stats text_view image_view recline_view msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields
+
+scheming.dataset_schemas = ckanext.msl_ckan:schemas/datasets/data_publication.yml ckanext.msl_ckan:schemas/datasets/labs.json
+scheming.group_schemas = ckanext.msl_ckan:schemas/groups/custom_group_msl_subdomain.json
+scheming.organization_schemas = ckanext.msl_ckan:schemas/organizations/custom_org_institute.json
+
+mslfacets.dataset_config = ckanext.msl_ckan:config/facets.json
+
+mslindexfields.field_config = ckanext.msl_ckan:config/msl_index_fields.json
 
 # Define which views should be created by default
 # (plugins must be loaded in ckan.plugins)
@@ -116,24 +144,19 @@ ckan.views.default_views = image_view text_view recline_view
 #ckan.preview.image_formats = png jpeg jpg gif
 
 ## Front-End Settings
-ckan.site_title = EPOS - Multi-scale Laboratories
-ckan.site_logo = https://{{ epos_msl_fqdn }}/images/logo.png
-ckan.site_description = EPOS - Multi-scale Laboratories
+
+ckan.site_title = CKAN
+ckan.site_logo = /base/images/ckan-logo.png
+ckan.site_description =
 ckan.favicon = /base/images/ckan.ico
 ckan.gravatar_default = identicon
 ckan.preview.direct = png jpg gif
 ckan.preview.loadable = html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json
 ckan.display_timezone = server
 
-ckan.main_css = /base/css/green.css
-ckan.site_intro_text = TCS Multi-scale laboratories includes a wide range of world-class experimental laboratory infrastructures: from high pressure-temperature rock and fault mechanics and rock physics facilities, to electron microscopy, micro-beam analysis, analogue modelling and paleomagnetic laboratories. More information can be found [here](https://epos-ip.org/tcs/multi-scale-laboratories).
-ckan.site_about = TCS Multi-scale laboratories includes a wide range of world-class experimental laboratory infrastructures: from high pressure-temperature rock and fault mechanics and rock physics facilities, to electron microscopy, micro-beam analysis, analogue modelling and paleomagnetic laboratories. More information can be found [here](https://epos-ip.org/tcs/multi-scale-laboratories).
-ckan.homepage_style = 3
-
 # package_hide_extras = for_search_index_only
 #package_edit_return_url = http://another.frontend/dataset/<NAME>
 #package_new_return_url = http://another.frontend/dataset/<NAME>
-#ckan.recaptcha.version = 1
 #ckan.recaptcha.publickey =
 #ckan.recaptcha.privatekey =
 #licenses_group_url = http://licenses.opendefinition.org/licenses/groups/ckan.json
@@ -141,9 +164,10 @@ ckan.homepage_style = 3
 
 
 ## Internationalisation Settings
-ckan.locale_default = en_GB
+ckan.locale_default = en
 ckan.locale_order = en pt_BR ja it cs_CZ ca es fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv
 ckan.locales_offered =
+ckan.locales_filtered_out = en_GB
 
 ## Feeds Settings
 
@@ -154,9 +178,14 @@ ckan.feeds.author_link =
 
 ## Storage Settings
 
-#ckan.storage_path = /var/lib/ckan
+ckan.storage_path = {{ ckan_storage_path }}
 #ckan.max_resource_size = 10
 #ckan.max_image_size = 2
+
+## Webassets Settings
+#ckan.webassets.use_x_sendfile = false
+#ckan.webassets.path = /var/lib/ckan/webassets
+
 
 ## Datapusher settings
 
@@ -171,6 +200,8 @@ ckan.feeds.author_link =
 #ckan.resource_proxy.max_file_size = 1048576
 # Size of chunks to read/write.
 #ckan.resource_proxy.chunk_size = 4096
+# Default timeout for fetching proxied items
+#ckan.resource_proxy.timeout = 10
 
 ## Activity Streams Settings
 
@@ -190,14 +221,14 @@ ckan.hide_activity_from_users = %(ckan.site_id)s
 #smtp.user = username@example.com
 #smtp.password = your_password
 #smtp.mail_from =
+#smtp.reply_to =
 
-
-## Remote harvesting settings
-ckan.harvest.mq.type = redis
+## Background Job Settings
+ckan.jobs.timeout = 180
 
 ## Logging configuration
 [loggers]
-keys = root, ckan, ckanext
+keys = root, ckan, ckanext, werkzeug
 
 [handlers]
 keys = console
@@ -208,6 +239,12 @@ keys = generic
 [logger_root]
 level = WARNING
 handlers = console
+
+[logger_werkzeug]
+level = WARNING
+handlers = console
+qualname = werkzeug
+propagate = 0
 
 [logger_ckan]
 level = INFO
@@ -229,3 +266,13 @@ formatter = generic
 
 [formatter_generic]
 format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
+
+# Settings for EPOS-MSL plugins
+
+# msl_ckan settings
+scheming.dataset_schemas          = ckanext.msl_ckan:schemas/datasets/data_publication.yml ckanext.msl_ckan:schemas/datasets/labs.json
+scheming.group_schemas            = ckanext.msl_ckan:schemas/groups/custom_group_msl_subdomain.json
+scheming.organization_schemas     = ckanext.msl_ckan:schemas/organizations/custom_org_institute.json
+# msl_ckan_util settings
+ckan.mslfacets.dataset_config     = ckanext.msl_ckan_util:samples/facets.json
+ckan.mslindexfields.fields_config = ckanext.msl_ckan_util:samples/msl_index_fields.json
