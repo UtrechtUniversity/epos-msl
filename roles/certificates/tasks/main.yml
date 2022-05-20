@@ -10,7 +10,7 @@
 
 - name: Ensure dependencies of Ansible OpenSSL are installed
   package:
-    name: pyOpenSSL
+    name: python3-openssl
     state: present
   when: cert_mode != "ignore"
 
@@ -39,6 +39,9 @@
   template:
     src: cert-and-chain.j2
     dest: '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
+    owner: root
+    group: root
+    mode: 0644
   when: cert_mode == "static"
 
 
@@ -47,7 +50,7 @@
     -key '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}' \
     -out '{{ openssl_csr_selfsigned }}' -batch -subj \
     '/O={{ openssl_o }}/C={{ openssl_c }}\
-     /localityName={{ openssl_localityName }}\
+     /localityName={{ openssl_localityname }}\
      /commonName={{ ansible_fqdn }}'"
   args:
     chdir: '{{ openssl_certs_dir }}'
@@ -89,6 +92,9 @@
   copy:
     dest: '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
     content: '{{ static_cert_crt }}'
+    owner: root
+    group: root
+    mode: 0644
   when: cert_mode == "static"
 
 
@@ -96,6 +102,9 @@
   copy:
     dest: '{{ openssl_certs_dir }}/{{ openssl_chain }}'
     content: '{{ static_cert_chain }}'
+    owner: root
+    group: root
+    mode: 0644
   when: cert_mode == "static"
 
 
