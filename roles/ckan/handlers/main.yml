@@ -7,6 +7,12 @@
   command: supervisorctl reload
 
 
+# Call command, rather than module, because module doesn't work
+# right on Ubuntu 20.04
+- name: Restart ckan-uwsgi # noqa command-instead-of-module
+  command: supervisorctl restart ckan-uwsgi:ckan-uwsgi-00
+
+
 - name: Restart Nginx webserver
   service:
     name: nginx
