@@ -35,7 +35,7 @@
   ansible.builtin.git:
     repo: 'https://github.com/UtrechtUniversity/msl_api'
     dest: /var/www/msl_api
-    version: master
+    version: '{{ msl_api_version }}'
 
 
 - name: Ensure MSL API dir is writable for Composer
@@ -47,7 +47,7 @@
 
 
 # Use command rather than community composer module, because
-# community module doesn't seem to be working correctly on Ubuntu 20.04 (fails
+# community module does not seem to be working correctly on Ubuntu 20.04 (fails
 # with JSON parsing errors).
 - name: Install MSL API dependencies
   become: yes
