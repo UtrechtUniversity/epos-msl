@@ -12,10 +12,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Lint Ansible Playbook
-      uses: ansible/ansible-lint-action@main
-      with:
-        targets: |
-          playbook.yml
+      uses: ansible/ansible-lint-action@v5
 
         # [optional]
         # Arguments to be passed to the ansible-lint

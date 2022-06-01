@@ -4,19 +4,18 @@
 - name: Ensure Zabbix scripts are present
   copy:
     src: '{{ item }}'
-    dest: '/etc/zabbix/zabbix_agentd.d/{{ item }}'
+    dest: '/etc/zabbix/zabbix_agentd.conf.d/{{ item }}'
     owner: zabbix
     group: zabbix
     mode: 0500
   with_items:
-    - 'dailyFetchLogErrors.sh'
-    - 'dailyGatherLogErrors.sh'
+    - 'dailyErrorLog.sh'
 
 
 - name: Ensure Zabbix user parameters configuration is present
   copy:
     src: 'zabbix_agentd.userparams.conf'
-    dest: '/etc/zabbix/zabbix_agentd.d/zabbix_agentd.userparams.conf'
+    dest: '/etc/zabbix/zabbix_agentd.conf.d/zabbix_agentd.userparams.conf'
     owner: zabbix
     group: zabbix
     mode: 0400

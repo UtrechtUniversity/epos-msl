@@ -32,7 +32,7 @@ PidFile=/var/run/zabbix/zabbix_agentd.pid
 # Default:
 # LogFile=
 
-LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFile=/var/log/zabbix-agent/zabbix_agent.log
 
 ### Option: LogFileSize
 #	Maximum size of log file in MB.
@@ -266,7 +266,7 @@ AllowRoot=0
 # Default:
 # Include=
 
-Include=/etc/zabbix/zabbix_agentd.d/*.conf
+Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf
 # Include=/usr/local/etc/zabbix_agentd.conf.d/
 # Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
 

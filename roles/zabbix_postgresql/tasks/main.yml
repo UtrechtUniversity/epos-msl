@@ -1,0 +1,51 @@
+---
+# copyright Utrecht University
+
+
+- name: Download Zabbix source code for PostgreSQL monitoring files
+  get_url:
+    url: 'https://github.com/zabbix/zabbix/archive/refs/tags/{{ zabbix_source_version }}.tar.gz'
+    dest: '/tmp/zabbix-{{ zabbix_source_version }}.tar.gz'
+
+
+- name: Extract Zabbix source code
+  ansible.builtin.unarchive:
+    src: '/tmp/zabbix-{{ zabbix_source_version }}.tar.gz'
+    dest: /usr/src
+    remote_src: true
+
+
+- name: Create Zabbix postgresql directory
+  ansible.builtin.file:
+    path: '{{ item }}'
+    owner: zabbix
+    group: zabbix
+    mode: 0755
+    state: directory
+  with_items:
+  - /var/lib/zabbix
+  - /var/lib/zabbix/postgresql
+
+
+- name: Synchronize Zabbix Postgresql files
+  ansible.posix.synchronize:
+    src: '/usr/src/zabbix-{{ zabbix_source_version }}/templates/db/postgresql/postgresql/'
+    dest: /var/lib/zabbix/postgresql
+  delegate_to: "{{ inventory_hostname }}"
+
+
+- name: Load Zabbix Postgresql template
+  ansible.posix.synchronize:
+    src: '/usr/src/zabbix-{{ zabbix_source_version }}/templates/db/postgresql/template_db_postgresql.conf'
+    dest: /etc/zabbix/zabbix_agentd.conf.d/template_db_postgresql.conf
+  delegate_to: "{{ inventory_hostname }}"
+
+
+- name: Create Zabbix database user
+  become_user: postgres
+  become: yes
+  postgresql_user:
+    db: "{{ zabbix_database_name }}"
+    name: "{{ zabbix_database_user }}"
+    priv: "CONNECT"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB,NOCREATEROLE
