@@ -23,8 +23,8 @@
     mode: 0755
     state: directory
   with_items:
-  - /var/lib/zabbix
-  - /var/lib/zabbix/postgresql
+    - /var/lib/zabbix
+    - /var/lib/zabbix/postgresql
 
 
 - name: Synchronize Zabbix Postgresql files
@@ -43,7 +43,7 @@
 
 - name: Create Zabbix database user
   become_user: postgres
-  become: yes
+  become: true
   postgresql_user:
     db: "{{ zabbix_database_name }}"
     name: "{{ zabbix_database_user }}"

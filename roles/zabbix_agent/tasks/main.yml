@@ -23,7 +23,7 @@
     owner: root
     group: root
     mode: 0644
-     
+
 
 - name: Install Zabbix agent"
   apt:
@@ -35,7 +35,7 @@
 - name: Enable the Zabbix agent service
   service:
     name: zabbix-agent
-    enabled: yes
+    enabled: true
     use: service
 
 

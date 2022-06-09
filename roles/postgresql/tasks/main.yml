@@ -6,8 +6,8 @@
     name: '{{ item }}'
     state: present
   with_items:
-  - postgresql
-  - postgresql-contrib
+    - postgresql
+    - postgresql-contrib
 
 
 - name: Ensure dependencies for Ansible PostgreSQL module are installed
@@ -87,5 +87,5 @@
 - name: Ensure PostgreSQL is enabled and started
   service:
     name: postgresql
-    enabled: yes
+    enabled: true
     state: started

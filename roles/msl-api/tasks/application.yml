@@ -7,7 +7,7 @@
     state: present
 
 
-- name: Create user account for MSL API 
+- name: Create user account for MSL API
   ansible.builtin.user:
     name: '{{ msl_api_user }}'
     group: '{{ msl_api_user }}'
@@ -28,9 +28,9 @@
     group: "{{ msl_api_user }}"
     recurse: true
 
- 
+
 - name: Clone / check out MSL API
-  become: yes
+  become: true
   become_user: "{{ msl_api_user }}"
   ansible.builtin.git:
     repo: 'https://github.com/UtrechtUniversity/msl_api'
@@ -50,7 +50,7 @@
 # community module does not seem to be working correctly on Ubuntu 20.04 (fails
 # with JSON parsing errors).
 - name: Install MSL API dependencies
-  become: yes
+  become: true
   become_user: '{{ msl_api_user }}'
   command: /usr/bin/php8.0 /usr/bin/composer install
   args:

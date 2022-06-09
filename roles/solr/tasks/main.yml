@@ -12,7 +12,7 @@
 - name: Install Solr server configuration
   ansible.builtin.template:
     src: templates/server.xml.j2
-    dest: /etc/tomcat9/server.xml 
+    dest: /etc/tomcat9/server.xml
     owner: root
     group: tomcat
     mode: 0640
@@ -31,4 +31,4 @@
 - name: Ensure Solr is enabled on boot
   service:
     name: tomcat9
-    enabled: yes
+    enabled: true

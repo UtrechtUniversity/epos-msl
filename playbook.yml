@@ -3,7 +3,7 @@
 # This playbook deploys a complete EPOS-MSL CKAN instance.
 
 - hosts: localhost
-  gather_facts: False
+  gather_facts: false
   pre_tasks:
     - name: Verify Ansible version meets requirements
       assert:
@@ -14,7 +14,7 @@
 
 - name: Provision EPOS-MSL CKAN server
   hosts: all
-  become: yes
+  become: true
   roles:
     - common
     - { role: acme_certificates, when: epos_msl_environment == "testing" }

@@ -20,7 +20,7 @@
     path: '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
     size: 4096
     type: RSA
-    force: no
+    force: false
     state: present
   when: cert_mode == "selfsigned"
 

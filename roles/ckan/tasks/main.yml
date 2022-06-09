@@ -52,12 +52,12 @@
     home: /usr/lib/ckan
     shell: /bin/bash
     groups: wheel
-    append: yes
+    append: true
 
 
 - name: Ensure CKAN database exists
   become_user: postgres
-  become: yes
+  become: true
   postgresql_db:
     name: "ckan_default"
     encoding: "{{ ckan_db_encoding }}"
@@ -71,7 +71,7 @@
 
 - name: Ensure CKAN database user exists
   become_user: postgres
-  become: yes
+  become: true
   postgresql_user:
     db: "ckan_default"
     name: "ckan_default"
@@ -142,7 +142,7 @@
 
 - name: Use custom Solr scheme for EPOS-MSL
   become_user: root
-  become: yes
+  become: true
   copy:
     src: solrschema.xml
     dest: /etc/solr/conf/schema.xml
@@ -165,7 +165,7 @@
 
 - name: Ensure CKAN who.ini is symlinked
   become_user: root
-  become: yes
+  become: true
   file:
     src: /usr/lib/ckan/default/src/ckan/who.ini
     dest: /etc/ckan/default/who.ini
@@ -188,12 +188,12 @@
 
 
 - name: Install CKAN MSL Core plugin
-  pip: 
+  pip:
     name: "git+https://github.com/UtrechtUniversity/msl_ckan_core@{{ ckan_msl_core_plugin_branch }}"
     virtualenv: /usr/lib/ckan/default
     extra_args: "--upgrade"
   notify: Restart ckan-uwsgi
-   
+
 
 - name: Clone CKAN MSL Core plugin for copying images
   ansible.builtin.git:
@@ -211,7 +211,7 @@
 
 
 - name: Install CKAN MSL Util plugin
-  pip: 
+  pip:
     name: "git+https://github.com/UtrechtUniversity/msl_ckan_util@{{ ckan_msl_util_plugin_branch }}"
     virtualenv: /usr/lib/ckan/default
     extra_args: "--upgrade"
@@ -219,19 +219,19 @@
 
 
 - name: Check CKAN database initialized
-  become: yes
+  become: true
   become_user: postgres
   command: 'psql -d ckan_default -c "select * from public.user"'
   ignore_errors: true
   register: userlist
-  changed_when: False
+  changed_when: false
   vars:
     ansible_ssh_pipelining: true
 
 
 - name: Initialize CKAN database
   become_user: root
-  become: yes
+  become: true
   command: "/usr/bin/ckan --config {{ ckan_ini_file }} db init"
   vars:
     # Pipelininig is needed for internal temporary files
@@ -242,9 +242,9 @@
 
 - name: Check if CKAN admin user exists
   become_user: root
-  become: yes
+  become: true
   command: "/usr/bin/ckan -c {{ ckan_ini_file }} user list"
-  changed_when: False
+  changed_when: false
   register: ckan_admin_user
   vars:
     # Pipelininig is needed for internal temporary files
@@ -253,7 +253,7 @@
 
 - name: Add CKAN admin user
   become_user: root
-  become: yes
+  become: true
   expect:
     command: '/usr/bin/ckan -c {{ ckan_ini_file }} user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin'
     responses:
@@ -266,7 +266,7 @@
 
 - name: Convert CKAN admin user to sysadmin
   become_user: root
-  become: yes 
+  become: true
   command: "/usr/bin/ckan -c {{ ckan_ini_file }} sysadmin add ckanadmin"
   when: ('"name=ckanadmin" not in ckan_admin_user.stdout') and not ansible_check_mode
   vars:

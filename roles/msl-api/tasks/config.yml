@@ -9,5 +9,5 @@
     group: "{{ msl_api_user }}"
     mode: '0644'
   notify:
-  - Reload MSL-API configuration
-  - Restart Laravel Worker Process
+    - Reload MSL-API configuration
+    - Restart Laravel Worker Process
