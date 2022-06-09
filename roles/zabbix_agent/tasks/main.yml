@@ -2,14 +2,14 @@
 # copyright Utrecht University
 
 - name: Download Zabbix repo package
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ zabbix_agent.url }}/{{ zabbix_agent.filename }}"
     dest: '{{ zabbix_agent.deb_dest_dir }}/{{ zabbix_agent.filename }}'
     checksum: '{{ zabbix_agent.checksum }}'
 
 
 - name: Install Zabbix repo from downloaded package
-  package:
+  ansible.builtin.package:
     deb: '{{ zabbix_agent.deb_dest_dir }}/{{ zabbix_agent.filename }}'
     state: present
 
@@ -17,7 +17,7 @@
 # Otherwise it would install the older Ubuntu version of the zabbix-agent
 # package.
 - name: Pin Zabbix agent package to Zabbix repository
-  copy:
+  ansible.builtin.copy:
     src: zabbix-agent.preferences
     dest: /etc/apt/preferences.d/99zabbix-agent
     owner: root
@@ -26,27 +26,27 @@
 
 
 - name: Install Zabbix agent"
-  apt:
+  ansible.builtin.apt:
     name: "zabbix-agent"
     state: present
     update_cache: true
 
 
 - name: Enable the Zabbix agent service
-  service:
+  ansible.builtin.service:
     name: zabbix-agent
     enabled: true
     use: service
 
 
 - name: Generate Zabbix agent PSK
-  shell: openssl rand -hex 256 > /etc/zabbix/zabbix_agentd.psk
+  ansible.builtin.shell: openssl rand -hex 256 > /etc/zabbix/zabbix_agentd.psk
     creates=/etc/zabbix/zabbix_agentd.psk
   when: not ansible_check_mode
 
 
 - name: Ensure right file ownership on zabbix_agentd.psk
-  file:
+  ansible.builtin.file:
     path: /etc/zabbix/zabbix_agentd.psk
     owner: zabbix
     group: zabbix
@@ -54,7 +54,7 @@
 
 
 - name: Configure Zabbix agent
-  template:
+  ansible.builtin.template:
     src: zabbix_agentd.conf.j2
     dest: /etc/zabbix/zabbix_agentd.conf
     owner: zabbix

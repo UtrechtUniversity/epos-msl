@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 - name: Ensure CKAN prerequisites are installed
-  package:
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:
@@ -17,7 +17,7 @@
 
 
 - name: Ensure CKAN storage path is present
-  file:
+  ansible.builtin.file:
     path: "{{ ckan_storage_path }}"
     state: directory
     owner: www-data
@@ -26,18 +26,18 @@
 
 
 - name: Install CKAN package
-  apt:
+  ansible.builtin.apt:
     deb: '{{ ckan_package_url }}'
 
 
 - name: Ensure a 'wheel' group exists
-  group:
+  ansible.builtin.group:
     name: wheel
     state: present
 
 
 - name: Allow 'wheel' group to have passwordless sudo
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     state: present
     regexp: '^%wheel'
@@ -46,7 +46,7 @@
 
 
 - name: Ensure CKAN user exists
-  user:
+  ansible.builtin.user:
     name: ckan
     comment: "CKAN User"
     home: /usr/lib/ckan
@@ -83,7 +83,7 @@
 
 
 - name: Ensure CKAN directories exist
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: 0755
@@ -96,31 +96,31 @@
 
 
 - name: Generate session secret
-  shell: openssl rand -base64 32 > /etc/ckan/default/session_secret
+  ansible.builtin.shell: openssl rand -base64 32 > /etc/ckan/default/session_secret
     creates=/etc/ckan/default/session_secret
   when: not ansible_check_mode
 
 
 - name: Read session secret
-  command: cat /etc/ckan/default/session_secret
+  ansible.builtin.command: cat /etc/ckan/default/session_secret
   register: session_secret
   changed_when: false
 
 
 - name: Generate unique application instance identifier
-  shell: 'echo {{ ansible_hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
+  ansible.builtin.shell: 'echo {{ ansible_hostname | to_uuid }} > /etc/ckan/default/app_instance_uuid
     creates=/etc/ckan/default/app_instance_uuid'
   when: not ansible_check_mode
 
 
 - name: Read unique application instance identifier
-  command: cat /etc/ckan/default/app_instance_uuid
+  ansible.builtin.command: cat /etc/ckan/default/app_instance_uuid
   register: app_instance_uuid
   changed_when: false
 
 
 - name: Configure CKAN
-  template:
+  ansible.builtin.template:
     src: "ckan.ini.j2"
     dest: "{{ ckan_ini_file }}"
     owner: www-data
@@ -136,14 +136,14 @@
 
 
 - name: Ensure default schema has been backed up
-  command: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
+  ansible.builtin.command: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
   when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
 
 
 - name: Use custom Solr scheme for EPOS-MSL
   become_user: root
   become: true
-  copy:
+  ansible.builtin.copy:
     src: solrschema.xml
     dest: /etc/solr/conf/schema.xml
     owner: root
@@ -159,14 +159,14 @@
 
 
 - name: Ensure who.ini has been backed up
-  command: "mv /etc/ckan/default/who.ini /etc/ckan/default/who.ini.orig"
+  ansible.builtin.command: "mv /etc/ckan/default/who.ini /etc/ckan/default/who.ini.orig"
   when: whoini.stat.exists and whoini.stat.isreg is defined and whoini.stat.isreg
 
 
 - name: Ensure CKAN who.ini is symlinked
   become_user: root
   become: true
-  file:
+  ansible.builtin.file:
     src: /usr/lib/ckan/default/src/ckan/who.ini
     dest: /etc/ckan/default/who.ini
     state: link
@@ -174,13 +174,13 @@
 
 # Needed for preventing warnings/error when installing MSL plugins
 - name: Install wheel package
-  pip:
+  ansible.builtin.pip:
     name: wheel
     virtualenv: /usr/lib/ckan/default
 
 
 - name: Install CKAN scheming plugin
-  pip:
+  ansible.builtin.pip:
     name: "https://github.com/ckan/ckanext-scheming/archive/{{ ckanext_scheming_version }}.tar.gz"
     virtualenv: /usr/lib/ckan/default
     extra_args: "--upgrade"
@@ -188,7 +188,7 @@
 
 
 - name: Install CKAN MSL Core plugin
-  pip:
+  ansible.builtin.pip:
     name: "git+https://github.com/UtrechtUniversity/msl_ckan_core@{{ ckan_msl_core_plugin_branch }}"
     virtualenv: /usr/lib/ckan/default
     extra_args: "--upgrade"
@@ -211,7 +211,7 @@
 
 
 - name: Install CKAN MSL Util plugin
-  pip:
+  ansible.builtin.pip:
     name: "git+https://github.com/UtrechtUniversity/msl_ckan_util@{{ ckan_msl_util_plugin_branch }}"
     virtualenv: /usr/lib/ckan/default
     extra_args: "--upgrade"
@@ -221,7 +221,7 @@
 - name: Check CKAN database initialized
   become: true
   become_user: postgres
-  command: 'psql -d ckan_default -c "select * from public.user"'
+  ansible.builtin.command: 'psql -d ckan_default -c "select * from public.user"'
   ignore_errors: true
   register: userlist
   changed_when: false
@@ -232,7 +232,7 @@
 - name: Initialize CKAN database
   become_user: root
   become: true
-  command: "/usr/bin/ckan --config {{ ckan_ini_file }} db init"
+  ansible.builtin.command: "/usr/bin/ckan --config {{ ckan_ini_file }} db init"
   vars:
     # Pipelininig is needed for internal temporary files
     ansible_ssh_pipelining: true
@@ -243,7 +243,7 @@
 - name: Check if CKAN admin user exists
   become_user: root
   become: true
-  command: "/usr/bin/ckan -c {{ ckan_ini_file }} user list"
+  ansible.builtin.command: "/usr/bin/ckan -c {{ ckan_ini_file }} user list"
   changed_when: false
   register: ckan_admin_user
   vars:
@@ -254,7 +254,7 @@
 - name: Add CKAN admin user
   become_user: root
   become: true
-  expect:
+  ansible.builtin.expect:
     command: '/usr/bin/ckan -c {{ ckan_ini_file }} user add ckanadmin password="{{ ckan_admin_password }}" email=ckanadmin@localhost name=ckanadmin'
     responses:
       user: y
@@ -267,7 +267,7 @@
 - name: Convert CKAN admin user to sysadmin
   become_user: root
   become: true
-  command: "/usr/bin/ckan -c {{ ckan_ini_file }} sysadmin add ckanadmin"
+  ansible.builtin.command: "/usr/bin/ckan -c {{ ckan_ini_file }} sysadmin add ckanadmin"
   when: ('"name=ckanadmin" not in ckan_admin_user.stdout') and not ansible_check_mode
   vars:
     # Pipelininig is needed for internal temporary files
@@ -275,7 +275,7 @@
 
 
 - name: Ensure reverse proxy config for Nginx is present
-  template:
+  ansible.builtin.template:
     src: "nginx-ckan.j2"
     dest: "/etc/nginx/sites-available/ckan"
     owner: root
@@ -285,7 +285,7 @@
 
 
 - name: Activate Nginx reverse proxy
-  file:
+  ansible.builtin.file:
     dest: "/etc/nginx/sites-enabled/ckan"
     src: "/etc/nginx/sites-available/ckan"
     state: link

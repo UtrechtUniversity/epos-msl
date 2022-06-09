@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 - name: Ensure PostgreSQL database is installed
-  package:
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:
@@ -11,13 +11,13 @@
 
 
 - name: Ensure dependencies for Ansible PostgreSQL module are installed
-  package:
+  ansible.builtin.package:
     name: python3-psycopg2
     state: present
 
 
 - name: Password protect loopback IPv4 connections
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/postgresql/12/main/pg_hba.conf
     regexp: 'host\s+all\s+all\s+127.0.0.1/32'
     line: 'host all all 127.0.0.1/32 md5'
@@ -25,7 +25,7 @@
 
 
 - name: Password protect loopback IPv6 connections
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/postgresql/12/main/pg_hba.conf
     regexp: 'host\s+all\s+all\s+::1/128'
     line: 'host all all ::1/128 md5'
@@ -33,28 +33,28 @@
 
 
 - name: Listen on all interfaces
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/postgresql/12/main/postgresql.conf
     line: "listen_addresses = '*'"
   notify: Restart PostgreSQL
 
 
 - name: Ensure private key file is available for PostgreSQL
-  command: 'cp {{ openssl_private_dir }}/{{ openssl_key_signed }} {{ openssl_key_signed }}'
+  ansible.builtin.command: 'cp {{ openssl_private_dir }}/{{ openssl_key_signed }} {{ openssl_key_signed }}'
   args:
     chdir: '/etc/postgresql/12/main'
     creates: '{{ openssl_key_signed }}'
 
 
 - name: Ensure certificate file is available for PostgreSQL
-  command: 'cp {{ openssl_certs_dir }}/{{ openssl_crt_signed }} {{ openssl_crt_signed }}'
+  ansible.builtin.command: 'cp {{ openssl_certs_dir }}/{{ openssl_crt_signed }} {{ openssl_crt_signed }}'
   args:
     chdir: '/etc/postgresql/12/main'
     creates: '{{ openssl_crt_signed }}'
 
 
 - name: Ensure PostgreSQL has access to PKI files
-  file:
+  ansible.builtin.file:
     path: '{{ item }}'
     mode: 0600
     group: 'postgres'
@@ -66,7 +66,7 @@
 
 
 - name: Ensure PostgreSQL is configured to use SSL
-  ini_file:
+  ansible.builtin.ini_file:
     path: /etc/postgresql/12/main/postgresql.conf
     section: null
     option: '{{ item.option }}'
@@ -85,7 +85,7 @@
 
 
 - name: Ensure PostgreSQL is enabled and started
-  service:
+  ansible.builtin.service:
     name: postgresql
     enabled: true
     state: started

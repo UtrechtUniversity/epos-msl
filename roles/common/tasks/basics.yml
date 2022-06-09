@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 - name: Ensure Ansible dependencies are installed
-  package:
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:

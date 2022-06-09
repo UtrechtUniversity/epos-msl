@@ -15,14 +15,14 @@
 
 
 - name: Ensure MSP API dir exists
-  file:
+  ansible.builtin.file:
     path: /var/www/msl_api
     state: directory
     mode: 0755
 
 
 - name: Ensure MSL API dir is writable for Composer
-  file:
+  ansible.builtin.file:
     path: /var/www/msl_api
     owner: "{{ msl_api_user }}"
     group: "{{ msl_api_user }}"
@@ -39,7 +39,7 @@
 
 
 - name: Ensure MSL API dir is writable for Composer
-  file:
+  ansible.builtin.file:
     path: /var/www/msl_api
     owner: "{{ msl_api_user }}"
     group: "{{ msl_api_user }}"
@@ -52,14 +52,14 @@
 - name: Install MSL API dependencies
   become: true
   become_user: '{{ msl_api_user }}'
-  command: /usr/bin/php8.0 /usr/bin/composer install
+  ansible.builtin.command: /usr/bin/php8.0 /usr/bin/composer install
   args:
     chdir: /var/www/msl_api
     creates: /var/www/msl_api/vendor/composer
 
 
 - name: Install MSL API worker job
-  template:
+  ansible.builtin.template:
     src: laravel-worker.j2
     dest: /etc/supervisor/conf.d/laravel-worker.conf
     owner: root

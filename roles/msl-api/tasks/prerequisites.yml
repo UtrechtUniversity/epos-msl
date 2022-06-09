@@ -7,7 +7,7 @@
 
 
 - name: Ensure MSL API prerequisites are installed
-  package:
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:

@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 - name: Ensure Zabbix scripts are present
-  copy:
+  ansible.builtin.copy:
     src: '{{ item }}'
     dest: '/etc/zabbix/zabbix_agentd.conf.d/{{ item }}'
     owner: zabbix
@@ -13,7 +13,7 @@
 
 
 - name: Ensure Zabbix user parameters configuration is present
-  copy:
+  ansible.builtin.copy:
     src: 'zabbix_agentd.userparams.conf'
     dest: '/etc/zabbix/zabbix_agentd.conf.d/zabbix_agentd.userparams.conf'
     owner: zabbix
@@ -22,7 +22,7 @@
 
 
 - name: Ensure Zabbix sudoers file is present
-  copy:
+  ansible.builtin.copy:
     src: 'ckan-zabbix-sudoers'
     dest: '/etc/sudoers.d/ckan-zabbix-sudoers'
     owner: root

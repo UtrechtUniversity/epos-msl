@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 - name: Ensure MySQL-related packages have been installed
-  package:
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:

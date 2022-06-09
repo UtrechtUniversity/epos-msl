@@ -2,13 +2,13 @@
 # copyright Utrecht University
 
 - name: Ensure Redis is installed
-  package:
+  ansible.builtin.package:
     name: redis
     state: present
 
 
 - name: Ensure Redis is configured
-  template:
+  ansible.builtin.template:
     src: redis.conf.j2
     dest: /etc/redis.conf
     mode: 0644
@@ -16,7 +16,7 @@
 
 
 - name: Set Linux kernel setting to improve Redis performance
-  sysctl:
+  ansible.builtin.sysctl:
     name: vm.overcommit_memory
     value: "1"
     state: present
@@ -24,7 +24,7 @@
 
 
 - name: Ensure Redis is running and enabled on boot
-  service:
+  ansible.builtin.service:
     name: redis
     state: started
     enabled: true

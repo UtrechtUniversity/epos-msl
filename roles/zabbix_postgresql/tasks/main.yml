@@ -3,7 +3,7 @@
 
 
 - name: Download Zabbix source code for PostgreSQL monitoring files
-  get_url:
+  ansible.builtin.get_url:
     url: 'https://github.com/zabbix/zabbix/archive/refs/tags/{{ zabbix_source_version }}.tar.gz'
     dest: '/tmp/zabbix-{{ zabbix_source_version }}.tar.gz'
 
