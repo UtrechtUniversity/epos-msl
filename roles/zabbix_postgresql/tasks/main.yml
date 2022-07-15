@@ -34,11 +34,17 @@
   delegate_to: "{{ inventory_hostname }}"
 
 
+# We use a template with hardcoded values for the Zabbix database user, password
+# and database, because the server-side PostgreSQL monitoring template passes these parameters
+# in a different order than the upstream PostgreSQL client template for Zabbix 5.0.
 - name: Load Zabbix Postgresql template
-  ansible.posix.synchronize:
-    src: '/usr/src/zabbix-{{ zabbix_source_version }}/templates/db/postgresql/template_db_postgresql.conf'
+  ansible.builtin.template:
+    src: template_db_postgresql.conf.j2
     dest: /etc/zabbix/zabbix_agentd.conf.d/template_db_postgresql.conf
-  delegate_to: "{{ inventory_hostname }}"
+    owner: zabbix
+    group: zabbix
+    mode: 0640
+  no_log: true
 
 
 - name: Create Zabbix database user
@@ -46,6 +52,17 @@
   become: true
   postgresql_user:
     db: "{{ zabbix_database_name }}"
-    name: "{{ zabbix_database_user }}"
+    name: "{{ zabbix_psql_monitoring_user }}"
+    password: "{{ zabbix_psql_monitoring_password }}"
     priv: "CONNECT"
     role_attr_flags: NOSUPERUSER,NOCREATEDB,NOCREATEROLE
+
+
+- name: Grant Zabbix user select rights on postgres database
+  become: true
+  become_user: postgres
+  postgresql_privs:
+    db: "{{ zabbix_psql_monitoring_db }}"
+    role: "{{ zabbix_psql_monitoring_user }}"
+    objs: ALL_IN_SCHEMA
+    privs: SELECT
