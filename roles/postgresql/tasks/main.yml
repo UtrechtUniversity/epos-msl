@@ -71,7 +71,7 @@
     section: null
     option: '{{ item.option }}'
     value: '{{ item.value }}'
-    mode: 0600
+    mode: 0644
   with_items:
     - option: ssl
       value: "on"
