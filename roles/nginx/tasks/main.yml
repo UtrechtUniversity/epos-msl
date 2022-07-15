@@ -1,0 +1,19 @@
+---
+# copyright Utrecht University
+
+- name: Ensure CKAN prerequisites are installed
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+
+- name: Allow public to ports for Apache in firewall
+  ansible.builtin.firewalld:
+    port: '{{ item }}'
+    permanent: true
+    state: enabled
+    immediate: true
+  with_items:
+    - 80/tcp
+    - 443/tcp
+  notify: Restart firewall

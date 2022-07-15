@@ -2,6 +2,6 @@
 # copyright Utrecht University
 
 - name: Restart Redis
-  service:
+  ansible.builtin.service:
     name: redis
     state: started

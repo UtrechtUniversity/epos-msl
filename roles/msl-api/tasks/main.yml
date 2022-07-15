@@ -1,0 +1,8 @@
+---
+# copyright Utrecht University
+
+- ansible.builtin.import_tasks: prerequisites.yml
+- ansible.builtin.import_tasks: database.yml
+- ansible.builtin.import_tasks: application.yml
+- ansible.builtin.import_tasks: storage.yml
+- ansible.builtin.import_tasks: config.yml

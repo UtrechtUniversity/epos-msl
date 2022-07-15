@@ -1,6 +1,0 @@
----
-# copyright Utrecht University
-
-dependencies:
-- common
-- apache

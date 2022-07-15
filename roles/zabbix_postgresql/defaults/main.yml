@@ -1,0 +1,19 @@
+---
+# copyright Utrecht University
+
+zabbix_source_version: 5.0.24
+
+# Zabbix postgres database user (CREATE ROLE zabbix WITH LOGIN NOSUPERUSER, NOCREATEDB, NOCREATEROLE
+# and (GRANT CONNECT ON DATABASE "db" TO zabbix)
+# Zabbix configuration
+zabbix_database_name: ckan_default
+zabbix_database_user: zabbix
+ckan_database_name: ckan_default
+
+zabbix_server: 192.168.50.20
+
+zabbix_psql_monitoring_host: "127.0.0.1"
+zabbix_psql_monitoring_port: "5432"
+zabbix_psql_monitoring_db: postgres
+zabbix_psql_monitoring_user: zbx_monitor
+zabbix_psql_monitoring_password: PLACEHOLDER

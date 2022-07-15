@@ -3,10 +3,10 @@
 # This playbook provisions EPOS-MSL instance with the Zabbix agent, PostgreSQL monitoring and Zabbix user access to the database.
 
 - hosts: localhost
-  gather_facts: False
+  gather_facts: false
   pre_tasks:
     - name: Verify Ansible version meets requirements
-      assert:
+      ansible.builtin.assert:
         that: "ansible_version.full is version('2.7', '>=')"
         msg: >
           "You must update Ansible to at least 2.7 to deploy EPOS-MSL CKAN."
@@ -14,9 +14,9 @@
 
 - name: Provision EPOS-MSL CKAN server with Zabbix monitoring
   hosts: all
-  become: yes
+  become: true
   roles:
-    - zabbix-agent
-    - role: zabbix-postgresql
+    - zabbix_agent
+    - role: zabbix_postgresql
       zabbix_database_name: "{{ ckan_database_name }}"
-    - zabbix-ckan
+    - zabbix_ckan

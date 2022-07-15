@@ -2,95 +2,90 @@
 # copyright Utrecht University
 
 - name: Ensure PostgreSQL database is installed
-  package:
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:
-    - postgresql-server
+    - postgresql
     - postgresql-contrib
 
 
 - name: Ensure dependencies for Ansible PostgreSQL module are installed
-  package:
-    name: python-psycopg2
+  ansible.builtin.package:
+    name: python3-psycopg2
     state: present
 
 
-- name: Initialize PostgreSQL database
-  command: postgresql-setup initdb
-    creates=/var/lib/pgsql/data/postgresql.conf
-
-
 - name: Password protect loopback IPv4 connections
-  lineinfile:
-    dest: /var/lib/pgsql/data/pg_hba.conf
+  ansible.builtin.lineinfile:
+    dest: /etc/postgresql/12/main/pg_hba.conf
     regexp: 'host\s+all\s+all\s+127.0.0.1/32'
     line: 'host all all 127.0.0.1/32 md5'
   notify: Restart PostgreSQL
 
 
 - name: Password protect loopback IPv6 connections
-  lineinfile:
-    dest: /var/lib/pgsql/data/pg_hba.conf
+  ansible.builtin.lineinfile:
+    dest: /etc/postgresql/12/main/pg_hba.conf
     regexp: 'host\s+all\s+all\s+::1/128'
     line: 'host all all ::1/128 md5'
   notify: Restart PostgreSQL
 
 
 - name: Listen on all interfaces
-  lineinfile:
-    dest: /var/lib/pgsql/data/postgresql.conf
+  ansible.builtin.lineinfile:
+    dest: /etc/postgresql/12/main/postgresql.conf
     line: "listen_addresses = '*'"
   notify: Restart PostgreSQL
 
 
 - name: Ensure private key file is available for PostgreSQL
-  command: 'cp {{ openssl_private_dir }}/{{ openssl_key_signed }} {{ openssl_key_signed }}'
+  ansible.builtin.command: 'cp {{ openssl_private_dir }}/{{ openssl_key_signed }} {{ openssl_key_signed }}'
   args:
-    chdir: '/var/lib/pgsql/data'
+    chdir: '/etc/postgresql/12/main'
     creates: '{{ openssl_key_signed }}'
 
 
 - name: Ensure certificate file is available for PostgreSQL
-  command: 'cp {{ openssl_certs_dir }}/{{ openssl_crt_signed }} {{ openssl_crt_signed }}'
+  ansible.builtin.command: 'cp {{ openssl_certs_dir }}/{{ openssl_crt_signed }} {{ openssl_crt_signed }}'
   args:
-    chdir: '/var/lib/pgsql/data'
+    chdir: '/etc/postgresql/12/main'
     creates: '{{ openssl_crt_signed }}'
 
 
 - name: Ensure PostgreSQL has access to PKI files
-  file:
+  ansible.builtin.file:
     path: '{{ item }}'
     mode: 0600
     group: 'postgres'
     owner: 'postgres'
     state: file
   with_items:
-    - '/var/lib/pgsql/data/{{ openssl_key_signed }}'
-    - '/var/lib/pgsql/data/{{ openssl_crt_signed }}'
+    - '/etc/postgresql/12/main/{{ openssl_key_signed }}'
+    - '/etc/postgresql/12/main/{{ openssl_crt_signed }}'
 
 
 - name: Ensure PostgreSQL is configured to use SSL
-  ini_file:
-    path: /var/lib/pgsql/data/postgresql.conf
+  ansible.builtin.ini_file:
+    path: /etc/postgresql/12/main/postgresql.conf
     section: null
     option: '{{ item.option }}'
     value: '{{ item.value }}'
-    mode: 0600
+    mode: 0644
   with_items:
     - option: ssl
       value: "on"
     - option: ssl_cert_file
-      value: "'{{ openssl_crt_signed }}'"
+      value: "'/etc/postgresql/12/main/{{ openssl_crt_signed }}'"
     - option: ssl_key_file
-      value: "'{{ openssl_key_signed }}'"
+      value: "'/etc/postgresql/12/main/{{ openssl_key_signed }}'"
     - option: ssl_ciphers
       value: "'AES128+EECDH:AES128+EDH'"
   notify: Restart PostgreSQL
 
 
 - name: Ensure PostgreSQL is enabled and started
-  service:
+  ansible.builtin.service:
     name: postgresql
-    enabled: yes
+    enabled: true
     state: started

@@ -3,10 +3,10 @@
 # This playbook deploys a complete EPOS-MSL CKAN instance.
 
 - hosts: localhost
-  gather_facts: False
+  gather_facts: false
   pre_tasks:
     - name: Verify Ansible version meets requirements
-      assert:
+      ansible.builtin.assert:
         that: "ansible_version.full is version('2.7', '>=')"
         msg: >
           "You must update Ansible to at least 2.7 to deploy EPOS-MSL CKAN."
@@ -14,15 +14,14 @@
 
 - name: Provision EPOS-MSL CKAN server
   hosts: all
-  become: yes
+  become: true
   roles:
     - common
     - { role: acme_certificates, when: epos_msl_environment == "testing" }
     - certificates
-    - apache
-    - php
+    - nginx
     - postgresql
     - solr
     - redis
     - ckan
-    - ckan-harvester
+    - msl-api

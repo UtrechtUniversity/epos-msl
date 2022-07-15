@@ -4,20 +4,26 @@
 # EPOS-MSL configuration
 epos_msl_version: development      # EPOS-MSL version to install
 epos_msl_fqdn: epos-msl.ckan.test  # EPOS-MSL fully qualified domain name (FQDN)
+ckan_port: 8080
+solr_port: 8983
+nginx_client_max_body_size: 100M
 
 # OpenSSL configuration.
-openssl_private_dir: '/etc/pki/tls/private'
-openssl_certs_dir: '/etc/pki/tls/certs'
+openssl_private_dir: '/etc/ssl/private'
+openssl_certs_dir: '/etc/ssl/certs'
 openssl_key_signed: localhost.key
 openssl_crt_signed: localhost.crt
 
 # CKAN version
 # Note that updating the CKAN version of a server might require additional upgrade
 # steps, such as:
-# - Updating the internationalization data (ckan.po) that is deployed via Ansible
 # - Updating the solrconfig.yml file that is deployed via Ansible
 # - Any specific upgrade instructions as per the release notes
-ckan_version: 2.7.3
+
+ckan_package_url: https://packaging.ckan.org/python-ckan_2.9-py3-focal_amd64.deb
+ckan_package_file: /tmp/ckan_package.deb
+ckan_ini_file: /etc/ckan/default/ckan.ini
+ckan_storage_path: /ckandata
 
 ckan_session_timeout: 3600
 
@@ -26,7 +32,7 @@ ckan_db_encoding: UTF-8
 ckan_db_lc_collate: en_US.utf8
 ckan_db_lc_ctype: en_US.utf8
 
-# CKAN extension verions
-ckanext_harvest_version: 7dd82a0e01ba85b7f2f4cc02b66dd4948ed7093e
-ckanext_oaipmh_version: 123aec59231dabea9b776063502131606a15f8c1
-ckanext_custom_theme_version: '{{ epos_msl_version }}'
+# CKAN extension versions
+ckanext_scheming_version: release-2.1.0
+ckan_msl_core_plugin_branch: cc96b08ac003c3717afc7b77a46b5a6730c896b6
+ckan_msl_util_plugin_branch: e9dfe66c7fb98d9245ebcb0e43d72851d4231998

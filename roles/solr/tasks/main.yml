@@ -1,88 +1,34 @@
 ---
 # copyright Utrecht University
 
-- name: Ensure Solr dependencies are installed
-  package:
+- name: Ensure Solr is installed
+  ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:
-    - java-1.8.0-openjdk
-    - java-1.8.0-openjdk-devel
-    - unzip
-    - lsof
-
-- name: Check if Solr is installed
-  stat:
-    path: /opt/solr
-  register: solr_installed
+    - solr-tomcat
 
 
-- name: Download Solr 6.5.1 archive
-  get_url:
-    url: https://archive.apache.org/dist/lucene/solr/6.5.1/solr-6.5.1.tgz
-    dest: ~/solr-6.5.1.tgz
-    checksum: sha256:7c6a7d4474d5e847a8ddd0a4717d33bf5db07adf17c3d36ad1532c72885bd5d3
-    force: no
-  when: solr_installed.stat.isdir is not defined
-  register: solr_downloaded
+- name: Install Solr server configuration
+  ansible.builtin.template:
+    src: templates/server.xml.j2
+    dest: /etc/tomcat9/server.xml
+    owner: root
+    group: tomcat
+    mode: 0640
+  register: serverxml
 
 
-- name: Expand Solr archive
-  unarchive:
-    src: ~/solr-6.5.1.tgz
-    dest: ~/
-    copy: no
-  when: solr_downloaded.changed
-
-
-- name: Run Solr installation script
-  shell: ~/solr-6.5.1/bin/install_solr_service.sh ~/solr-6.5.1.tgz
-    creates=/opt/solr/bin/solr
-  register: solr_installed
-
-
-- name: Remove the Solr installation files
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - ~/solr-6.5.1.tgz
-    - ~/solr-6.5.1/
-
-
-- name: Create Solr CKAN configuration
-  become_user: solr
-  shell: /opt/solr/bin/solr create -c ckan
-    creates=/var/solr/data/ckan/conf/solrconfig.xml
-  when: solr_installed.changed
-
-
-- name: Ensure managed-schema is absent
-  file:
-    path: '/var/solr/data/ckan/conf/managed-schema'
-    state: absent
-
-
-- name: Ensure solrconfig.xml for CKAN is present
-  template:
-    src: "solrconfig.xml.j2"
-    dest: "/var/solr/data/ckan/conf/solrconfig.xml"
-
-
-# Solr might not be running as a system service, so don't invoke systemd
-- name: Ensure Solr is stopped
-  shell: service solr stop
-  when: solr_installed.changed
-
-
-- name: Ensure Solr deamon is reloaded
-  systemd:
-    name: solr
-    daemon_reload: yes
-  when: solr_installed.changed
+# Restarting Solr immediately so that it runs on the right port. If
+# we would use the handler, CKAN wouldn't be able to find Solr.
+- name: Restart Solr if config if server configuration changed
+  ansible.builtin.service:
+    name: tomcat9
+    state: restarted
+  when: serverxml.changed
 
 
 - name: Ensure Solr is enabled on boot
-  service:
-    name: solr
-    enabled: yes
+  ansible.builtin.service:
+    name: tomcat9
+    enabled: true

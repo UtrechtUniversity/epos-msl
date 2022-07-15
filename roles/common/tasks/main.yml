@@ -1,6 +1,6 @@
 ---
 # copyright Utrecht University
 
-- import_tasks: epel.yml
-- import_tasks: firewalld.yml
-- import_tasks: basics.yml
+- ansible.builtin.import_tasks: apt_update.yml
+- ansible.builtin.import_tasks: firewalld.yml
+- ansible.builtin.import_tasks: basics.yml

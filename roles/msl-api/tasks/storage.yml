@@ -1,0 +1,10 @@
+---
+# copyright Utrecht University
+
+- name: Create MSL API directory for storing log files etc.
+  ansible.builtin.file:
+    path: /storage
+    state: directory
+    mode: '0755'
+    owner: www-data
+    group: www-data

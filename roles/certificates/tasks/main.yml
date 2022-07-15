@@ -3,14 +3,14 @@
 #
 
 - name: Check that cert_mode is set to valid mode
-  fail:
+  ansible.builtin.fail:
     msg: "cert_mode should be set to either selfsigned, ignore or static"
   when: cert_mode not in ["selfsigned", "ignore", "static"]
 
 
 - name: Ensure dependencies of Ansible OpenSSL are installed
-  package:
-    name: pyOpenSSL
+  ansible.builtin.package:
+    name: python3-openssl
     state: present
   when: cert_mode != "ignore"
 
@@ -20,13 +20,13 @@
     path: '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
     size: 4096
     type: RSA
-    force: no
+    force: false
     state: present
   when: cert_mode == "selfsigned"
 
 
 - name: Upload private key of certificate
-  copy:
+  ansible.builtin.copy:
     dest: '{{ openssl_private_dir }}/{{ openssl_key_signed }}'
     content: '{{ static_cert_key }}'
     owner: root
@@ -36,18 +36,21 @@
 
 
 - name: Create file with certificate and chain
-  template:
+  ansible.builtin.template:
     src: cert-and-chain.j2
     dest: '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
+    owner: root
+    group: root
+    mode: 0644
   when: cert_mode == "static"
 
 
 - name: Ensure OpenSSL certificate signing request is present
-  command: "openssl req -new -sha256 \
+  ansible.builtin.command: "openssl req -new -sha256 \
     -key '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}' \
     -out '{{ openssl_csr_selfsigned }}' -batch -subj \
     '/O={{ openssl_o }}/C={{ openssl_c }}\
-     /localityName={{ openssl_localityName }}\
+     /localityName={{ openssl_localityname }}\
      /commonName={{ ansible_fqdn }}'"
   args:
     chdir: '{{ openssl_certs_dir }}'
@@ -56,7 +59,7 @@
 
 
 - name: Ensure OpenSSL self signed certificate is present
-  command: >
+  ansible.builtin.command: >
     openssl x509 -req -days 365
     -in '{{ openssl_csr_selfsigned }}'
     -signkey '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
@@ -68,7 +71,7 @@
 
 
 - name: Ensure signed private key is present
-  command: >
+  ansible.builtin.command: >
     cp '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
     '{{ openssl_private_dir }}/{{ openssl_key_signed }}'
   args:
@@ -77,7 +80,7 @@
 
 
 - name: Ensure signed certificate is present
-  command: >
+  ansible.builtin.command: >
     cp '{{ openssl_certs_dir }}/{{ openssl_crt_selfsigned }}'
     '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
   args:
@@ -86,21 +89,27 @@
 
 
 - name: Upload contents of certificate file
-  copy:
+  ansible.builtin.copy:
     dest: '{{ openssl_certs_dir }}/{{ openssl_crt_signed }}'
     content: '{{ static_cert_crt }}'
+    owner: root
+    group: root
+    mode: 0644
   when: cert_mode == "static"
 
 
 - name: Upload contents of chain file
-  copy:
+  ansible.builtin.copy:
     dest: '{{ openssl_certs_dir }}/{{ openssl_chain }}'
     content: '{{ static_cert_chain }}'
+    owner: root
+    group: root
+    mode: 0644
   when: cert_mode == "static"
 
 
 - name: Ensure CA chain is present
-  command: >
+  ansible.builtin.command: >
     cp '{{ openssl_certs_dir }}/{{ openssl_crt_selfsigned }}'
     '{{ openssl_certs_dir }}/{{ openssl_chain }}'
   args:
@@ -109,7 +118,7 @@
 
 
 - name: Ensure CA chain with signed certificate is present
-  command: >
+  ansible.builtin.command: >
     cp '{{ openssl_certs_dir }}/{{ openssl_crt_selfsigned }}'
     '{{ openssl_certs_dir }}/{{ openssl_crt_signed_and_chain }}'
   args:
@@ -118,7 +127,7 @@
 
 
 - name: Ensure Diffie-Hellman parameters (2048 bits) are present
-  command: openssl dhparam -2 -out {{ openssl_dhparams }} 2048
+  ansible.builtin.command: openssl dhparam -2 -out {{ openssl_dhparams }} 2048
   args:
     chdir: '{{ openssl_private_dir }}'
     creates: '{{ openssl_private_dir }}/{{ openssl_dhparams }}'
@@ -126,7 +135,7 @@
 
 
 - name: Ensure certificate files have correct permissions
-  file:
+  ansible.builtin.file:
     path: '{{ item }}'
     mode: 0644
     group: 'root'

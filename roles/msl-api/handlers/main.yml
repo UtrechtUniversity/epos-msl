@@ -1,0 +1,18 @@
+---
+# copyright Utrecht University
+
+# Call command, rather than module, because module doesn't work
+# right on Ubuntu 20.04
+- name: Reload Supervisor # noqa command-instead-of-module
+  ansible.builtin.command: supervisorctl reload
+
+
+# Call command, rather than module, because module doesn't work
+# right on Ubuntu 20.04
+- name: Restart Laravel Worker Process # noqa command-instead-of-module
+  ansible.builtin.command: supervisorctl restart laravel-worker:laravel-worker_00
+
+- name: Reload MSL-API configuration
+  ansible.builtin.command: /usr/bin/php8.0 artisan config:cache
+  args:
+    chdir: /var/www/msl_api
