@@ -290,3 +290,12 @@
     src: "/etc/nginx/sites-available/ckan"
     state: link
   notify: Restart Nginx webserver
+
+
+- name: Add cleanup job for CKAN Beaker session files
+  ansible.builtin.cron:
+    name: "Cleanup job for CKAN beaker session files"
+    hour: "19"
+    minute: "0"
+    user: root
+    job: "find /tmp/default/sessions -type f -mtime +1 -delete"
