@@ -1,6 +1,9 @@
 ---
 # copyright Utrecht University
 
-- ansible.builtin.import_tasks: apt_update.yml
-- ansible.builtin.import_tasks: firewalld.yml
-- ansible.builtin.import_tasks: basics.yml
+- name: Run apt update
+  ansible.builtin.import_tasks: apt_update.yml
+- name: Configure firewall
+  ansible.builtin.import_tasks: firewalld.yml
+- name: Install Ansible dependencies
+  ansible.builtin.import_tasks: basics.yml

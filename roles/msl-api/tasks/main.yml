@@ -1,8 +1,13 @@
 ---
 # copyright Utrecht University
 
-- ansible.builtin.import_tasks: prerequisites.yml
-- ansible.builtin.import_tasks: database.yml
-- ansible.builtin.import_tasks: application.yml
-- ansible.builtin.import_tasks: storage.yml
-- ansible.builtin.import_tasks: config.yml
+- name: Install MSL-API prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+- name: Configure MSL-API database
+  ansible.builtin.import_tasks: database.yml
+- name: Install MSL-API application
+  ansible.builtin.import_tasks: application.yml
+- name: Ensure MSL-API storage directory is present
+  ansible.builtin.import_tasks: storage.yml
+- name: Configure MSL-API
+  ansible.builtin.import_tasks: config.yml

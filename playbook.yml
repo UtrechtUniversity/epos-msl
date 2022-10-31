@@ -2,7 +2,8 @@
 # copyright Utrecht University
 # This playbook deploys a complete EPOS-MSL CKAN instance.
 
-- hosts: localhost
+- name: Local checks
+  hosts: localhost
   gather_facts: false
   pre_tasks:
     - name: Verify Ansible version meets requirements
