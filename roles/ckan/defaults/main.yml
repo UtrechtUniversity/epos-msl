@@ -22,6 +22,7 @@ openssl_crt_signed: localhost.crt
 
 ckan_package_url: https://packaging.ckan.org/python-ckan_2.9-py3-focal_amd64.deb
 ckan_package_file: /tmp/ckan_package.deb
+ckan_package_upgrade: false
 ckan_ini_file: /etc/ckan/default/ckan.ini
 ckan_storage_path: /ckandata
 

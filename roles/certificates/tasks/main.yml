@@ -16,7 +16,7 @@
 
 
 - name: Ensure an OpenSSL 4096 bits RSA private key is present
-  openssl_privatekey:
+  community.crypto.openssl_privatekey:
     path: '{{ openssl_private_dir }}/{{ openssl_key_selfsigned }}'
     size: 4096
     type: RSA
