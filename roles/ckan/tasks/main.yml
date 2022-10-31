@@ -1,6 +1,11 @@
 ---
 # copyright Utrecht University
 
+- name: Gather Package Facts
+  ansible.builtin.package_facts:
+    manager: apt
+
+
 - name: Ensure CKAN prerequisites are installed
   ansible.builtin.package:
     name: '{{ item }}'
@@ -28,6 +33,7 @@
 - name: Install CKAN package
   ansible.builtin.apt:
     deb: '{{ ckan_package_url }}'
+  when: 'ckan_package_upgrade or "python-ckan" not in ansible_facts.packages'
 
 
 - name: Ensure a 'wheel' group exists
