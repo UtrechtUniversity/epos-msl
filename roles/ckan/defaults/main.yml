@@ -34,5 +34,10 @@ ckan_db_lc_ctype: en_US.utf8
 
 # CKAN extension versions
 ckanext_scheming_version: release-2.1.0
-ckan_msl_core_plugin_branch: cc96b08ac003c3717afc7b77a46b5a6730c896b6
+# The CKAN MSL Core version parameter is used for determining the Solr schema,
+# whereas the branch parameter is used for updating the code. They are separate parameters
+# so that we can reference a specific commit in the code base while still getting
+# the correct Solr schema. They would usually be the same, however.
+ckan_msl_core_plugin_version: 1.1.1
+ckan_msl_core_plugin_branch: 1.1.1
 ckan_msl_util_plugin_branch: e9dfe66c7fb98d9245ebcb0e43d72851d4231998

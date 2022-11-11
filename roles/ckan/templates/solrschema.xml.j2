@@ -208,6 +208,41 @@ schema. In this case the version should be set to the next CKAN version number.
   <field name="msl_analogue_3" type="string" indexed="true" stored="true" multiValued="true"/>
   <field name="msl_analogue_4" type="string" indexed="true" stored="true" multiValued="true"/>
   <field name="msl_analogue_5" type="string" indexed="true" stored="true" multiValued="true"/>
+
+{% if ckan_msl_core_plugin_version != "1.0.1" %}
+  <!-- Geological age -->
+  <field name="msl_geologicalage_1" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalage_2" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalage_3" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalage_4" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalage_5" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalage_6" type="string" indexed="true" stored="true" multiValued="true"/>
+  	
+  <!-- Geological setting -->
+  <field name="msl_geologicalsetting_1" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalsetting_2" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalsetting_3" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geologicalsetting_4" type="string" indexed="true" stored="true" multiValued="true"/>	
+  	
+  <!-- Paleomagnetism -->
+  <field name="msl_paleomagnetism_1" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_paleomagnetism_2" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_paleomagnetism_3" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_paleomagnetism_4" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_paleomagnetism_5" type="string" indexed="true" stored="true" multiValued="true"/>
+  	
+  <!-- Geochemistry -->
+  <field name="msl_geochemistry_1" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geochemistry_2" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_geochemistry_3" type="string" indexed="true" stored="true" multiValued="true"/>
+  	
+  <!--Microscopy -->
+  <field name="msl_microscopy_1" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_microscopy_2" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_microscopy_3" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_microscopy_4" type="string" indexed="true" stored="true" multiValued="true"/>
+  <field name="msl_microscopy_5" type="string" indexed="true" stored="true" multiValued="true"/>
+{% endif %}
 </fields>
 
 <uniqueKey>index_id</uniqueKey>
