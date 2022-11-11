@@ -243,8 +243,12 @@
     # Pipelininig is needed for internal temporary files
     ansible_ssh_pipelining: true
   when: 'userlist.rc !=0 or "default" not in userlist.stdout'
-  notify: Restart Supervisor
 
+# Reload supervisorctl as task, because there is no way to enforce ordering in
+# Ansible handlers, and we need to reload before we can start tasks.
+- name: Reload supervisorctl  # noqa command-instead-of-module
+  ansible.builtin.command: supervisorctl reload
+  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
 
 - name: Check if CKAN admin user exists
   become_user: root
