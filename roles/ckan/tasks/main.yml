@@ -149,8 +149,8 @@
 - name: Use custom Solr scheme for EPOS-MSL
   become_user: root
   become: true
-  ansible.builtin.copy:
-    src: solrschema.xml
+  ansible.builtin.template:
+    src: solrschema.xml.j2
     dest: /etc/solr/conf/schema.xml
     owner: root
     group: root
