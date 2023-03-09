@@ -38,6 +38,6 @@ ckanext_scheming_version: release-2.1.0
 # whereas the branch parameter is used for updating the code. They are separate parameters
 # so that we can reference a specific commit in the code base while still getting
 # the correct Solr schema. They would usually be the same, however.
-ckan_msl_core_plugin_version: 1.1.1
-ckan_msl_core_plugin_branch: 1.1.1
+ckan_msl_core_plugin_version: 1.2.1
+ckan_msl_core_plugin_branch: 1.2.1
 ckan_msl_util_plugin_branch: e9dfe66c7fb98d9245ebcb0e43d72851d4231998
