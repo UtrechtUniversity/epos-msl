@@ -16,7 +16,7 @@
 
 
 - name: Set Linux kernel setting to improve Redis performance
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
     name: vm.overcommit_memory
     value: "1"
     state: present
