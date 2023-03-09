@@ -52,7 +52,7 @@
 - name: Install MSL API dependencies
   become: true
   become_user: '{{ msl_api_user }}'
-  ansible.builtin.command: /usr/bin/php8.0 /usr/bin/composer install
+  ansible.builtin.command: /usr/bin/php8.0 /usr/bin/composer2 install
   args:
     chdir: /var/www/msl_api
     creates: /var/www/msl_api/vendor/composer
