@@ -15,7 +15,7 @@
     dest: /etc/tomcat9/server.xml
     owner: root
     group: tomcat
-    mode: 0640
+    mode: "0640"
   register: serverxml
 
 

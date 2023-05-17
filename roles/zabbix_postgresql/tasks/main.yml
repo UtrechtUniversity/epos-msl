@@ -6,6 +6,7 @@
   ansible.builtin.get_url:
     url: 'https://github.com/zabbix/zabbix/archive/refs/tags/{{ zabbix_source_version }}.tar.gz'
     dest: '/tmp/zabbix-{{ zabbix_source_version }}.tar.gz'
+    mode: "0644"
 
 
 - name: Extract Zabbix source code
@@ -20,7 +21,7 @@
     path: '{{ item }}'
     owner: zabbix
     group: zabbix
-    mode: 0755
+    mode: "0755"
     state: directory
   with_items:
     - /var/lib/zabbix
@@ -43,14 +44,14 @@
     dest: /etc/zabbix/zabbix_agentd.conf.d/template_db_postgresql.conf
     owner: zabbix
     group: zabbix
-    mode: 0640
+    mode: "0640"
   no_log: true
 
 
 - name: Create Zabbix database user
   become_user: postgres
   become: true
-  postgresql_user:
+  community.postgresql.postgresql_user:
     db: "{{ zabbix_database_name }}"
     name: "{{ zabbix_psql_monitoring_user }}"
     password: "{{ zabbix_psql_monitoring_password }}"
@@ -61,7 +62,7 @@
 - name: Grant Zabbix user select rights on postgres database
   become: true
   become_user: postgres
-  postgresql_privs:
+  community.postgresql.postgresql_privs:
     db: "{{ zabbix_psql_monitoring_db }}"
     role: "{{ zabbix_psql_monitoring_user }}"
     objs: ALL_IN_SCHEMA

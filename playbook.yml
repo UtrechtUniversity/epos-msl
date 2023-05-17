@@ -25,4 +25,4 @@
     - solr
     - redis
     - ckan
-    - msl-api
+    - msl_api

@@ -27,7 +27,7 @@
     state: directory
     owner: www-data
     group: www-data
-    mode: 0775
+    mode: "0775"
 
 
 - name: Install CKAN package
@@ -92,7 +92,7 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: 0755
+    mode: "0755"
     owner: root
   with_items:
     - /usr/lib/ckan
@@ -131,7 +131,7 @@
     dest: "{{ ckan_ini_file }}"
     owner: www-data
     group: www-data
-    mode: 0644
+    mode: "0644"
   when: not ansible_check_mode
 
 
@@ -154,7 +154,7 @@
     dest: /etc/solr/conf/schema.xml
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart Solr
 
 
@@ -290,7 +290,7 @@
     dest: "/etc/nginx/sites-available/ckan"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart Nginx webserver
 
 

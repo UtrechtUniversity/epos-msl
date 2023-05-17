@@ -11,7 +11,7 @@
   ansible.builtin.template:
     src: redis.conf.j2
     dest: /etc/redis.conf
-    mode: 0644
+    mode: "0644"
   notify: Restart Redis
 
 
