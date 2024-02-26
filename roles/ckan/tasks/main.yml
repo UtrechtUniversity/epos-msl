@@ -142,20 +142,21 @@
 
 
 - name: Ensure default schema has been backed up
-  ansible.builtin.command: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
+  ansible.builtin.command:
+    cmd: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
+    creates: /etc/solr/conf/schema.xml.orig
   when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
 
 
 - name: Use custom Solr scheme for EPOS-MSL
   become_user: root
   become: true
-  ansible.builtin.template:
-    src: solrschema.xml.j2
+  ansible.posix.synchronize:
+    src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/config/solr/schema.xml
     dest: /etc/solr/conf/schema.xml
-    owner: root
-    group: root
-    mode: "0644"
   notify: Restart Solr
+  delegate_to: "{{ inventory_hostname }}"
+  when: not ansible_check_mode
 
 
 - name: Check who.ini
