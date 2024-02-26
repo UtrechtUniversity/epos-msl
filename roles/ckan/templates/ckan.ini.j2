@@ -124,12 +124,13 @@ solr_url = http://127.0.0.1:{{ solr_port }}/solr
 ckan.plugins = stats text_view image_view recline_view msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields
 
 scheming.dataset_schemas = ckanext.msl_ckan:schemas/datasets/data_publication.yml ckanext.msl_ckan:schemas/datasets/labs.json
-scheming.group_schemas = ckanext.msl_ckan:schemas/groups/custom_group_msl_subdomain.json
-scheming.organization_schemas = ckanext.msl_ckan:schemas/organizations/custom_org_institute.json
+scheming.organization_schemas = ckanext.msl_ckan:schemas/organizations/organization.json
 
 mslfacets.dataset_config = ckanext.msl_ckan:config/facets.json
 
 mslindexfields.field_config = ckanext.msl_ckan:config/msl_index_fields.json
+
+mslvocabularies.endpoint_root = {{ ckan_msl_vocabularies_endpoint }}
 
 # Define which views should be created by default
 # (plugins must be loaded in ckan.plugins)
@@ -267,12 +268,6 @@ formatter = generic
 [formatter_generic]
 format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
 
-# Settings for EPOS-MSL plugins
-
-# msl_ckan settings
-scheming.dataset_schemas          = ckanext.msl_ckan:schemas/datasets/data_publication.yml ckanext.msl_ckan:schemas/datasets/labs.json
-scheming.group_schemas            = ckanext.msl_ckan:schemas/groups/custom_group_msl_subdomain.json
-scheming.organization_schemas     = ckanext.msl_ckan:schemas/organizations/custom_org_institute.json
 # msl_ckan_util settings
 ckan.mslfacets.dataset_config     = ckanext.msl_ckan_util:samples/facets.json
 ckan.mslindexfields.fields_config = ckanext.msl_ckan_util:samples/msl_index_fields.json
