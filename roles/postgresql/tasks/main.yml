@@ -68,7 +68,7 @@
 - name: Ensure PostgreSQL is configured to use SSL
   community.general.ini_file:
     path: /etc/postgresql/12/main/postgresql.conf
-    section: null
+    section: ''
     option: '{{ item.option }}'
     value: '{{ item.value }}'
     mode: "0644"
