@@ -26,6 +26,7 @@ ckan_package_file: /tmp/ckan_package.deb
 ckan_package_upgrade: false
 ckan_ini_file: /etc/ckan/default/ckan.ini
 ckan_storage_path: /ckandata
+ckan_search_facets_limit: 10000
 
 # CKAN Database settings
 ckan_db_encoding: UTF-8

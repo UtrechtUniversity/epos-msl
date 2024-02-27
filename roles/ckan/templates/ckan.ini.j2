@@ -39,6 +39,9 @@ beaker.session.secret = {{ session_secret.stdout }}
 # a config file.
 app_instance_uuid = {{ app_instance_uuid.stdout }}
 
+# Default number of search facets returned in a query
+search.facets.limit = {{ ckan_search_facets_limit }}
+
 # repoze.who config
 who.config_file = %(here)s/who.ini
 who.log_level = warning
