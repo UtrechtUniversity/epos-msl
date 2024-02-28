@@ -6,3 +6,4 @@
     update_cache: true
     force_apt_get: true
     cache_valid_time: 3600
+  changed_when: false
