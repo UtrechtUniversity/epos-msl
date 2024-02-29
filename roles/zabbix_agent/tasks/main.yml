@@ -6,6 +6,7 @@
     url: "{{ zabbix_agent.url }}/{{ zabbix_agent.filename }}"
     dest: '{{ zabbix_agent.deb_dest_dir }}/{{ zabbix_agent.filename }}'
     checksum: '{{ zabbix_agent.checksum }}'
+    mode: "0644"
 
 
 - name: Install Zabbix repo from downloaded package
@@ -22,7 +23,7 @@
     dest: /etc/apt/preferences.d/99zabbix-agent
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 
 - name: Install Zabbix agent"
@@ -50,7 +51,7 @@
     path: /etc/zabbix/zabbix_agentd.psk
     owner: zabbix
     group: zabbix
-    mode: 0600
+    mode: "0600"
 
 
 - name: Configure Zabbix agent
@@ -59,5 +60,5 @@
     dest: /etc/zabbix/zabbix_agentd.conf
     owner: zabbix
     group: zabbix
-    mode: 0600
+    mode: "0600"
   notify: Restart Zabbix agent

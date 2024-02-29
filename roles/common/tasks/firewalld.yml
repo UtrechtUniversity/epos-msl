@@ -9,7 +9,7 @@
 
 
 - name: Ensure firewall is running and enabled
-  ansible.builtin.service:
+  ansible.builtin.systemd_service:
     name: firewalld
     state: started
     enabled: true

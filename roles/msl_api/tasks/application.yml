@@ -18,7 +18,7 @@
   ansible.builtin.file:
     path: /var/www/msl_api
     state: directory
-    mode: 0755
+    mode: "0755"
 
 
 - name: Ensure MSL API dir is writable for Composer
@@ -64,5 +64,5 @@
     dest: /etc/supervisor/conf.d/laravel-worker.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Reload Supervisor

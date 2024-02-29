@@ -56,7 +56,7 @@
 - name: Ensure PostgreSQL has access to PKI files
   ansible.builtin.file:
     path: '{{ item }}'
-    mode: 0600
+    mode: "0600"
     group: 'postgres'
     owner: 'postgres'
     state: file
@@ -68,10 +68,10 @@
 - name: Ensure PostgreSQL is configured to use SSL
   community.general.ini_file:
     path: /etc/postgresql/12/main/postgresql.conf
-    section: null
+    section: ''
     option: '{{ item.option }}'
     value: '{{ item.value }}'
-    mode: 0644
+    mode: "0644"
   with_items:
     - option: ssl
       value: "on"

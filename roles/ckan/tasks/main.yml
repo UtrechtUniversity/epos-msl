@@ -27,7 +27,7 @@
     state: directory
     owner: www-data
     group: www-data
-    mode: 0775
+    mode: "0775"
 
 
 - name: Install CKAN package
@@ -92,7 +92,7 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: 0755
+    mode: "0755"
     owner: root
   with_items:
     - /usr/lib/ckan
@@ -131,51 +131,8 @@
     dest: "{{ ckan_ini_file }}"
     owner: www-data
     group: www-data
-    mode: 0644
+    mode: "0644"
   when: not ansible_check_mode
-
-
-- name: Check Solr schema
-  ansible.builtin.stat:
-    path: /etc/solr/conf/schema.xml
-  register: solrschema
-
-
-- name: Ensure default schema has been backed up
-  ansible.builtin.command: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
-  when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
-
-
-- name: Use custom Solr scheme for EPOS-MSL
-  become_user: root
-  become: true
-  ansible.builtin.template:
-    src: solrschema.xml.j2
-    dest: /etc/solr/conf/schema.xml
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart Solr
-
-
-- name: Check who.ini
-  ansible.builtin.stat:
-    path: /etc/ckan/default/who.ini
-  register: whoini
-
-
-- name: Ensure who.ini has been backed up
-  ansible.builtin.command: "mv /etc/ckan/default/who.ini /etc/ckan/default/who.ini.orig"
-  when: whoini.stat.exists and whoini.stat.isreg is defined and whoini.stat.isreg
-
-
-- name: Ensure CKAN who.ini is symlinked
-  become_user: root
-  become: true
-  ansible.builtin.file:
-    src: /usr/lib/ckan/default/src/ckan/who.ini
-    dest: /etc/ckan/default/who.ini
-    state: link
 
 
 # Needed for preventing warnings/error when installing MSL plugins
@@ -206,6 +163,58 @@
     repo: "https://github.com/UtrechtUniversity/msl_ckan_core"
     dest: /usr/lib/ckan/msl_ckan_core
     version: "{{ ckan_msl_core_plugin_branch }}"
+
+
+# Workaround for issue where pip doesn't install static images in MSL core plugin
+- name: Synchronize MSL Core plugin images
+  ansible.posix.synchronize:
+    src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/public/
+    dest: /usr/lib/ckan/default/lib/python3.8/site-packages/ckanext/msl_ckan/public/
+  delegate_to: "{{ inventory_hostname }}"
+
+
+- name: Check Solr schema
+  ansible.builtin.stat:
+    path: /etc/solr/conf/schema.xml
+  register: solrschema
+
+
+- name: Ensure default schema has been backed up
+  ansible.builtin.command:
+    cmd: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
+    creates: /etc/solr/conf/schema.xml.orig
+  when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
+
+
+- name: Use custom Solr scheme for EPOS-MSL
+  become_user: root
+  become: true
+  ansible.posix.synchronize:
+    src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/config/solr/schema.xml
+    dest: /etc/solr/conf/schema.xml
+  notify: Restart Solr
+  delegate_to: "{{ inventory_hostname }}"
+  when: not ansible_check_mode
+
+
+- name: Check who.ini
+  ansible.builtin.stat:
+    path: /etc/ckan/default/who.ini
+  register: whoini
+
+
+- name: Ensure who.ini has been backed up
+  ansible.builtin.command: "mv /etc/ckan/default/who.ini /etc/ckan/default/who.ini.orig"
+  when: whoini.stat.exists and whoini.stat.isreg is defined and whoini.stat.isreg
+
+
+- name: Ensure CKAN who.ini is symlinked
+  become_user: root
+  become: true
+  ansible.builtin.file:
+    src: /usr/lib/ckan/default/src/ckan/who.ini
+    dest: /etc/ckan/default/who.ini
+    state: link
 
 
 # Workaround for issue where pip doesn't install static images in MSL core plugin
@@ -290,7 +299,7 @@
     dest: "/etc/nginx/sites-available/ckan"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart Nginx webserver
 
 

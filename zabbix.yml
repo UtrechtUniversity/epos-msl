@@ -2,7 +2,8 @@
 # copyright Utrecht University
 # This playbook provisions EPOS-MSL instance with the Zabbix agent, PostgreSQL monitoring and Zabbix user access to the database.
 
-- hosts: localhost
+- name: Local checks
+  hosts: localhost
   gather_facts: false
   pre_tasks:
     - name: Verify Ansible version meets requirements

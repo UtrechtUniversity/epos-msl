@@ -7,7 +7,7 @@
     dest: '/etc/zabbix/zabbix_agentd.conf.d/{{ item }}'
     owner: zabbix
     group: zabbix
-    mode: 0500
+    mode: "0500"
   with_items:
     - 'dailyErrorLog.sh'
 
@@ -18,7 +18,7 @@
     dest: '/etc/zabbix/zabbix_agentd.conf.d/zabbix_agentd.userparams.conf'
     owner: zabbix
     group: zabbix
-    mode: 0400
+    mode: "0400"
 
 
 - name: Ensure Zabbix sudoers file is present
@@ -27,4 +27,4 @@
     dest: '/etc/sudoers.d/ckan-zabbix-sudoers'
     owner: root
     group: root
-    mode: 0440
+    mode: "0440"
