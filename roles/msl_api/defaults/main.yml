@@ -1,7 +1,7 @@
 ---
 # copyright Utrecht University
 
-msl_api_version: 1.5.1
+msl_api_version: 1.5.2
 msl_api_database: mslapi
 msl_api_database_user: msl
 msl_api_user: www-data
