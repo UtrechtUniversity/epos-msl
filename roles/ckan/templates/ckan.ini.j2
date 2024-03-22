@@ -99,7 +99,12 @@ expire_api_token.default_lifetime = 3600
 ## Search Settings
 
 ckan.site_id = default
+
+{% if solr_install_native %}
 solr_url = http://127.0.0.1:{{ solr_port }}/solr
+{% else %}
+solr_url = http://127.0.0.1:{{ solr_port }}/solr/ckan
+{% endif %}
 
 
 ## Redis Settings

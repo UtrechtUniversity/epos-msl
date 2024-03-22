@@ -1,0 +1,127 @@
+---
+# copyright Utrecht University
+
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+
+- name: Ensure native Solr is disabled and stopped, if present
+  ansible.builtin.service:
+    name: tomcat9
+    enabled: false
+    state: stopped
+  when: ansible_facts.services['tomcat9.service'] is defined
+
+
+- name: Ensure Solr dependencies are installed
+  ansible.builtin.package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - default-jdk
+    - unzip
+
+
+- name: Check if Solr is installed
+  ansible.builtin.stat:
+    path: /opt/solr
+  register: solr_installed
+
+
+- name: "Download Solr archive"
+  ansible.builtin.get_url:
+    url: "https://www.apache.org/dyn/closer.lua/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz?action=download"
+    dest: "~/solr-{{ solr_version }}.tgz"
+    checksum: "{{ solr_checksum }}"
+    force: false
+    owner: root
+    group: root
+    mode: "0644"
+    timeout: 300
+  when: solr_installed.stat.isdir is not defined
+  register: solr_downloaded
+
+
+- name: Expand Solr archive
+  ansible.builtin.unarchive:
+    src: "~/solr-{{ solr_version }}.tgz"
+    dest: ~/
+    copy: false
+  when: solr_downloaded.changed
+
+
+- name: Run Solr installation script
+  ansible.builtin.command:
+    cmd: "~/solr-{{ solr_version }}/bin/install_solr_service.sh ~/solr-{{ solr_version }}.tgz"
+    creates: /opt/solr/bin/solr
+  register: solr_installed
+
+
+- name: Remove the Solr installation files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "~/solr-{{ solr_version }}.tgz"
+    - "~/solr-{{ solr_version }}/"
+
+
+- name: Create Solr CKAN configuration
+  become_user: solr
+  become: true
+  ansible.builtin.command:
+    cmd: /opt/solr/bin/solr create -c ckan
+    creates: /var/solr/data/ckan/core.properties
+
+
+- name: Ensure solrconfig.xml for CKAN is present
+  ansible.builtin.template:
+    src: "solrconfig.xml.j2"
+    dest: "/var/solr/data/ckan/conf/solrconfig.xml"
+    owner: solr
+    group: solr
+    mode: "0660"
+
+
+- name: Ensure Solr QueryElevationComponent is initialized
+  ansible.builtin.copy:
+    src: "{{ solr_elevate_example_dir }}/elevate.xml"
+    dest: "{{ solr_config_dir }}/elevate.xml"
+    owner: solr
+    group: solr
+    mode: '0644'
+    remote_src: true
+  register: solr_init_queryelevation
+
+
+# Solr might be started outside of systemd. Stop it with command to workaround
+# service limitations, so it can be restarted via systemd.
+- name: Ensure Solr is stopped
+  # noqa command-instead-of-module no-handler no-changed-when
+  ansible.builtin.command: service solr stop
+  when: solr_installed.changed
+
+
+- name: Install Solr systemd unit file
+  ansible.builtin.copy:
+    src: "solr.service"
+    dest: "/etc/systemd/system/solr.service"
+    owner: root
+    group: root
+    mode: "0644"
+
+
+- name: Ensure Solr daemon is started using systemd
+  ansible.builtin.systemd:
+    name: solr
+    state: started
+    daemon_reload: true
+    enabled: true
+
+
+- name: Ensure Solr config directory is present
+  ansible.builtin.file:
+    path: "{{ solr_config_dir }}"
+    state: directory
+    mode: "0755"
+    owner: root
