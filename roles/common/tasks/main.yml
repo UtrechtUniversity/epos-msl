@@ -1,6 +1,9 @@
 ---
 # copyright Utrecht University
 
+- name: Update local DNS settings
+  ansible.builtin.import_tasks: google_dns.yml
+  when: commons_use_google_dns
 - name: Run apt update
   ansible.builtin.import_tasks: apt_update.yml
 - name: Configure firewall
