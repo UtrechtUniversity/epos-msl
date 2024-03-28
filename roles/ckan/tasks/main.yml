@@ -173,28 +173,54 @@
   delegate_to: "{{ inventory_hostname }}"
 
 
+- name: Set Solr schema directory for native Solr package
+  ansible.builtin.set_fact:
+    ckan_solr_schema_directory: /etc/solr/conf
+  when: solr_install_native
+
+
+- name: Set Solr schema directory for upstream Solr package
+  ansible.builtin.set_fact:
+    ckan_solr_schema_directory: /var/solr/data/ckan/conf
+  when: not solr_install_native
+
+
 - name: Check Solr schema
   ansible.builtin.stat:
-    path: /etc/solr/conf/schema.xml
+    path: "{{ ckan_solr_schema_directory }}/schema.xml"
   register: solrschema
+  when: not ansible_check_mode
 
 
 - name: Ensure default schema has been backed up
   ansible.builtin.command:
-    cmd: "mv /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig"
-    creates: /etc/solr/conf/schema.xml.orig
-  when: solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
+    cmd: "mv {{ ckan_solr_schema_directory }}/schema.xml {{ ckan_solr_schema_directory }}/schema.xml.orig"
+    creates: "{{ ckan_solr_schema_directory }}/schema.xml.orig"
+  when: not ansible_check_mode and solrschema.stat.exists and solrschema.stat.isreg is defined and solrschema.stat.isreg
 
 
-- name: Use custom Solr scheme for EPOS-MSL
+- name: Use custom Solr schema for EPOS-MSL
   become_user: root
   become: true
   ansible.posix.synchronize:
     src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/config/solr/schema.xml
-    dest: /etc/solr/conf/schema.xml
+    dest: "{{ ckan_solr_schema_directory }}/schema.xml"
   notify: Restart Solr
   delegate_to: "{{ inventory_hostname }}"
   when: not ansible_check_mode
+
+
+- name: Remove legacy settings no longer compatible with Solr 8
+  become_user: root
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ ckan_solr_schema_directory }}/schema.xml"
+    regexp: "{{ item }}"
+    state: absent
+  with_items:
+    - "defaultSearchField"
+    - "solrQueryParser"
+  when: not solr_install_native
 
 
 - name: Check who.ini
