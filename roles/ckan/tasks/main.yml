@@ -263,7 +263,7 @@
   become: true
   become_user: postgres
   ansible.builtin.command: 'psql -d ckan_default -c "select * from public.user"'
-  ignore_errors: true
+  failed_when: "userlist.rc != 0 and 'ERROR:  relation \"public.user\" does not exist' not in userlist.stderr"
   register: userlist
   changed_when: false
   vars:
@@ -277,13 +277,13 @@
   vars:
     # Pipelininig is needed for internal temporary files
     ansible_ssh_pipelining: true
-  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
+  when: 'userlist.rc != 0 or "default" not in userlist.stdout'
 
 # Reload supervisorctl as task, because there is no way to enforce ordering in
 # Ansible handlers, and we need to reload before we can start tasks.
 - name: Reload supervisorctl  # noqa command-instead-of-module
   ansible.builtin.command: supervisorctl reload
-  when: 'userlist.rc !=0 or "default" not in userlist.stdout'
+  when: 'userlist.rc != 0 or "default" not in userlist.stdout'
 
 - name: Check if CKAN admin user exists
   become_user: root
