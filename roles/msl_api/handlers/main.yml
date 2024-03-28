@@ -10,7 +10,7 @@
 # Call command, rather than module, because module doesn't work
 # right on Ubuntu 20.04
 - name: Restart Laravel Worker Process # noqa command-instead-of-module
-  ansible.builtin.command: supervisorctl restart laravel-worker:laravel-worker_00
+  ansible.builtin.shell: sleep 6 && supervisorctl stop laravel-worker:laravel-worker_00 && sleep 6 && supervisorctl start laravel-worker:laravel-worker_00
 
 - name: Reload MSL-API configuration
   ansible.builtin.command: /usr/bin/php8.0 artisan config:cache
