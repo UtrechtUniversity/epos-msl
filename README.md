@@ -60,9 +60,9 @@ space.
 Run the following commands in /var/www/msl\_api after deploying the application using Ansible:
 
 ```bash
-/usr/bin/php8.0 artisan migrate
-/usr/bin/php8.0 artisan db:seed
-/usr/bin/php8.0 artisan storage:link
+sudo -u www-data /usr/bin/php8.0 artisan migrate
+sudo -u www-data /usr/bin/php8.0 artisan db:seed
+sudo -u www-data /usr/bin/php8.0 artisan storage:link
 ```
 
 # Configuration
