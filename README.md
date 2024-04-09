@@ -52,6 +52,19 @@ Upgrade EPOS-MSL instance:
 ansible-playbook playbook.yml
 ```
 
+## Updating the MSL API app key
+
+If you have deployed the server using the default empty MSL API app key, generate
+a random one:
+
+```
+sudo -u www-data /usr/bin/php8.0 artisan key:generate
+sudo -u www-data /usr/bin/php8.0 artisan config:cache
+```
+
+Then copy this key from `APP_KEY` in `/var/www/msl_api/.env` to the Ansible configuration of
+the server.
+
 ## Database creation/seeding for the MSL API
 
 You currently need to manually trigger creation and seeding of the MSL API database, as well as linking its storage
@@ -78,7 +91,7 @@ The main configuration settings are:
 |msl_api_app_url           | application URL for the MSL API web service, e.g. https://epos-catalog.mydomain.nl/webservice |
 |msl_api_asset_url         | asset URL for the MSL API web service, e.g. https://epos-catalog.mydomain.nl/webservice |
 |ckan_api_token            | the MSL API uses this value to authenticate to the CKAN API. this should currently be the API key (not API token!) of the ckanadmin account. The current way to use this field is: deploy the catalog using a dummy value for this parameter, log in on CKAN using the ckanadmin account, generate an API key, replace the dummy value in the host\_vars file with the real API key, and run the playbook a second time.
-|msl_api_app_key           | the MSL API application key. The current way to configure this is to deploy the application, generate the app key by running `/usr/bin/php8.0 artisan key:generate` in /var/www/msl\_api. Finally copy the generated key in /var/www/msl\_api/.env to the host\_vars file.
+|msl_api_app_key           | the MSL API application key. The current way to configure this is to deploy the application, generate the app key by running `sudo -u www-data /usr/bin/php8.0 artisan key:generate && sudo -u www-data /usr/bin/php8.0 artisan config:cache` in /var/www/msl\_api. Finally copy the generated key in /var/www/msl\_api/.env to the host\_vars file.
 
 # CKAN catalog
 
