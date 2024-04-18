@@ -1,0 +1,21 @@
+---
+# copyright Utrecht University
+
+- name: Check whether local certificate has already been added to the CA certificates
+  ansible.builtin.stat:
+    path: /etc/ssl/certs/ca-certificates_updated.txt
+  register: msl_api_certs_updated
+
+
+- name: Add local certificate to CA certificates
+  ansible.builtin.shell:
+    cmd: "tee -a /etc/ssl/certs/ca-certificates.crt < /etc/ssl/certs/localhost_and_chain.crt"
+  when: not msl_api_certs_updated.stat.exists
+
+
+- name: Add file to record CA certificates have been updated
+  ansible.builtin.file:
+    path: /etc/ssl/certs/ca-certificates_updated.txt
+    state: touch
+    mode: "0644"
+  when: not msl_api_certs_updated.stat.exists
