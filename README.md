@@ -78,6 +78,24 @@ sudo -u www-data /usr/bin/php8.0 artisan db:seed
 sudo -u www-data /usr/bin/php8.0 artisan storage:link
 ```
 
+# Local development setup
+
+## Configuring shared folder for local development (Windows host)
+
+For local development on the msl_api codebase a shared folder can be created and mounted within the server to easy work 
+with git and an IDE on the local filesystem.
+
+1. Open the Virtualbox management program
+2. Right-click the 'epos-msl' container and select settings
+3. Go to 'shared folders' and click to add a new shared folder with the following settings:
+   - name: epos
+   - path: <path to local directory containing checkout of msl_api>
+   - access: full
+   - automatically connect: yes
+
+
+
+
 # Configuration
 
 The main configuration settings are:
