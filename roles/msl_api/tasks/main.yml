@@ -11,3 +11,6 @@
   ansible.builtin.import_tasks: storage.yml
 - name: Configure MSL-API
   ansible.builtin.import_tasks: config.yml
+- name: Add self-signed certificate to CA certificate file on development
+  ansible.builtin.import_tasks: update-cacerts.yml
+  when: epos_msl_environment == "development"
