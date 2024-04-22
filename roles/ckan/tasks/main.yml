@@ -23,11 +23,15 @@
 
 - name: Ensure CKAN storage path is present
   ansible.builtin.file:
-    path: "{{ ckan_storage_path }}"
+    path: "{{ item }}"
     state: directory
     owner: www-data
     group: www-data
     mode: "0775"
+  with_items:
+    - "{{ ckan_storage_path }}"
+    - "{{ ckan_storage_path }}/storage"
+    - "{{ ckan_storage_path }}/webassets"
 
 
 - name: Install CKAN package
@@ -344,3 +348,12 @@
     minute: "0"
     user: root
     job: "find /tmp/default/sessions -type f -mtime +1 -delete"
+
+
+- name: Fix up permissions CKAN storage directory
+  ansible.builtin.file:
+    dest: "{{ ckan_storage_path }}"
+    owner: www-data
+    group: www-data
+    mode: "u=rwX,g=rX,o=rX"
+    recurse: true
