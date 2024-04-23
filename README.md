@@ -82,7 +82,7 @@ sudo -u www-data /usr/bin/php8.0 artisan storage:link
 
 ### Configuring shared folder for local development (Windows host)
 
-For local development on the msl_api codebase a shared folder can be created and mounted within the server to easy work 
+For local development on the msl_api codebase a shared folder can be created and mounted within the server to work 
 with git and an IDE on the local filesystem.
 
 1. Open the Virtualbox management program
