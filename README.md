@@ -38,7 +38,7 @@ Upgrading the EPOS-MSL development instance to the latest version can be done by
 
 On a Windows host first SSH into the Ansible controller virtual machine (skip this step on GNU/Linux or macOS):
 ```bash
-vagrant ssh controller
+vagrant ssh epos-msl-controller
 cd ~/epos-msl
 ```
 
@@ -77,6 +77,94 @@ sudo -u www-data /usr/bin/php8.0 artisan migrate
 sudo -u www-data /usr/bin/php8.0 artisan db:seed
 sudo -u www-data /usr/bin/php8.0 artisan storage:link
 ```
+
+## Local development setup
+
+### Configuring shared folder for local development (Windows host)
+
+For local development on the msl_api codebase a shared folder can be created and mounted within the server to work 
+with git and an IDE on the local filesystem.
+
+1. Open the Virtualbox management program
+2. Right-click the 'epos-msl' container and select settings
+3. Go to 'shared folders' and click to add a new shared folder with the following settings:
+   - name: epos
+   - path: <path to local directory containing checkout of msl_api>
+   - access: full
+   - automatically connect: yes
+
+Next ssh in to epos-msl:
+```bash
+vagrant ssh epos-msl
+```
+The share should now be visible within /media. To give the vagrant and msl-api users access to the folder and its 
+contents:
+```bash
+sudo adduser www-data vboxsf
+sudo adduser vagrant vboxsf
+```
+
+Next, restart the server:
+```bash
+sudo restart
+```
+
+After rebooting ssh into epos-msl again and the content of the share should be visible within /media/sf_epos!
+
+Now we will use the actual contents to replace the currently used checkout of msl_api by the contents of the share.
+First remove the current msl_api folder or rename it:
+
+```bash
+sudo mv /var/www/msl_api /var/www/msl_api_bck
+```
+
+Create a symlink to use the contents from the shared folder to replace the msl_api folder:
+```bash
+sudo ln -s /media/sf_epos /var/www/msl_api
+```
+
+Check to see if the login page is accessible by navigating to epos-msl.ckan.test/webservice/login, a reboot might be 
+needed.
+
+### Seeding test admin panel account(s)
+
+The msl_api project contains a specific seeder for adding test admin accounts. Contents can be adjusted to add or 
+adjust accounts within /database/seeders/AdminUserSeeder.php. Add the account(s) by running the following command:
+
+```bash
+sudo -u www-data /usr/bin/php8.0 artisan db:seed --class=AdminUserSeeder
+```
+
+You should now be able to login to the admin panel.
+
+### Create and set CKAN apikey for msl_api connections
+
+An API key needs to be generated within CKAN to be used by msl-api for transferring data.
+
+1. Navigate to: https://epos-msl.ckan.test/user/login and sigin in with:  
+   Username: ckanadmin  
+   Password: testtest
+2. Navigate to: https://epos-msl.ckan.test/user/edit/ckanadmin and click 'Regenerate API key'
+3. Copy the API Key displayed in the bottom left
+4. Paste the value within the .env file of msl-api for the 'CKAN_API_TOKEN' key
+
+### Restarting the queue processor
+
+After changing settings in the .env file or making changes to the code used by queue processing jobs the queue needs to 
+be restarted using:
+
+```bash
+sudo -u www-data /usr/bin/php8.0 artisan queue:restart
+```
+
+
+
+
+
+
+
+
+
 
 # Configuration
 
