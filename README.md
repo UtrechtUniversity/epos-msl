@@ -81,7 +81,7 @@ Create a symlink to use the contents from the shared folder to replace the msl_a
 sudo ln -s /media/sf_epos /var/www/msl_api
 ```
 
-Check to see if the login page is accessible by navigating to epos-msl.ckan.test/webservice/login, a reboot might be
+Check to see if the login page is accessible by navigating to https://epos-msl.ckan.test/webservice/login. A reboot might be
 needed.
 
 ### Seeding test admin panel account(s)
@@ -119,9 +119,13 @@ ansible-playbook playbook.yml
 
 An API key needs to be generated within CKAN to be used by msl-api for transferring data.
 
-1. Navigate to: https://epos-msl.ckan.test/user/login and sigin in with:
+1. Navigate to: https://epos-msl.ckan.test/user/login and sign in in with the following credentials:
+
+```
    Username: ckanadmin
    Password: testtest
+```
+
 2. Navigate to: https://epos-msl.ckan.test/user/edit/ckanadmin and click 'Regenerate API key'
 3. Copy the API Key displayed in the bottom left
 4. Paste the value within the .env file of msl-api for the 'CKAN_API_TOKEN' key
