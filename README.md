@@ -180,6 +180,9 @@ The main configuration settings are:
 |msl_api_asset_url         | asset URL for the MSL API web service, e.g. https://epos-catalog.mydomain.nl/webservice |
 |ckan_api_token            | the MSL API uses this value to authenticate to the CKAN API. this should currently be the API key (not API token!) of the ckanadmin account. The current way to use this field is: deploy the catalog using a dummy value for this parameter, log in on CKAN using the ckanadmin account, generate an API key, replace the dummy value in the host\_vars file with the real API key, and run the playbook a second time.
 |msl_api_app_key           | the MSL API application key. The current way to configure this is to deploy the application, generate the app key by running `sudo -u www-data /usr/bin/php8.0 artisan key:generate && sudo -u www-data /usr/bin/php8.0 artisan config:cache` in /var/www/msl\_api. Finally copy the generated key in /var/www/msl\_api/.env to the host\_vars file.
+| ckan_install_spatial_plugin | whether to install the ckanext-spatial plugin (default: false) |
+| ckan_spatial_plugin_repo    | Github repository to use for the ckanext-spatial plugin |
+| ckan_spatial_plugin_version | Branch or tag to use for the ckanext-spatial plugin |
 
 ## CKAN catalog
 

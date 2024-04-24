@@ -1,0 +1,33 @@
+---
+# copyright Utrecht University
+#
+- name: Install spatial CKAN plugin package dependencies
+  ansible.builtin.apt:
+    pkg:
+      - python-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - libgeos-c1v5
+    state: present
+
+
+- name: Clone spatial CKAN plugin
+  ansible.builtin.git:
+    repo: "https://github.com/{{ ckan_spatial_plugin_repo }}"
+    dest: /usr/lib/ckan/ckanext-spatial
+    version: "{{ ckan_spatial_plugin_version }}"
+
+
+- name: Install spatial CKAN plugin Python dependencies
+  ansible.builtin.pip:
+    requirements: /usr/lib/ckan/ckanext-spatial/requirements.txt
+    virtualenv: /usr/lib/ckan/default
+  notify: Restart ckan-uwsgi
+
+
+- name: Install spatial CKAN plugin
+  ansible.builtin.pip:
+    name: /usr/lib/ckan/ckanext-spatial
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "-e"
+  notify: Restart ckan-uwsgi

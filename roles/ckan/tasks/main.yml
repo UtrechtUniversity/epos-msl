@@ -146,6 +146,11 @@
     virtualenv: /usr/lib/ckan/default
 
 
+- name: Install CKAN spatial plugin, if enabled
+  ansible.builtin.import_tasks: spatial_plugin.yml
+  when: ckan_install_spatial_plugin
+
+
 - name: Install CKAN scheming plugin
   ansible.builtin.pip:
     name: "https://github.com/ckan/ckanext-scheming/archive/{{ ckanext_scheming_version }}.tar.gz"

@@ -129,7 +129,11 @@ solr_url = http://127.0.0.1:{{ solr_port }}/solr/ckan
 #		Add ``resource_proxy`` to enable resorce proxying and get around the
 #		same origin policy
 #ckan.plugins = stats text_view image_view recline_view
+{% if ckan_install_spatial_plugin %}
+ckan.plugins = stats text_view image_view recline_view msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields spatial_metadata spatial_query
+{% else %}
 ckan.plugins = stats text_view image_view recline_view msl_ckan scheming_datasets scheming_groups scheming_organizations msl_custom_facets msl_repeating_fields
+{% endif %}
 
 scheming.dataset_schemas = ckanext.msl_ckan:schemas/datasets/data_publication.yml ckanext.msl_ckan:schemas/datasets/labs.json
 scheming.organization_schemas = ckanext.msl_ckan:schemas/organizations/organization.json

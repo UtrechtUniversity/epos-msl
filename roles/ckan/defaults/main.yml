@@ -43,3 +43,7 @@ ckan_msl_core_plugin_version: 1.4.0
 ckan_msl_core_plugin_branch: 1.4.0
 ckan_msl_util_plugin_branch: 1.0.0
 ckan_msl_vocabularies_endpoint: https://epos-msl.ckan.test/webservice/api/vocabularies
+
+ckan_install_spatial_plugin: false
+ckan_spatial_plugin_repo: ckan/ckanext-spatial
+ckan_spatial_plugin_version: v2.1.1
