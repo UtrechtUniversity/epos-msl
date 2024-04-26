@@ -64,7 +64,7 @@ sudo adduser vagrant vboxsf
 
 Next, restart the server:
 ```bash
-sudo restart
+sudo reboot
 ```
 
 After rebooting ssh into epos-msl again and the content of the share should be visible within /media/sf_epos!
