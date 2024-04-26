@@ -84,6 +84,21 @@ sudo ln -s /media/sf_epos /var/www/msl_api
 Check to see if the login page is accessible by navigating to https://epos-msl.ckan.test/webservice/login. A reboot might be
 needed.
 
+#### CKAN extensions
+
+The same method can be used to work with local folders containing the msl CKAN extensions by creating shared folders 
+within the Virtualbox management program as described above. For example after creating a shared folder containing 
+the 'msl_ckan_core' repo checkout can be used within the epos-msl server by first removing the currently present version 
+on the server with:
+```bash
+sudo rm -r /usr/lib/ckan/msl_ckan_core
+```
+
+Followed by creating a symlink to the shared mount:
+```bash
+sudo ln -s /media/sf_ckanext-msl_ckan /usr/lib/ckan/msl_ckan_core
+```
+
 ### Seeding test admin panel account(s)
 
 The msl_api project contains a specific seeder for adding test admin accounts. Contents can be adjusted to add or
