@@ -1,0 +1,37 @@
+---
+# copyright Utrecht University
+
+# It is always cloned for copying images, and depending on settings, also for an
+# editable install of the plugin.
+- name: Clone CKAN MSL Core plugin
+  ansible.builtin.git:
+    repo: "https://github.com/UtrechtUniversity/msl_ckan_core"
+    dest: /usr/lib/ckan/msl_ckan_core
+    version: "{{ ckan_msl_core_plugin_branch }}"
+
+
+- name: Install CKAN MSL Core plugin (regular mode)
+  ansible.builtin.pip:
+    name: "git+https://github.com/UtrechtUniversity/msl_ckan_core@{{ ckan_msl_core_plugin_branch }}"
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "--upgrade"
+  notify: Restart ckan-uwsgi
+  when: not ckan_plugins_editable_mode
+
+
+- name: Install CKAN MSL Core plugin (editable mode)
+  ansible.builtin.pip:
+    name: /usr/lib/ckan/msl_ckan_core
+    virtualenv: /usr/lib/ckan/default
+    extra_args: "-e"
+  when: ckan_plugins_editable_mode
+  notify: Restart ckan-uwsgi
+
+
+# Workaround for issue where pip doesn't install static images in MSL core plugin
+- name: Synchronize MSL Core plugin images
+  ansible.posix.synchronize:
+    src: /usr/lib/ckan/msl_ckan_core/ckanext/msl_ckan/public/
+    dest: /usr/lib/ckan/default/lib/python3.8/site-packages/ckanext/msl_ckan/public/
+  delegate_to: "{{ inventory_hostname }}"
+  when: not ckan_plugins_editable_mode

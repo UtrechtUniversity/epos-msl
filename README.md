@@ -183,6 +183,7 @@ The main configuration settings are:
 | ckan_install_spatial_plugin | whether to install the ckanext-spatial plugin (default: false) |
 | ckan_spatial_plugin_repo    | Github repository to use for the ckanext-spatial plugin |
 | ckan_spatial_plugin_version | Branch or tag to use for the ckanext-spatial plugin |
+| ckan_plugins_editable_mode  | Whether to install CKAN plugins in editable mode. This is convenient for development and testing purposes. Enabled on development environment; default value is `false`. |
 
 ## CKAN catalog
 

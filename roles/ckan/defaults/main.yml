@@ -24,6 +24,7 @@ ckan_session_timeout: 3600
 ckan_package_url: https://packaging.ckan.org/python-ckan_2.9-py3-focal_amd64.deb
 ckan_package_file: /tmp/ckan_package.deb
 ckan_package_upgrade: false
+ckan_plugins_editable_mode: false
 ckan_ini_file: /etc/ckan/default/ckan.ini
 ckan_storage_path: /ckandata
 ckan_search_facets_limit: 10000

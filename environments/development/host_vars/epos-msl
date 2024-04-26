@@ -19,6 +19,7 @@ ckan_database_password: test               # CKAN Postgresql database password
 ckan_admin_password: testtest                  # CKAN admin user ('ckanadmin') password
 ckan_harvest_password: testtest                # CKAN harvest user ('harvest') password
 ckan_install_spatial_plugin: true
+ckan_plugins_editable_mode: true
 
 ##########################
 # MSL API configuration
