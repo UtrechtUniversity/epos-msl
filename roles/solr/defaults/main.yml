@@ -3,7 +3,7 @@
 
 # This installs an old version of Solr that comes with a native Ubuntu package,
 # rather than a version from Solr.org
-solr_install_native: true
+solr_install_native: false
 
 # CKAN 2.9 only supports Solr 7 and 8. This playbook uses the Solr 8 CKAN schema,
 # so it only works with Solr 8.x The settings below only take effect when solr_install_native
