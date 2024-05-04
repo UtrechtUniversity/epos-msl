@@ -181,6 +181,16 @@ sudo -u www-data /usr/bin/php8.0 artisan db:seed
 sudo -u www-data /usr/bin/php8.0 artisan storage:link
 ```
 
+## Connecting to the mysql database from local machine
+
+To connect from the host machine to the mysql database used by msl_api use the following command:
+
+```
+vagrant ssh epos-msl -- -L 3306:127.0.0.1:3306 -N epos-msl
+```
+
+While running, you can connect to the database using the default credentials.
+
 ## Configuration
 
 The main configuration settings are:
