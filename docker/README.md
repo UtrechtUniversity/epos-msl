@@ -2,6 +2,10 @@
 
 This Docker setup currently has an experimental status, and is in development.
 
+If you use Windows, ensure that core.autocrlf is set to false in your git client before you clone the EPOS-MSL
+repository: _git config --global core.autocrlf false_ Otherwise the Docker images may not work due to line
+ending changes.
+
 ## Building the images
 
 The images of the EPOS-MSL are not yet available in a registry, so you'll have to build them locally first.
