@@ -38,6 +38,7 @@ RUN apt-get -q -y update \
         build-essential \
         git-core \
         vim \
+        bash \
         wget \
         curl \
         nmap \

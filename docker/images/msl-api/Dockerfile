@@ -27,6 +27,7 @@ RUN apt-get -q -y update \
        nginx \
        wget \
        nmap \
+       bash \
        sudo \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
