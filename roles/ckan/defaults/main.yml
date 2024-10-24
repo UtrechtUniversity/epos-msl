@@ -23,6 +23,7 @@ openssl_crt_signed: localhost.crt
 ckan_package_url: https://packaging.ckan.org/python-ckan_2.9-py3-focal_amd64.deb
 ckan_package_file: /tmp/ckan_package.deb
 ckan_package_upgrade: false
+ckan_plugins_editable_mode: false
 ckan_ini_file: /etc/ckan/default/ckan.ini
 ckan_storage_path: /ckandata
 ckan_search_facets_limit: 10000
@@ -44,3 +45,7 @@ ckan_msl_core_plugin_version: 1.4.0
 ckan_msl_core_plugin_branch: 1.4.0
 ckan_msl_util_plugin_branch: 1.0.0
 ckan_msl_vocabularies_endpoint: https://epos-msl.ckan.test/webservice/api/vocabularies
+
+ckan_install_spatial_plugin: false
+ckan_spatial_plugin_repo: ckan/ckanext-spatial
+ckan_spatial_plugin_version: v2.1.1

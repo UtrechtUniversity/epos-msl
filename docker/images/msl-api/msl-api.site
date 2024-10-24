@@ -1,0 +1,34 @@
+proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=cache:30m max_size=250m;
+proxy_temp_path /tmp/nginx_proxy 1 2;
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    location / {
+        # This server only serves MSL-API traffic
+        return 404;
+    }
+
+    location /webservice/ {
+        alias     /var/www/msl_api/public;
+        try_files /index.php =404;
+        autoindex  on;
+
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass            unix:/run/php/php8.0-fpm.sock;
+        fastcgi_index           index.php;
+
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+    }
+
+    location /webservice/css/ {
+            alias /var/www/msl_api/public/css/;
+    }
+
+    location /webservice/js/ {
+            alias /var/www/msl_api/public/js/;
+    }
+}
+

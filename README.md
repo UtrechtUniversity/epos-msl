@@ -64,7 +64,7 @@ sudo adduser vagrant vboxsf
 
 Next, restart the server:
 ```bash
-sudo restart
+sudo reboot
 ```
 
 After rebooting ssh into epos-msl again and the content of the share should be visible within /media/sf_epos!
@@ -83,6 +83,21 @@ sudo ln -s /media/sf_epos /var/www/msl_api
 
 Check to see if the login page is accessible by navigating to https://epos-msl.ckan.test/webservice/login. A reboot might be
 needed.
+
+#### CKAN extensions
+
+The same method can be used to work with local folders containing the msl CKAN extensions by creating shared folders 
+within the Virtualbox management program as described above. For example after creating a shared folder containing 
+the 'msl_ckan_core' repo checkout can be used within the epos-msl server by first removing the currently present version 
+on the server with:
+```bash
+sudo rm -r /usr/lib/ckan/msl_ckan_core
+```
+
+Followed by creating a symlink to the shared mount:
+```bash
+sudo ln -s /media/sf_ckanext-msl_ckan /usr/lib/ckan/msl_ckan_core
+```
 
 ### Seeding test admin panel account(s)
 
@@ -165,6 +180,16 @@ sudo -u www-data /usr/bin/php8.0 artisan db:seed
 sudo -u www-data /usr/bin/php8.0 artisan storage:link
 ```
 
+## Connecting to the mysql database from local machine
+
+To connect from the host machine to the mysql database used by msl_api use the following command:
+
+```
+vagrant ssh epos-msl -- -L 3306:127.0.0.1:3306 -N epos-msl
+```
+
+While running, you can connect to the database using the default credentials.
+
 ## Configuration
 
 The main configuration settings are:
@@ -179,6 +204,10 @@ The main configuration settings are:
 |msl_api_asset_url         | asset URL for the MSL API web service, e.g. https://epos-catalog.mydomain.nl/webservice |
 |ckan_api_token            | the MSL API uses this value to authenticate to the CKAN API. this should currently be the API key (not API token!) of the ckanadmin account. The current way to use this field is: deploy the catalog using a dummy value for this parameter, log in on CKAN using the ckanadmin account, generate an API key, replace the dummy value in the host\_vars file with the real API key, and run the playbook a second time.
 |msl_api_app_key           | the MSL API application key. The current way to configure this is to deploy the application, generate the app key by running `sudo -u www-data /usr/bin/php8.0 artisan key:generate && sudo -u www-data /usr/bin/php8.0 artisan config:cache` in /var/www/msl\_api. Finally copy the generated key in /var/www/msl\_api/.env to the host\_vars file.
+| ckan_install_spatial_plugin | whether to install the ckanext-spatial plugin (default: false) |
+| ckan_spatial_plugin_repo    | Github repository to use for the ckanext-spatial plugin |
+| ckan_spatial_plugin_version | Branch or tag to use for the ckanext-spatial plugin |
+| ckan_plugins_editable_mode  | Whether to install CKAN plugins in editable mode. This is convenient for development and testing purposes. Enabled on development environment; default value is `false`. |
 
 ## CKAN catalog
 
