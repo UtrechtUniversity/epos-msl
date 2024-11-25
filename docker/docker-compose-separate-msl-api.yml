@@ -1,7 +1,7 @@
 # This is a locally modified version of the upstream CKAN docker compose file.
 #
-# This default version runs the MSL-API web server and queue worker in the same
-# container.
+# This version runs two separate containers for MSL-API (one for the web server and
+# one for the queue worker)
 
 version: "3"
 
@@ -71,14 +71,22 @@ services:
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
-  # In this Docker Compose setup, the web server container runs both
-  # the MSL-API web application and the queue worker.
   mslapi_webserver:
     container_name: mslapi_web
     image: epos-msl-api:latest
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      -  MSLAPI_ROLE=BOTH
+      -  MSLAPI_ROLE=WEBSERVER
+    volumes:
+      -  mslapi_signal:/signal
+      -  mslapi_storage:/storage
+
+  mslapi_worker:
+    container_name: mslapi_worker
+    image: epos-msl-api:latest
+    environment:
+      -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      -  MSLAPI_ROLE=QUEUE_WORKER
     volumes:
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage

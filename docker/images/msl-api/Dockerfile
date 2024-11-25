@@ -42,12 +42,14 @@ RUN apt-get -q -y update \
        php8.0-xml \
        php8.0-zip \
        mysql-client \
+       supervisor \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
     && wget "https://getcomposer.org/download/$COMPOSER_VERSION/composer.phar" \
        -O  /usr/local/bin/composer2
 
-ADD msl-api.site /etc/nginx/conf.d/msl-api.conf
+ADD msl-api.site /etc/nginx/sites-enabled/msl-api
+RUN rm /etc/nginx/sites-enabled/default
 
 ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh
@@ -57,8 +59,11 @@ RUN cd /var/www && \
     chown -R www-data:www-data msl_api
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env
+ADD supervisord.conf /etc/supervisor/conf.d/mslapi.conf
 RUN cd /var/www/msl_api && \
     /usr/bin/php8.0 /usr/local/bin/composer2 install
-
 USER root
+RUN chown www-data /var/www/msl_api/.env && \
+    chmod 0664 /var/www/msl_api/.env
+
 CMD ["/msl-api-entrypoint.sh"]

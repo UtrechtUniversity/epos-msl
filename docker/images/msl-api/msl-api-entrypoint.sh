@@ -32,7 +32,7 @@ SIGNALFILE="/signal/mslapi_initialized.sig"
 if [ -f "$SIGNALFILE" ]
 then echo "MSL-API already initialized. Proceeding with starting $MSLAPI_ROLE ..."
 else
-    if [ "$MSLAPI_ROLE" == "WEBSERVER" ]
+    if [ "$MSLAPI_ROLE" == "WEBSERVER" ] || [ "$MSLAPI_ROLE" == "BOTH" ]
     then # Initialize the MSL-API database
 	 mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
 CREATE DATABASE mslapi;
@@ -70,5 +70,8 @@ then while true
      done
 elif [ "$MSLAPI_ROLE" == "WEBSERVER" ]
 then /usr/sbin/nginx -g 'daemon off;'
+elif [ "$MSLAPI_ROLE" == "BOTH" ]
+then echo "Starting both web server and queue worker using supervisord..."
+     /usr/bin/supervisord
 else echo "Error: unknown MSL API role: $MSLAPI_ROLE"
 fi
