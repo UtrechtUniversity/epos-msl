@@ -1,7 +1,7 @@
 # This is a locally modified version of the upstream CKAN Dockerfile
 
 # See CKAN docs on installation from Docker Compose on usage
-FROM ubuntu:focal-20210119
+FROM ubuntu:jammy
 MAINTAINER Yoda team
 
 # Set timezone
@@ -21,7 +21,7 @@ RUN update-locale LANG=${LC_ALL}
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
     && apt-get -q -y install \
-        python3.8 \
+        python3.10 \
         python3-dev \
         python3-pip \
         python3-venv \
@@ -34,6 +34,8 @@ RUN apt-get -q -y update \
         libgeos-dev \
         libssl-dev \
         libffi-dev \
+        libmagic1 \
+        libmagic-dev \
         postgresql-client \
         build-essential \
         git-core \
@@ -52,10 +54,11 @@ ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/default
 ENV CKAN_CONFIG /etc/ckan
 ENV CKAN_STORAGE_PATH=/ckanstorage
-ENV CKAN_VERSION=2.9.11
-ENV CKAN_SCHEMING_VERSION=release-2.1.0
-ENV CKAN_MSL_CORE_VERSION=1.4.0
-ENV CKAN_MSL_UTIL_VERSION=1.0.0
+ENV CKAN_VERSION=2.11.0
+ENV CKAN_SCHEMING_VERSION=master
+ENV CKAN_SPATIAL_VERSION=master
+ENV CKAN_MSL_CORE_VERSION=development
+ENV CKAN_MSL_UTIL_VERSION=development
 
 # Create storage path
 RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage
@@ -86,11 +89,11 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
     ckan-pip3 install uwsgi && \
     ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
+    ckan-pip3 install -e "git+https://github.com/ckan/ckanext-spatial@${CKAN_SPATIAL_VERSION}#egg=ckanext-spatial" && \
+    ckan-pip3 install -r /usr/lib/ckan/default/src/ckanext-spatial/requirements.txt && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_core@${CKAN_MSL_CORE_VERSION}#egg=ckanext-msl_ckan" && \
     ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
-    cp -v $CKAN_VENV/src/ckan/contrib/docker/ckan-entrypoint.sh /ckan-entrypoint.sh && \
-    chmod +x /ckan-entrypoint.sh && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
     rm /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
     ln -sf /usr/lib/ckan/default/src/ckanext-msl-ckan/ckanext/msl_ckan/config/solr/schema.xml /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \

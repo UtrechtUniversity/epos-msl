@@ -6,17 +6,12 @@ server {
     listen [::]:80 default_server;
 
     location / {
-        # This server only serves MSL-API traffic
-        return 404;
-    }
-
-    location /webservice/ {
         alias     /var/www/msl_api/public;
         try_files /index.php =404;
         autoindex  on;
 
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass            unix:/run/php/php8.0-fpm.sock;
+        fastcgi_pass            unix:/run/php/php8.3-fpm.sock;
         fastcgi_index           index.php;
 
         include fastcgi_params;

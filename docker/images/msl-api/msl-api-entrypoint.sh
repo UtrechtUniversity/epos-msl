@@ -43,11 +43,11 @@ FLUSH PRIVILEGES;
          cd /var/www/msl_api
 	 # Initialize the MSL-API application
 	 set -x
-	 sudo -u www-data /usr/bin/php8.0 artisan key:generate
-	 sudo -u www-data /usr/bin/php8.0 artisan config:cache
-         sudo -u www-data /usr/bin/php8.0 artisan migrate --force
-         sudo -u www-data /usr/bin/php8.0 artisan db:seed --force
-         sudo -u www-data /usr/bin/php8.0 artisan storage:link
+	 sudo -u www-data /usr/bin/php8.3 artisan key:generate
+	 sudo -u www-data /usr/bin/php8.3 artisan config:cache
+         sudo -u www-data /usr/bin/php8.3 artisan migrate --force
+         sudo -u www-data /usr/bin/php8.3 artisan db:seed --force
+         sudo -u www-data /usr/bin/php8.3 artisan storage:link
 	 set +x
 	 touch "$SIGNALFILE"
     elif [ "$MSLAPI_ROLE" == "QUEUE_WORKER" ]
@@ -64,14 +64,18 @@ fi
 ## Run main process
 if [ "$MSLAPI_ROLE" == "QUEUE_WORKER" ]
 then while true
-     do sudo -u www-data /usr/bin/php8.0 /var/www/msl_api/artisan queue:work  --rest=1 --tries=3 --timeout=300
+     do echo "Starting MSL-API queue worker ..."
+	sudo -u www-data /usr/bin/php8.3 /var/www/msl_api/artisan queue:work  --rest=1 --tries=3 --timeout=300
 	sleep 3
 	echo "Restarting queue worker after exit..."
      done
 elif [ "$MSLAPI_ROLE" == "WEBSERVER" ]
-then /usr/sbin/nginx -g 'daemon off;'
+then echo "Starting web server using supervisord ..."
+     cp /var/www/msl-api-supervisord-webserver-only.conf /etc/supervisor/conf.d/mslapi.conf
+     /usr/bin/supervisord
 elif [ "$MSLAPI_ROLE" == "BOTH" ]
 then echo "Starting both web server and queue worker using supervisord..."
+     cp /var/www/msl-api-supervisord.conf /etc/supervisor/conf.d/mslapi.conf
      /usr/bin/supervisord
 else echo "Error: unknown MSL API role: $MSLAPI_ROLE"
 fi

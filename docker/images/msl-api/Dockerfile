@@ -1,7 +1,7 @@
 # This is an image for running the MSL-API application, that is part of the EPOS-MSL catalog
 
 # See CKAN docs on installation from Docker Compose on usage
-FROM ubuntu:focal-20210119
+FROM ubuntu:jammy
 MAINTAINER Yoda team
 
 # Set timezone
@@ -31,16 +31,16 @@ RUN apt-get -q -y update \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
     && apt-get -q -y install \
-       php8.0 \
-       php8.0-bcmath \
-       php8.0-common \
-       php8.0-curl \
-       php8.0-fpm \
-       php8.0-gd \
-       php8.0-mbstring \
-       php8.0-mysql \
-       php8.0-xml \
-       php8.0-zip \
+       php8.3 \
+       php8.3-bcmath \
+       php8.3-common \
+       php8.3-curl \
+       php8.3-fpm \
+       php8.3-gd \
+       php8.3-mbstring \
+       php8.3-mysql \
+       php8.3-xml \
+       php8.3-zip \
        mysql-client \
        supervisor \
     && apt-get -q clean \
@@ -55,15 +55,17 @@ ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh
 
 RUN cd /var/www && \
-    git clone https://github.com/utrechtUniversity/msl_api && \
+    git clone https://github.com/utrechtUniversity/msl_api --branch development && \
     chown -R www-data:www-data msl_api
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env
-ADD supervisord.conf /etc/supervisor/conf.d/mslapi.conf
+ADD supervisord.conf /var/www/msl-api-supervisord.conf
+ADD supervisord-webserver-only.conf /var/www/msl-api-supervisord-webserver-only.conf
 RUN cd /var/www/msl_api && \
-    /usr/bin/php8.0 /usr/local/bin/composer2 install
+    /usr/bin/php8.3 /usr/local/bin/composer2 install
 USER root
 RUN chown www-data /var/www/msl_api/.env && \
-    chmod 0664 /var/www/msl_api/.env
+    chmod 0664 /var/www/msl_api/.env && \
+    mkdir /run/php
 
 CMD ["/msl-api-entrypoint.sh"]
