@@ -13,7 +13,7 @@ else echo "Generating certificates for reverse proxy  at https://$EPOS_MSL_HOST 
      echo "Certificate generation complete."
 fi
 
-if [ -f "dhparam.pem" ]
+if [ -f "dhparams.pem" ]
 then echo "Skipping DHParam generation, because DHParam file is already present."
 else echo "Generating DHParam configuration..."
      openssl dhparam -dsaparam -out dhparams.pem 4096
