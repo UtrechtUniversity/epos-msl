@@ -20,7 +20,7 @@ volumes:
 services:
   ckan:
      container_name: ckan
-     image: epos-msl-ckan:latest
+     image: ghcr.io/utrechtuniversity/epos-msl-cat-ckan:latest
      links:
        - db
        - solr
@@ -45,7 +45,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: epos-msl-nginx:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-nginx:latest
     environment:
       - EPOS_MSL_HOST=${EPOS_MSL_HOST}
     ports:
@@ -73,7 +73,7 @@ services:
 
   mslapi_webserver:
     container_name: mslapi_web
-    image: epos-msl-api:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=WEBSERVER
@@ -83,7 +83,7 @@ services:
 
   mslapi_worker:
     container_name: mslapi_worker
-    image: epos-msl-api:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=QUEUE_WORKER
@@ -93,7 +93,7 @@ services:
 
   solr:
     container_name: solr
-    image: epos-msl-solr:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-solr:latest
     volumes:
       - solr_data:/opt/solr/server/solr/ckan/data
 
