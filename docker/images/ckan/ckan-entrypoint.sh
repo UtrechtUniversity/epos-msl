@@ -53,7 +53,11 @@ else echo "Initializing configuration ..."
      echo "Initializing database ..."
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" db init
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" user add ckanadmin password="$CKAN_ADMIN_PASSWORD" email=ckanadmin@localhost name=ckanadmin
+     /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" user add mslapi password="$CKAN_MSLAPI_PASSWORD" email=mslapi@localhost name=mslapi
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" sysadmin add ckanadmin
+     /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" sysadmin add mslapi
+     sudo chown ckan /ckan_api_key
+     /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" user token add mslapi mslapi | tail -1 | sed 's/^\t//' > /ckan_api_key/api.key
      touch "$CKAN_INIT_STATUS_FILE"
      echo "Configuration and database initialization finished."
 fi

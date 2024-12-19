@@ -16,6 +16,7 @@ volumes:
   nginx_certificates:
   mslapi_signal:
   mslapi_storage:
+  ckan_api_key:
 
 services:
   ckan:
@@ -38,6 +39,7 @@ services:
        - CKAN_SITE_URL=${CKAN_SITE_URL}
        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
      volumes:
+       - ckan_api_key:/ckan_api_key
        - ckan_config:/etc/ckan
        - ckan_home:/usr/lib/ckan
        - ckan_storage:/var/lib/ckan
@@ -78,6 +80,7 @@ services:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=WEBSERVER
     volumes:
+      -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
 
@@ -88,6 +91,7 @@ services:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=QUEUE_WORKER
     volumes:
+      -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
 

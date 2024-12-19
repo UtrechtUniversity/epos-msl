@@ -46,6 +46,7 @@ RUN apt-get -q -y update \
         sqlite3 \
         pwgen \
         uuid-runtime \
+        sudo \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -80,6 +81,7 @@ ADD ckan-uwsgi.ini /etc/ckan/default/ckan-uwsgi.ini
 ENV PATH=${CKAN_VENV}/bin:${PATH}
 ENV EPOS_MSL_FQDN=epos-msl.local
 ENV CKAN_ADMIN_PASSWORD="testtest"
+ENV CKAN_MSLAPI_PASSWORD="testtest"
 
 # Install CKAN and plugins
 RUN ckan-pip3 install -U pip && \
@@ -103,7 +105,7 @@ ADD ./ckan-entrypoint.sh /ckan-entrypoint.sh
 ENTRYPOINT ["/ckan-entrypoint.sh"]
 RUN chmod +x /ckan-entrypoint.sh
 
-USER ckan
+USER root
 EXPOSE 8080
 
 CMD ["/ckan-entrypoint.sh"]
