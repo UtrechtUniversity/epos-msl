@@ -62,7 +62,8 @@ ENV CKAN_MSL_CORE_VERSION=development
 ENV CKAN_MSL_UTIL_VERSION=development
 
 # Create storage path
-RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage
+RUN mkdir -p $CKAN_STORAGE_PATH/webassets $CKAN_STORAGE_PATH/storage && \
+    chown -R www-data:www-data $CKAN_STORAGE_PATH
 
 # Build-time variables specified by docker-compose.yml / .env
 ARG CKAN_SITE_URL

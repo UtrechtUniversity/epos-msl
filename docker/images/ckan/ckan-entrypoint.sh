@@ -58,6 +58,7 @@ else echo "Initializing configuration ..."
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" sysadmin add mslapi
      sudo chown ckan /ckan_api_key
      /usr/lib/ckan/default/bin/ckan -c "$CKAN_CONFIG_FILE" user token add mslapi mslapi | tail -1 | sed 's/^\t//' > /ckan_api_key/api.key
+     chown -R www-data:www-data "$CKAN_STORAGE_PATH"
      touch "$CKAN_INIT_STATUS_FILE"
      echo "Configuration and database initialization finished."
 fi
