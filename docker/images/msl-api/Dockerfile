@@ -4,6 +4,9 @@
 FROM ubuntu:jammy
 MAINTAINER Yoda team
 
+# Need bash to get nvm/npm to work with default init files
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Set timezone
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -17,6 +20,7 @@ RUN dpkg-reconfigure --frontend=noninteractive locales
 RUN update-locale LANG=${LC_ALL}
 
 # Install required system packages
+USER root
 ENV COMPOSER_VERSION=2.5.4
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
@@ -24,6 +28,7 @@ RUN apt-get -q -y update \
        nginx \
        acl \
        git \
+       curl \
        nginx \
        wget \
        nmap \
@@ -48,6 +53,14 @@ RUN apt-get -q -y update \
     && wget "https://getcomposer.org/download/$COMPOSER_VERSION/composer.phar" \
        -O  /usr/local/bin/composer2
 
+# Install NVM for MSL-API
+RUN chown www-data /var/www
+USER www-data
+RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && \
+    source /var/www/.nvm/nvm.sh && \
+    nvm install v18
+
+USER root
 ADD msl-api.site /etc/nginx/sites-enabled/msl-api
 RUN rm /etc/nginx/sites-enabled/default
 
@@ -62,7 +75,11 @@ ADD msl-api.env /var/www/msl_api/.env
 ADD supervisord.conf /var/www/msl-api-supervisord.conf
 ADD supervisord-webserver-only.conf /var/www/msl-api-supervisord-webserver-only.conf
 RUN cd /var/www/msl_api && \
-    /usr/bin/php8.3 /usr/local/bin/composer2 install
+    /usr/bin/php8.3 /usr/local/bin/composer2 install && \
+    source /var/www/.nvm/nvm.sh  && \
+    npm install && \
+    npm run build
+
 USER root
 RUN chown www-data /var/www/msl_api/.env && \
     chmod 0664 /var/www/msl_api/.env && \
