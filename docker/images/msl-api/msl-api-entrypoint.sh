@@ -54,6 +54,14 @@ FLUSH PRIVILEGES;
 	 # Also configure the FAST-API key, which is passed via an environment variable
 	 perl -pi.bak -e '$fast_api_token=$ENV{FAST_API_TOKEN}; s/PUT_FASTAPI_TOKEN_HERE/"$fast_api_token"/ge' "/var/www/msl_api/.env"
 
+	 # Configure App and and asset URL
+	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
+         then export APP_ASSET_URL="https://${EPOS_MSL_HOST}"
+	 else export APP_ASSET_URL="https://${EPOS_MSL_HOST}:${EPOS_MSL_HOST_PORT}"
+	 fi
+         perl -pi.bak -e '$app_url=$ENV{APP_ASSET_URL}; s/PUT_APP_URL_HERE/"$app_url"/ge' "/var/www/msl_api/.env"
+         perl -pi.bak -e '$asset_url=$ENV{APP_ASSET_URL}; s/PUT_ASSET_URL_HERE/"$asset_url"/ge' "/var/www/msl_api/.env"
+
          cd /var/www/msl_api
 	 # Initialize the MSL-API application
 	 set -x

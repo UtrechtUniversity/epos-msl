@@ -20,5 +20,12 @@ else echo "Generating DHParam configuration..."
      echo "DHParam generation complete."
 fi
 
+# Configure host header for reverse proxy
+if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
+then export HOST_HEADER="${EPOS_MSL_HOST}"
+else export HOST_HEADER="${EPOS_MSL_HOST}:${EPOS_MSL_HOST_PORT}"
+fi
+perl -pi.bak -e '$host_header=$ENV{HOST_HEADER}; s/PUT_HOST_HEADER_HERE/"$host_header"/ge' "/etc/nginx/conf.d/ckan.conf"
+
 ## Run Nginx
 nginx -g "daemon off;"
