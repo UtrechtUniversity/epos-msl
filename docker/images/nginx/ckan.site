@@ -43,7 +43,8 @@ server {
 
     location / {
         proxy_pass http://mslapi_webserver:80/;
-        proxy_set_header Host $host;
+        proxy_set_header Host $host:18443;
+        proxy_set_header X-Forwarded-Proto https;
         proxy_cache cache;
         proxy_cache_bypass $cookie_auth_tkt;
         proxy_no_cache $cookie_auth_tkt;
