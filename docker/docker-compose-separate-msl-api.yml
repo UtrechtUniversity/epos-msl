@@ -79,6 +79,9 @@ services:
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=WEBSERVER
+      -  FAST_API_TOKEN=${FAST_API_TOKEN}
+    ports:
+      - "80"
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal
@@ -90,6 +93,7 @@ services:
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=QUEUE_WORKER
+      -  FAST_API_TOKEN=${FAST_API_TOKEN}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal

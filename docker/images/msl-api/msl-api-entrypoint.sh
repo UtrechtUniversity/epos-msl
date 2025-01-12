@@ -51,6 +51,9 @@ FLUSH PRIVILEGES;
          export CKAN_API_KEY=$(cat "$CKAN_API_KEY_FILE")
          perl -pi.bak -e '$ckan_api_key=$ENV{CKAN_API_KEY}; s/PUT_API_TOKEN_HERE/"$ckan_api_key"/ge' "/var/www/msl_api/.env"
 
+	 # Also configure the FAST-API key, which is passed via an environment variable
+	 perl -pi.bak -e '$fast_api_token=$ENV{FAST_API_TOKEN}; s/PUT_FASTAPI_TOKEN_HERE/"$fast_api_token"/ge' "/var/www/msl_api/.env"
+
          cd /var/www/msl_api
 	 # Initialize the MSL-API application
 	 set -x

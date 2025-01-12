@@ -78,7 +78,10 @@ services:
   mslapi_webserver:
     container_name: mslapi_web
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    ports:
+      - "80"
     environment:
+      -  FAST_API_TOKEN=${FAST_API_TOKEN}
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=BOTH
     volumes:
