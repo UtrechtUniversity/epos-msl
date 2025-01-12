@@ -36,7 +36,7 @@ else
     then # Initialize the MSL-API database
 	 mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
 CREATE DATABASE mslapi;
-CREATE USER 'msl'@'%' IDENTIFIED BY 'msl';
+CREATE USER 'msl'@'%' IDENTIFIED BY '$MSLAPI_DB_PASSWORD';
 GRANT ALL PRIVILEGES ON mslapi.* TO 'msl'@'%';
 FLUSH PRIVILEGES;
 "
@@ -53,6 +53,10 @@ FLUSH PRIVILEGES;
 
 	 # Also configure the FAST-API key, which is passed via an environment variable
 	 perl -pi.bak -e '$fast_api_token=$ENV{FAST_API_TOKEN}; s/PUT_FASTAPI_TOKEN_HERE/"$fast_api_token"/ge' "/var/www/msl_api/.env"
+
+	 # Configure MSL-API DB password here
+	 perl -pi.bak -e '$mslapi_db_password=$ENV{MSLAPI_DB_PASSWORD}; s/PUT_MYSQL_PASSWORD_HERE/"$mslapi_db_password"/ge' \
+		 "/var/www/msl_api/.env"
 
 	 # Configure App and and asset URL
 	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]

@@ -83,6 +83,7 @@ services:
       -  FAST_API_TOKEN=${FAST_API_TOKEN}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
     ports:
       - "80"
     volumes:
@@ -99,6 +100,7 @@ services:
       -  FAST_API_TOKEN=${FAST_API_TOKEN}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal

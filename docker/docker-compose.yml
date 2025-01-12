@@ -37,6 +37,7 @@ services:
        - CKAN_SOLR_URL=http://solr:8983/solr/ckan
        - CKAN_REDIS_URL=redis://redis:6379/1
        - CKAN_SITE_URL=${CKAN_SITE_URL}
+       - CKAN_DATABASE_PASSWORD=${CKAN_DATABASE_PASSWORD}
        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
      volumes:
        - ckan_api_key:/ckan_api_key
@@ -86,6 +87,7 @@ services:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
       -  MSLAPI_ROLE=BOTH
     volumes:
       -  ckan_api_key:/ckan_api_key
