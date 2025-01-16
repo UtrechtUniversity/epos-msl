@@ -4,6 +4,12 @@
 export EPOS_MSL_HOST="$EPOS_MSL_HOST"
 perl -pi.bak -e '$epos_msl_host=$ENV{EPOS_MSL_HOST}; s/EPOS_MSL_HOST/$epos_msl_host/ge' /etc/certificates/epos-msl.cnf
 
+## Only include mailpit rev proxy configuration is mailpit is enabled.
+if [ "$MTA_ROLE" == "mailpit" ]
+then cat /etc/nginx/nginx.site.part1 /etc/nginx/nginx.site.part-mailpit /etc/nginx/nginx.site.part2 > /etc/nginx/conf.d/nginx.conf
+else cat /etc/nginx/nginx.site.part1 /etc/nginx/nginx.site.part2 > /etc/nginx/conf.d/nginx.conf
+fi
+
 ## Generate certificates if needed
 cd /etc/certificates
 if [ -f "epos-msl.pem" ]
@@ -25,7 +31,7 @@ if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
 then export HOST_HEADER="${EPOS_MSL_HOST}"
 else export HOST_HEADER="${EPOS_MSL_HOST}:${EPOS_MSL_HOST_PORT}"
 fi
-perl -pi.bak -e '$host_header=$ENV{HOST_HEADER}; s/PUT_HOST_HEADER_HERE/"$host_header"/ge' "/etc/nginx/conf.d/ckan.conf"
+perl -pi.bak -e '$host_header=$ENV{HOST_HEADER}; s/PUT_HOST_HEADER_HERE/"$host_header"/ge' "/etc/nginx/conf.d/nginx.conf"
 
 ## Run Nginx
 nginx -g "daemon off;"

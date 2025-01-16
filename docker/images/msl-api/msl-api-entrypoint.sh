@@ -58,6 +58,10 @@ FLUSH PRIVILEGES;
 	 perl -pi.bak -e '$mslapi_db_password=$ENV{MSLAPI_DB_PASSWORD}; s/PUT_MYSQL_PASSWORD_HERE/"$mslapi_db_password"/ge' \
 		 "/var/www/msl_api/.env"
 
+	 # Configure email sender address
+	 perl -pi.bak -e '$mail_from_address=$ENV{MAIL_FROM_ADDRESS}; s/PUT_MAIL_FROM_ADDRESS_HERE/"$mail_from_address"/ge' \
+		 /var/www/msl_api/.env
+
 	 # Configure App and and asset URL
 	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
          then export APP_ASSET_URL="https://${EPOS_MSL_HOST}"

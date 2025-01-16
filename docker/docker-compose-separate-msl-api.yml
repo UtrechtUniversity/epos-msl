@@ -51,8 +51,11 @@ services:
     environment:
       - EPOS_MSL_HOST=${EPOS_MSL_HOST}
       - EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      - MTA_ROLE=${MTA_ROLE}
     ports:
       - "${EPOS_MSL_HOST_IP}:${EPOS_MSL_HOST_PORT}:443"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
     volumes:
       - nginx_config:/etc/nginx/conf.d
       - nginx_certificates:/etc/certificates
@@ -84,6 +87,7 @@ services:
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
+      -  MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
     ports:
       - "80"
     volumes:
@@ -101,6 +105,7 @@ services:
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
+      -  MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal
@@ -115,3 +120,19 @@ services:
   redis:
     container_name: redis
     image: redis:6.2
+
+  mta:
+    container_name: mta
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mta:latest
+    environment:
+      -  MTA_ROLE=${MTA_ROLE}
+      -  POSTFIX_RELAYHOST_FQDN=${POSTFIX_RELAYHOST_FQDN}
+      -  POSTFIX_RELAYHOST_PORT=${POSTFIX_RELAYHOST_PORT}
+      -  POSTFIX_RELAYHOST_USERNAME=${POSTFIX_RELAYHOST_USERNAME}
+      -  POSTFIX_RELAYHOST_PASSWORD=${POSTFIX_RELAYHOST_PASSWORD}
+      -  POSTFIX_RELAYHOST_AUTH_ENABLED=${POSTFIX_RELAYHOST_AUTH_ENABLED}
+      -  POSTFIX_RELAYHOST_TLS_ENABLED=${POSTFIX_RELAYHOST_TLS_ENABLED}
+      -  POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}
+      -  POSTFIX_ORIGIN=${POSTFIX_ORIGIN}
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
