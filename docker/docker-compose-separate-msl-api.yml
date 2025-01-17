@@ -101,11 +101,11 @@ services:
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=QUEUE_WORKER
-      -  FAST_API_TOKEN=${FAST_API_TOKEN}
+      -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
-      -  MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal

@@ -52,23 +52,22 @@ FLUSH PRIVILEGES;
          perl -pi.bak -e '$ckan_api_key=$ENV{CKAN_API_KEY}; s/PUT_API_TOKEN_HERE/"$ckan_api_key"/ge' "/var/www/msl_api/.env"
 
 	 # Also configure the FAST-API key, which is passed via an environment variable
-	 perl -pi.bak -e '$fast_api_token=$ENV{FAST_API_TOKEN}; s/PUT_FASTAPI_TOKEN_HERE/"$fast_api_token"/ge' "/var/www/msl_api/.env"
+	 perl -pi.bak -e '$fast_api_token=$ENV{MSLAPI_FAST_API_TOKEN}; s/PUT_FASTAPI_TOKEN_HERE/"$fast_api_token"/ge' "/var/www/msl_api/.env"
 
 	 # Configure MSL-API DB password here
 	 perl -pi.bak -e '$mslapi_db_password=$ENV{MSLAPI_DB_PASSWORD}; s/PUT_MYSQL_PASSWORD_HERE/"$mslapi_db_password"/ge' \
 		 "/var/www/msl_api/.env"
 
 	 # Configure email sender address
-	 perl -pi.bak -e '$mail_from_address=$ENV{MAIL_FROM_ADDRESS}; s/PUT_MAIL_FROM_ADDRESS_HERE/"$mail_from_address"/ge' \
+	 perl -pi.bak -e '$mail_from_address=$ENV{MSLAPI_MAIL_FROM_ADDRESS}; s/PUT_MAIL_FROM_ADDRESS_HERE/"$mail_from_address"/ge' \
 		 /var/www/msl_api/.env
 
-	 # Configure App and and asset URL
+	 # Configure App URL
 	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
-         then export APP_ASSET_URL="https://${EPOS_MSL_HOST}"
-	 else export APP_ASSET_URL="https://${EPOS_MSL_HOST}:${EPOS_MSL_HOST_PORT}"
+         then export MSLAPI_APP_URL="https://${EPOS_MSL_HOST}"
+	 else export MSLAPI_APP_URL="https://${EPOS_MSL_HOST}:${EPOS_MSL_HOST_PORT}"
 	 fi
-         perl -pi.bak -e '$app_url=$ENV{APP_ASSET_URL}; s/PUT_APP_URL_HERE/"$app_url"/ge' "/var/www/msl_api/.env"
-         perl -pi.bak -e '$asset_url=$ENV{APP_ASSET_URL}; s/PUT_ASSET_URL_HERE/"$asset_url"/ge' "/var/www/msl_api/.env"
+         perl -pi.bak -e '$app_url=$ENV{MSLAPI_APP_URL}; s/PUT_APP_URL_HERE/"$app_url"/ge' "/var/www/msl_api/.env"
 
          cd /var/www/msl_api
 	 # Initialize the MSL-API application
