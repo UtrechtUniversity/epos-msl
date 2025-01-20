@@ -8,3 +8,7 @@
 # Vagrant / VirtualBox stuff
 /.vagrant
 *.log
+
+# Imported certificate for the nginx container
+docker/import-certificates/epos-msl.key
+docker/import-certificates/epos-msl.pem

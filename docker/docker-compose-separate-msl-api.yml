@@ -13,7 +13,6 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
-  nginx_certificates:
   mslapi_signal:
   mslapi_storage:
   ckan_api_key:
@@ -58,7 +57,7 @@ services:
       net.ipv4.ip_unprivileged_port_start: 0
     volumes:
       - nginx_config:/etc/nginx/conf.d
-      - nginx_certificates:/etc/certificates
+      - ./import-certificates:/etc/import-certificates
 
   db:
     container_name: db
