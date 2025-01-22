@@ -32,7 +32,7 @@ PidFile=/var/run/zabbix/zabbix_agentd.pid
 # Default:
 # LogFile=
 
-LogFile=/var/log/zabbix-agent/zabbix_agent.log
+LogFile=/var/log/zabbix/zabbix_agentd.log
 
 ### Option: LogFileSize
 #	Maximum size of log file in MB.
@@ -236,6 +236,7 @@ HostnameItem=system.hostname
 # Range: 1-30
 # Default:
 # Timeout=3
+Timeout={{ zabbix_timeout }}
 
 ### Option: AllowRoot
 #	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
@@ -266,7 +267,7 @@ AllowRoot=0
 # Default:
 # Include=
 
-Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
 # Include=/usr/local/etc/zabbix_agentd.conf.d/
 # Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
 
@@ -389,7 +390,7 @@ TLSAccept=psk
 # Mandatory: no
 # Default:
 # TLSPSKIdentity=
-TLSPSKIdentity=PSK-{{ ansible_fqdn }}
+TLSPSKIdentity=PSK-{{ ansible_host }}
 
 ### Option: TLSPSKFile
 #	Full pathname of a file containing the pre-shared key.

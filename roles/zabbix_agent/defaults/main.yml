@@ -1,15 +1,14 @@
 ---
 # copyright Utrecht University
 
-zabbix_package_version: 5.0.24-1
+# Temporary directory to store downloaded files.
+zabbix_agent_package_dir: /tmp
 
-# Zabbix agent package location and checksum
-zabbix_agent:
-  url: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release
-  filename: zabbix-release_5.0-1+focal_all.deb
-  deb_dest_dir: /tmp
-  checksum: sha256:744a808bc273039150e57d55a8ce07e461a173b314df3391c7f6627ac7543b43
+zabbix_server: 192.168.2.22
+zabbix_timeout: 15               # in seconds (range: 1-30)
 
-zabbix_server: 192.168.50.20
+repo_only: false
 
-repo_only: false # Only download packages from repos.
+# This forces Zabbix to install from a Zabbix RPM package rather
+# than from a local repository.
+zabbix_force_install_from_rpm: true

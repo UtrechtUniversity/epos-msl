@@ -1,7 +1,0 @@
----
-# copyright Utrecht University
-
-- name: Restart Nginx webserver
-  ansible.builtin.service:
-    name: nginx
-    state: restarted

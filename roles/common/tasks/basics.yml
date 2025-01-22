@@ -1,12 +1,11 @@
 ---
 # copyright Utrecht University
 
-- name: Ensure Ansible dependencies are installed
+- name: Ensure Ansible and other dependencies are installed
   ansible.builtin.package:
     name: '{{ item }}'
     state: present
   with_items:
     - acl
+    - git
     - python3-pip
-    - python3-selinux
-    - policycoreutils-python-utils

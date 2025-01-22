@@ -1,7 +1,0 @@
----
-# copyright Utrecht University
-
-- name: Restart Solr
-  ansible.builtin.service:
-    name: tomcat9
-    state: restarted

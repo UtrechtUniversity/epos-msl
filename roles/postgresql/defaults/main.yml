@@ -1,8 +1,0 @@
----
-# copyright Utrecht University
-
-# OpenSSL configuration.
-openssl_private_dir: '/etc/ssl/private'
-openssl_certs_dir: '/etc/ssl/certs'
-openssl_key_signed: localhost.key
-openssl_crt_signed: localhost.crt
