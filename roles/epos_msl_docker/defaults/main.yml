@@ -1,0 +1,31 @@
+---
+# copyright Utrecht University
+
+epos_msl_user: eposmsl
+epos_msl_branch: development
+
+epos_msl_ckan_site_id: default
+epos_msl_ckan_database_password: defaultpassworda
+
+epos_msl_host_name: epos-msl.ckan
+epos_msl_host_ip: 127.0.0.1
+epos_msl_host_port: 18443
+
+epos_msl_postgresl_password: ckan
+
+epos_msl_mysql_root_password: testtest
+epos_msl_mslapi_db_password: testtest
+epos_msl_fast_api_token: notokenspecified
+
+# MTA role can be either "mailpit" or "postfix"
+epos_msl_mta_role: mailpit
+
+epos_msl_postfix_relayhost_fqdn: notspecified
+epos_msl_postfix_relayhost_port: 25
+epos_msl_postfix_relayhost_username: changeme
+epos_msl_postfix_relayhost_password: changeme
+epos_msl_postfix_relayhost_auth_enabled: "yes"
+epos_msl_postfix_relayhost_tls_enabled: "yes"
+epos_msl_postfix_myhostname: changeme
+epos_msl_postfix_origin: changeme
+epos_msl_mail_from_address: epos@changeme.nl

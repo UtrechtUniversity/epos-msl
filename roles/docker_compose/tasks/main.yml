@@ -1,0 +1,30 @@
+---
+# copyright Utrecht University
+
+- name: Add Docker CE repository
+  ansible.builtin.yum_repository:
+    name: docker-ce
+    description: Docker CE Repository
+    baseurl: https://download.docker.com/linux/rhel/9/x86_64/stable
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey: https://download.docker.com/linux/rhel/gpg
+
+
+- name: Install Docker CE and CLI
+  ansible.builtin.dnf:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+
+- name: Start and enable Docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true

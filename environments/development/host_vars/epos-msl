@@ -12,27 +12,6 @@ commons_use_google_dns: true
 #########################
 # EPOS-MSL configuration
 #########################
-epos_msl_version: development              # EPOS-MSL version to install
-epos_msl_fqdn: epos-msl.ckan.test          # EPOS-MSL fully qualified domain name (FQDN)
-epos_msl_environment: development          # EPOS-MSL environment: development, testing, acceptance or production
-ckan_database_password: test               # CKAN Postgresql database password
-ckan_admin_password: testtest                  # CKAN admin user ('ckanadmin') password
-ckan_harvest_password: testtest                # CKAN harvest user ('harvest') password
-ckan_install_spatial_plugin: true
-ckan_plugins_editable_mode: true
 
-##########################
-# MSL API configuration
-##########################
-
-msl_api_database_password: testtest
-msl_api_app_url: http://epos-msl.ckan.test/webservice
-msl_api_asset_url: https://epos-msl.ckan.test/webservice
-msl_api_app_key: ""
-ckan_api_token: none
-
-#########################
-# Solr configuration
-#########################
-
-solr_install_native: false
+epos_msl_host_ip: 192.168.60.10
+epos_msl_host_port: 443
