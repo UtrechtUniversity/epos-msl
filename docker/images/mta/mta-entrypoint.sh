@@ -40,8 +40,7 @@ then echo "[$POSTFIX_RELAYHOST]:$POSTFIX_RELAYHOST_PORT $POSTFIX_RELAYHOST_USERN
      perl -pi.bak -e '$postfix_smtp_sasl_tls_security_options=$ENV{POSTFIX_SMTP_SASL_TLS_SECURITY_OPTIONS}; s/INSERT_POSTFIX_SMTP_SASL_TLS_SECURITY_OPTIONS/"$postfix_smtp_sasl_tls_security_options"/ge' \
                  /etc/postfix/main.cf
 
-     # Start Postfix master directly (since we can't disable forking for the main postfix binary)
-     /usr/lib/postfix/sbin/master -c /etc/postfix -d
+     /usr/sbin/postfix start-fg
 
 else
      echo "Unknown MTA role: $MTA_ROLE."
