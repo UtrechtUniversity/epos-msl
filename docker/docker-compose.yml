@@ -3,8 +3,6 @@
 # This default version runs the MSL-API web server and queue worker in the same
 # container.
 
-version: "3"
-
 volumes:
   ckan_config:
   ckan_home:

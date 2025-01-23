@@ -3,8 +3,6 @@
 # This version runs two separate containers for MSL-API (one for the web server and
 # one for the queue worker)
 
-version: "3"
-
 volumes:
   ckan_config:
   ckan_home:
