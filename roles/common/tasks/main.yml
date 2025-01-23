@@ -3,5 +3,7 @@
 
 - name: Configure firewall
   ansible.builtin.import_tasks: firewalld.yml
+- name: Configure kernel settings
+  ansible.builtin.import_tasks: kernel_settings.yml
 - name: Install Ansible dependencies
   ansible.builtin.import_tasks: basics.yml
