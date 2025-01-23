@@ -4,7 +4,7 @@ if [ "$MTA_ROLE" == "mailpit" ]
 then BINDIP=$(ip addr | grep eth0 | grep inet | awk '{print $2}' | cut -d '/' -f 1)
      /mailpit.bin -s $BINDIP:25 --webroot mailpit
 elif [ "$MTA_ROLE" == "postfix" ]
-then echo "[$POSTFIX_RELAYHOST]:$POSTFIX_RELAYHOST_PORT $POSTFIX_RELAYHOST_USERNAME:$POSTFIX_RELAYHOST_PASSWORD" > /etc/postfix/sasl_passwd
+then echo "[$POSTFIX_RELAYHOST_FQDN]:$POSTFIX_RELAYHOST_PORT $POSTFIX_RELAYHOST_USERNAME:$POSTFIX_RELAYHOST_PASSWORD" > /etc/postfix/sasl_passwd
      cd /etc/postfix
      postmap sasl_passwd
 
