@@ -29,3 +29,8 @@ epos_msl_postfix_relayhost_tls_enabled: "yes"
 epos_msl_postfix_myhostname: changeme
 epos_msl_postfix_origin: changeme
 epos_msl_mail_from_address: epos@changeme.nl
+
+# Cert mode can be static or self-signed
+epos_msl_cert_mode: selfsigned
+epos_msl_static_cert: notset
+epos_msl_static_cert_key: notset
