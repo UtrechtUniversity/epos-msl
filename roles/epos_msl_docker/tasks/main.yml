@@ -24,6 +24,32 @@
     force: true
 
 
+- name: Check that cert_mode is set to valid mode
+  ansible.builtin.fail:
+    msg: "cert_mode should be set to either selfsigned or static"
+  when: epos_msl_cert_mode not in ["selfsigned", "static"]
+
+
+- name: Upload static certificate
+  ansible.builtin.copy:
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-certificates/epos-msl.pem"
+    content: '{{ epos_msl_static_cert }}'
+    owner: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    mode: '0644'
+  when: epos_msl_cert_mode == "static"
+
+
+- name: Upload static certificate key
+  ansible.builtin.copy:
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-certificates/epos-msl.key"
+    content: '{{ epos_msl_static_cert_key }}'
+    owner: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    mode: '0644'
+  when: epos_msl_cert_mode == "static"
+
+
 - name: Install configuration Docker Compose setup
   ansible.builtin.template:
     src: env.j2
@@ -66,29 +92,3 @@
     enabled: true
     state: started
     daemon_reload: true
-
-
-- name: Check that cert_mode is set to valid mode
-  ansible.builtin.fail:
-    msg: "cert_mode should be set to either selfsigned or static"
-  when: epos_msl_cert_mode not in ["selfsigned", "static"]
-
-
-- name: Upload static certificate
-  ansible.builtin.copy:
-    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-certificates/epos-msl.pem"
-    content: '{{ epos_msl_static_cert }}'
-    owner: "{{ epos_msl_user }}"
-    group: "{{ epos_msl_user }}"
-    mode: '0644'
-  when: epos_msl_cert_mode == "static"
-
-
-- name: Upload static certificate key
-  ansible.builtin.copy:
-    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-certificates/epos-msl.key"
-    content: '{{ epos_msl_static_cert_key }}'
-    owner: "{{ epos_msl_user }}"
-    group: "{{ epos_msl_user }}"
-    mode: '0644'
-  when: epos_msl_cert_mode == "static"
