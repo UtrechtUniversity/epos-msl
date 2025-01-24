@@ -34,3 +34,6 @@ epos_msl_mail_from_address: epos@changeme.nl
 epos_msl_cert_mode: selfsigned
 epos_msl_static_cert: notset
 epos_msl_static_cert_key: notset
+
+epos_msl_admin_account_data: |
+  username;email;passwordhash

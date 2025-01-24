@@ -33,6 +33,15 @@
     mode: '0644'
 
 
+- name: Add admin account data for MSL-API seeder
+  ansible.builtin.copy:
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-msl-api-seed-data/admin-passwd.csv"
+    content: '{{ epos_msl_admin_account_data }}'
+    owner: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    mode: '0644'
+
+
 - name: Open TCP port for EPOS MSL catalog
   ansible.posix.firewalld:
     port: "{{ epos_msl_host_port }}/tcp"

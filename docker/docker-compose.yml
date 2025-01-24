@@ -94,6 +94,7 @@ services:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
+      -  ./import-msl-api-seed-data:/var/msl-api-seed-data
 
   solr:
     container_name: solr
