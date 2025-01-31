@@ -37,3 +37,6 @@ echo "Reloading CKAN web server after database change ..."
 docker restart ckan
 echo "Rebuilding CKAN search index"
 docker exec -it ckan /bin/bash -c "/usr/lib/ckan/default/bin/ckan -c /etc/ckan/default/ckan.ini search-index rebuild"
+echo "Restarting the application ..."
+docker compose restart
+echo "Done."
