@@ -72,6 +72,8 @@ FLUSH PRIVILEGES;
 	 # Import admin account credentials for MSL-API seeder, as configured via Ansible.
 	 if [ -f "/var/msl-api-seed-data/admin-passwd.csv" ]
 	 then cp /var/msl-api-seed-data/admin-passwd.csv /var/www/msl_api/admin-passwd.csv
+	      cd /var/www/msl_api
+	      sudo -u www-data /usr/bin/php8.3 artisan db:seed --force --class=UserSeeder
          fi
 
          cd /var/www/msl_api
