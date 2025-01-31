@@ -47,6 +47,7 @@ RUN apt-get -q -y update \
         pwgen \
         uuid-runtime \
         sudo \
+        vim  \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 

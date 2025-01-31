@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Setting the locale
 ENV LC_ALL=en_US.UTF-8
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y locales
+RUN apt-get install --no-install-recommends -y locales vim
 RUN sed -i "/$LC_ALL/s/^# //g" /etc/locale.gen
 RUN dpkg-reconfigure --frontend=noninteractive locales
 RUN update-locale LANG=${LC_ALL}

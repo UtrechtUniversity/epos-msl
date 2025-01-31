@@ -9,10 +9,14 @@ ENV SOLR_CONFIG_DIR="/opt/solr/server/solr/configsets"
 USER root
 RUN cp -R $SOLR_CONFIG_DIR/_default $SOLR_CONFIG_DIR/ckan
 
+# Install basic components
+RUN apt update && \
+    apt install -y git vim && \
+    apt-get -q clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Download the EPOS-MSL core plugin (for the schema)
 RUN cd /usr/lib && \
-    apt update && \
-    apt install -y git && \
     git clone https://github.com/UtrechtUniversity/msl_ckan_core.git
 
 # Change the CKAN configset to use the EPOS-MSL schema, and enable Query Elevation

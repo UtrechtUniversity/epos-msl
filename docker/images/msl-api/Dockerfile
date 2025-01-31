@@ -33,6 +33,7 @@ RUN apt-get -q -y update \
        wget \
        nmap \
        sudo \
+       vim \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
     && apt-get -q -y install \
