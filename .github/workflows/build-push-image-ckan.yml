@@ -4,8 +4,7 @@ name: "Build CKAN image and push it to registry"
 on:
   push:
     branches:
-      - 'development'
-      - 'dev-update-docker'
+      - 'master'
     paths:
       - '.github/workflows/build-push-image-ckan.yml'
       - 'docker/images/ckan/**'
