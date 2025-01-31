@@ -1,9 +1,7 @@
 # This is a locally modified version of the upstream CKAN docker compose file.
-# It contains image names for pushing locally built images to a central registry at ECR
-
-# docker-compose build && docker-compose up -d
-# If "docker-compose logs ckan" shows DB not ready, run "docker-compose restart ckan" a few times.
-version: "3"
+#
+# This default version runs the MSL-API web server and queue worker in the same
+# container.
 
 volumes:
   ckan_config:
@@ -13,14 +11,14 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
-  nginx_certificates:
   mslapi_signal:
   mslapi_storage:
+  ckan_api_key:
 
 services:
   ckan:
      container_name: ckan
-     image: epos-msl-ckan:latest
+     image: ghcr.io/utrechtuniversity/epos-msl-cat-ckan:latest
      links:
        - db
        - solr
@@ -30,14 +28,16 @@ services:
        - solr
        - redis
      ports:
-       - "0.0.0.0:${CKAN_PORT}:5000"
+       - "5000"
      environment:
        - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan_default
        - CKAN_SOLR_URL=http://solr:8983/solr/ckan
        - CKAN_REDIS_URL=redis://redis:6379/1
        - CKAN_SITE_URL=${CKAN_SITE_URL}
+       - CKAN_DATABASE_PASSWORD=${CKAN_DATABASE_PASSWORD}
        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
      volumes:
+       - ckan_api_key:/ckan_api_key
        - ckan_config:/etc/ckan
        - ckan_home:/usr/lib/ckan
        - ckan_storage:/var/lib/ckan
@@ -45,14 +45,18 @@ services:
 
   nginx:
     container_name: nginx
-    image: epos-msl-nginx:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-nginx:latest
     environment:
       - EPOS_MSL_HOST=${EPOS_MSL_HOST}
+      - EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      - MTA_ROLE=${MTA_ROLE}
     ports:
-      - "18443:443"
+      - "${EPOS_MSL_HOST_IP}:${EPOS_MSL_HOST_PORT}:443"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
     volumes:
       - nginx_config:/etc/nginx/conf.d
-      - nginx_certificates:/etc/certificates
+      - ./import-certificates:/etc/import-certificates
 
   db:
     container_name: db
@@ -71,32 +75,49 @@ services:
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
+  # In this Docker Compose setup, the web server container runs both
+  # the MSL-API web application and the queue worker.
   mslapi_webserver:
     container_name: mslapi_web
-    image: epos-msl-api:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    ports:
+      - "80"
     environment:
+      -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      -  MSLAPI_ROLE=WEBSERVER
+      -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
+      -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
+      -  MSLAPI_ROLE=BOTH
+      -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
     volumes:
+      -  ckan_api_key:/ckan_api_key
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
-
-  mslapi_worker:
-    container_name: mslapi_worker
-    image: epos-msl-api:latest
-    environment:
-      -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      -  MSLAPI_ROLE=QUEUE_WORKER
-    volumes:
-      -  mslapi_signal:/signal
-      -  mslapi_storage:/storage
+      -  ./import-msl-api-seed-data:/var/msl-api-seed-data
 
   solr:
     container_name: solr
-    image: epos-msl-solr:latest
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-solr:latest
     volumes:
       - solr_data:/opt/solr/server/solr/ckan/data
 
   redis:
     container_name: redis
     image: redis:6.2
+
+  mta:
+    container_name: mta
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mta:latest
+    environment:
+      -  MTA_ROLE=${MTA_ROLE}
+      -  POSTFIX_RELAYHOST_FQDN=${POSTFIX_RELAYHOST_FQDN}
+      -  POSTFIX_RELAYHOST_PORT=${POSTFIX_RELAYHOST_PORT}
+      -  POSTFIX_RELAYHOST_USERNAME=${POSTFIX_RELAYHOST_USERNAME}
+      -  POSTFIX_RELAYHOST_PASSWORD=${POSTFIX_RELAYHOST_PASSWORD}
+      -  POSTFIX_RELAYHOST_AUTH_ENABLED=${POSTFIX_RELAYHOST_AUTH_ENABLED}
+      -  POSTFIX_RELAYHOST_TLS_ENABLED=${POSTFIX_RELAYHOST_TLS_ENABLED}
+      -  POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}
+      -  POSTFIX_ORIGIN=${POSTFIX_ORIGIN}
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0

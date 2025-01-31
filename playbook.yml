@@ -13,16 +13,10 @@
           "You must update Ansible to at least 2.7 to deploy EPOS-MSL CKAN."
 
 
-- name: Provision EPOS-MSL CKAN server
+- name: Provision EPOS-MSL CKAN server using Docker setup
   hosts: all
   become: true
   roles:
     - common
-    - { role: acme_certificates, when: epos_msl_environment == "testing" }
-    - certificates
-    - nginx
-    - postgresql
-    - solr
-    - redis
-    - ckan
-    - msl_api
+    - docker_compose
+    - epos_msl_docker

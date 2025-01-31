@@ -1,0 +1,11 @@
+---
+# copyright Utrecht University
+
+# Zabbix agent rpm location
+zabbix_agent:
+  package: zabbix-agent
+  package_version: zabbix-agent-5.0.44-1
+  url: https://repo.zabbix.com/zabbix/5.0/rhel/9/x86_64/
+  filename: zabbix-agent-5.0.44-1.el9.x86_64.rpm
+  checksum: sha256:466f0b43ba05b67f1f4055bda3fe6d716fbff16ddd8c0444573be4ee6b7c1273
+  rpm_key_loc: "https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-08EFA7DD"

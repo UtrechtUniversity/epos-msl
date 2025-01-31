@@ -5,30 +5,33 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
+    # Serve static files from public directory
     location / {
-        # This server only serves MSL-API traffic
-        return 404;
+        root /var/www/msl_api/public;
+        try_files $uri $uri/ /index.php?$query_string;
     }
 
-    location /webservice/ {
-        alias     /var/www/msl_api/public;
-        try_files /index.php =404;
-        autoindex  on;
-
+    # Run PHP files
+    location ~ \.php$ {
+	try_files /index.php =404;
+        root /var/www/msl_api/public;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass            unix:/run/php/php8.0-fpm.sock;
-        fastcgi_index           index.php;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
 
         include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
 
-    location /webservice/css/ {
-            alias /var/www/msl_api/public/css/;
-    }
+    # Serve web root from index.php
+    location = / {
+        try_files /index.php =404;
+        root /var/www/msl_api/public;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
 
-    location /webservice/js/ {
-            alias /var/www/msl_api/public/js/;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
 }
-

@@ -18,6 +18,3 @@
   become: true
   roles:
     - zabbix_agent
-    - role: zabbix_postgresql
-      zabbix_database_name: "{{ ckan_database_name }}"
-    - zabbix_ckan

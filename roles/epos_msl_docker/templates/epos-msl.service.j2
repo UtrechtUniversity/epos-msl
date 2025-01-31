@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+[Unit]
+Description=EPOS-MSL catalog service
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+User={{ epos_msl_user }}
+Group= {{ epos_msl_user }}
+WorkingDirectory=/home/{{ epos_msl_user }}/epos-msl/docker
+ExecStart=/usr/bin/docker compose up --no-color --no-recreate
+ExecStop=/usr/bin/docker compose down
+TimeoutStartSec=0
+Restart=always

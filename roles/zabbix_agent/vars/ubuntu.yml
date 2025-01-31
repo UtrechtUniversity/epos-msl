@@ -1,0 +1,9 @@
+---
+# copyright Utrecht University
+
+# Zabbix agent rpm location
+zabbix_agent:
+  package: zabbix-agent
+  package_version: 5.0.44-1~focal
+  url: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix/
+  filename: zabbix-agent_5.0.44-1+focal_amd64.deb

@@ -1,36 +1,30 @@
 ---
 # copyright Utrecht University
 
-- name: Download Zabbix repo package
-  ansible.builtin.get_url:
-    url: "{{ zabbix_agent.url }}/{{ zabbix_agent.filename }}"
-    dest: '{{ zabbix_agent.deb_dest_dir }}/{{ zabbix_agent.filename }}'
-    checksum: '{{ zabbix_agent.checksum }}'
-    mode: "0644"
+- name: Include distribution version specific variables for Zabbix (EL)
+  ansible.builtin.include_vars: "rh9.yml"
+  when: ansible_os_family == 'RedHat'
 
 
-- name: Install Zabbix repo from downloaded package
-  ansible.builtin.package:
-    deb: '{{ zabbix_agent.deb_dest_dir }}/{{ zabbix_agent.filename }}'
-    state: present
+- name: Include distribution version specific variables for Zabbix (Ubuntu)
+  ansible.builtin.include_vars: "ubuntu.yml"
+  when: ansible_os_family == 'Debian'
 
 
-# Otherwise it would install the older Ubuntu version of the zabbix-agent
-# package.
-- name: Pin Zabbix agent package to Zabbix repository
-  ansible.builtin.copy:
-    src: zabbix-agent.preferences
-    dest: /etc/apt/preferences.d/99zabbix-agent
-    owner: root
-    group: root
-    mode: "0644"
+- name: Remove old zabbix_agentd.userparams.conf from zabbix_agentd.d
+  ansible.builtin.file:
+    path: /etc/zabbix/zabbix_agentd.d/zabbix_agentd.userparams.conf
+    state: absent
 
 
-- name: Install Zabbix agent"
-  ansible.builtin.apt:
-    name: "zabbix-agent"
-    state: present
-    update_cache: true
+- name: Install Zabbix package for Debian family
+  ansible.builtin.include_tasks: install-debian.yml
+  when: ansible_os_family == 'Debian'
+
+
+- name: Install Zabbix package for RedHat family
+  ansible.builtin.include_tasks: install-redhat.yml
+  when: ansible_os_family == 'RedHat'
 
 
 - name: Enable the Zabbix agent service
@@ -38,6 +32,21 @@
     name: zabbix-agent
     enabled: true
     use: service
+
+
+- name: Allow Zabbix agent to start
+  community.general.selinux_permissive:
+    name: zabbix_agent_t
+    permissive: true
+  when: ansible_os_family == 'RedHat' and ansible_selinux.status == "enabled"
+
+
+- name: Allow Zabbix agent to sudo
+  ansible.posix.seboolean:
+    name: zabbix_run_sudo
+    state: true
+    persistent: true
+  when: ansible_os_family == 'RedHat' and ansible_selinux.status == "enabled"
 
 
 - name: Generate Zabbix agent PSK
@@ -51,7 +60,7 @@
     path: /etc/zabbix/zabbix_agentd.psk
     owner: zabbix
     group: zabbix
-    mode: "0600"
+    mode: '0600'
 
 
 - name: Configure Zabbix agent
@@ -60,5 +69,25 @@
     dest: /etc/zabbix/zabbix_agentd.conf
     owner: zabbix
     group: zabbix
-    mode: "0600"
+    mode: '0600'
   notify: Restart Zabbix agent
+
+
+- name: Configure Zabbix AppArmor profile
+  ansible.builtin.template:
+    src: usr.sbin.zabbix_agentd.j2
+    dest: /etc/apparmor.d/usr.sbin.zabbix_agentd
+    owner: root
+    group: root
+    mode: '0644'
+  register: zabbix_apparmor
+  when: ansible_os_family == 'Debian'
+
+
+- name: Put Zabbix agent in AppArmor complain mode
+  ansible.builtin.shell: |
+    aa-complain /usr/sbin/zabbix_agentd
+    apparmor_parser -r /etc/apparmor.d/usr.sbin.zabbix_agentd
+  notify: Restart Zabbix agent
+  changed_when: true
+  when: ansible_os_family == 'Debian' and zabbix_apparmor.changed

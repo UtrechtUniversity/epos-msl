@@ -1,0 +1,8 @@
+---
+# copyright Utrecht University
+
+- name: Set Linux kernel setting to overcommit memory because of Redis
+  ansible.posix.sysctl:
+    name: vm.overcommit_memory
+    value: 1
+    state: present

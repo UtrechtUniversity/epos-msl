@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t epos-msl-solr:latest .
+docker build -t ghcr.io/utrechtuniversity/epos-msl-cat-solr:latest . $*

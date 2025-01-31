@@ -1,0 +1,94 @@
+---
+# copyright Utrecht University
+
+- name: Ensure group for EPOS-MSL docker setup exists
+  ansible.builtin.group:
+    name: "{{ epos_msl_user }}"
+
+
+- name: Ensure user for EPOS-MSL docker setup exists
+  ansible.builtin.user:
+    name: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    groups: docker
+    create_home: true
+
+
+- name: Check out EPOS-MSL repo with Docker Compose setup
+  become_user: "{{ epos_msl_user }}"
+  become: true
+  ansible.builtin.git:
+    repo: "https://github.com/UtrechtUniversity/epos-msl.git"
+    dest: "/home/{{ epos_msl_user }}/epos-msl"
+    version: "{{ epos_msl_branch }}"
+    force: true
+
+
+- name: Check that cert_mode is set to valid mode
+  ansible.builtin.fail:
+    msg: "cert_mode should be set to either selfsigned or static"
+  when: epos_msl_cert_mode not in ["selfsigned", "static"]
+
+
+- name: Upload static certificate
+  ansible.builtin.copy:
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-certificates/epos-msl.pem"
+    content: '{{ epos_msl_static_cert }}'
+    owner: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    mode: '0644'
+  when: epos_msl_cert_mode == "static"
+
+
+- name: Upload static certificate key
+  ansible.builtin.copy:
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-certificates/epos-msl.key"
+    content: '{{ epos_msl_static_cert_key }}'
+    owner: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    mode: '0644'
+  when: epos_msl_cert_mode == "static"
+
+
+- name: Install configuration Docker Compose setup
+  ansible.builtin.template:
+    src: env.j2
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/.env"
+    owner: '{{ epos_msl_user }}'
+    group: '{{ epos_msl_user }}'
+    mode: '0644'
+
+
+- name: Add admin account data for MSL-API seeder
+  ansible.builtin.copy:
+    dest: "/home/{{ epos_msl_user }}/epos-msl/docker/import-msl-api-seed-data/admin-passwd.csv"
+    content: '{{ epos_msl_admin_account_data }}'
+    owner: "{{ epos_msl_user }}"
+    group: "{{ epos_msl_user }}"
+    mode: '0644'
+
+
+- name: Open TCP port for EPOS MSL catalog
+  ansible.posix.firewalld:
+    port: "{{ epos_msl_host_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+
+
+- name: Create EPOS-MSL systemd unit file
+  ansible.builtin.template:
+    src: epos-msl.service.j2
+    dest: /etc/systemd/system/epos-msl.service
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Enable and start EPOS-MSL service
+  ansible.builtin.service:
+    name: epos-msl
+    enabled: true
+    state: started
+    daemon_reload: true

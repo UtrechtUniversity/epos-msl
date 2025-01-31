@@ -4,9 +4,10 @@
 # vi: set ft=ruby :
 
 # Configuration variables.
+VAGRANT_DEFAULT_PROVIDER= "libvirt"
 VAGRANTFILE_API_VERSION = "2"
 
-BOX = 'ubuntu/focal64'
+BOX = 'almalinux/9'
 GUI = false
 CPU = 2
 RAM = 2048
@@ -34,6 +35,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vbox.memory = ram
         vbox.name   = name
         vbox.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
+      end
+
+      machine.vm.provider :libvirt do |libvirt|
+        libvirt.driver = "kvm"
+        libvirt.cpus   = cpu
+        libvirt.memory = ram
       end
 
       machine.vm.hostname = name + DOMAIN
