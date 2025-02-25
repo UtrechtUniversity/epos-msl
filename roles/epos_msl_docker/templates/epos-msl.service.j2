@@ -12,3 +12,6 @@ ExecStart=/usr/bin/docker compose up --no-color --no-recreate
 ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0
 Restart=always
+
+[Install]
+WantedBy=multi-user.target
