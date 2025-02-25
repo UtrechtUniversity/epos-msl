@@ -11,6 +11,7 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
+  mslapi_env:
   mslapi_signal:
   mslapi_storage:
   ckan_api_key:
@@ -92,6 +93,7 @@ services:
       -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
     volumes:
       -  ckan_api_key:/ckan_api_key
+      -  mslapi_env:/var/www/msl_api/.env
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
