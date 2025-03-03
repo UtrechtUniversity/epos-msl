@@ -1,23 +1,81 @@
-# epos-msl
-[Ansible](https://docs.ansible.com) scripts for automatic deployment of the EPOS-MSL catalog.
+# EPOS-MSL catalog
+
+This repository contains the [Docker Compose](https://docs.docker.com/compose/) setup for
+the [EPOS-MSL metadata catalog](https://epos-msl.uu.nl/about), as well as the [Ansible](https://docs.ansible.com)
+playbook for deploying the application to a server.
+
+## Design
+
+EPOS-MSL is based on [CKAN](https://www.ckan.org). It uses several modules / extensions to customize CKAN for the EPOS catalog.
+
+### MSL CKAN extension
+
+The [MSL CKAN core extension](https://github.com/UtrechtUniversity/msl_ckan_core) contains specific settings and configuration
+for the EPOS MSL catalog.
+
+### MSL CKAN Util extension
+
+The [MSL CKAN util extension](https://github.com/UtrechtUniversity/msl_ckan_util) contains functionality used in the EPOS catalog
+that can be reused in other catalogs, specifically custom facets and repeating fields.
 
 ## Requirements
-### Control machine requirements
+
+### Requirements for local development (Docker setup)
+
+* [Docker Compose](https://docs.docker.com/compose/)
+* The images have been developed for the amd64 architecture
+
+### Requirements for deploying to server
+
 * [Ansible](https://docs.ansible.com/ansible/intro_installation.html) (>= 2.9)
-* [VirtualBox](https://www.virtualbox.org/manual/ch02.html) (>= 5.1)
-* [Vagrant](https://www.vagrantup.com/docs/installation/) (2.x)
+* [Vagrant](https://www.vagrantup.com/docs/installation/) (2.x - only for local VM)
+* Enterprise Linux 9 (e.g. AlmaLinux or RHEL)
+* The images have been developed for the amd64 architecture
 
-### Managed node requirements
-* [Ubuntu](https://www.ubuntu.com/) 20.04 LTS
+## Local development in containers (Docker)
 
+If you use Windows, ensure that core.autocrlf is set to false in your git client before you clone the EPOS-MSL
+repository: _git config --global core.autocrlf false_ Otherwise the Docker images may not work due to line
+ending changes.
+
+### Building the images
+
+If you want to test any local updates, you need to re-build the images:
+
+```
+cd docker
+./build-local-images.sh
+```
+
+### Running the application using Docker
+
+First add an entry to your `/etc/hosts` file (or equivalent) so that queries for the development setup
+interface resolve to your loopback interface. For example:
+
+```
+127.0.0.1 epos-msl.ckan
+```
+
+Unless you want to build the images locally (see above), you need to pull them from the registry:
+
+```
+cd docker
+docker compose pull
+```
+
+Then start the Docker Compose setup:
+```
+docker compose up
+```
+
+Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
+[https://epos-msl.ckan](https://epos-msl.ckan) in your browser. The development VM runs with
+self-signed certificates, so you'll need to accept the security warning in your browser.
 
 ## Local development VM
 
-You can run the EPOS-MSL catalog locally in a development VM.
+First create the VMs using Vagrant:
 
-### Deploying the development VM
-
-Create a virtual machine for the development environment:
 ```bash
 vagrant up
 ```
@@ -33,196 +91,83 @@ Deploy EPOS-MSL to development virtual machine:
 ansible-playbook playbook.yml
 ```
 
-Add following host to /etc/hosts (GNU/Linux or macOS) or %SystemRoot%\System32\drivers\etc\hosts (Windows):
+Add the following host to /etc/hosts (GNU/Linux or macOS) or %SystemRoot%\System32\drivers\etc\hosts (Windows):
 ```
-192.168.60.10 epos-msl.ckan.test
-```
-
-### Configuring shared folder for local development (Windows host)
-
-For local development on the msl_api codebase a shared folder can be created and mounted within the server to work
-with git and an IDE on the local filesystem.
-
-1. Open the Virtualbox management program
-2. Right-click the 'epos-msl' container and select settings
-3. Go to 'shared folders' and click to add a new shared folder with the following settings:
-   - name: epos
-   - path: <path to local directory containing checkout of msl_api>
-   - access: full
-   - automatically connect: yes
-
-Next ssh in to epos-msl:
-```bash
-vagrant ssh epos-msl
-```
-The share should now be visible within /media. To give the vagrant and msl-api users access to the folder and its
-contents:
-```bash
-sudo adduser www-data vboxsf
-sudo adduser vagrant vboxsf
+192.168.60.10 epos-msl.ckan
 ```
 
-Next, restart the server:
-```bash
-sudo reboot
-```
-
-After rebooting ssh into epos-msl again and the content of the share should be visible within /media/sf_epos!
-
-Now we will use the actual contents to replace the currently used checkout of msl_api by the contents of the share.
-First remove the current msl_api folder or rename it:
-
-```bash
-sudo mv /var/www/msl_api /var/www/msl_api_bck
-```
-
-Create a symlink to use the contents from the shared folder to replace the msl_api folder:
-```bash
-sudo ln -s /media/sf_epos /var/www/msl_api
-```
-
-Check to see if the login page is accessible by navigating to https://epos-msl.ckan.test/webservice/login. A reboot might be
-needed.
-
-#### CKAN extensions
-
-The same method can be used to work with local folders containing the msl CKAN extensions by creating shared folders 
-within the Virtualbox management program as described above. For example after creating a shared folder containing 
-the 'msl_ckan_core' repo checkout can be used within the epos-msl server by first removing the currently present version 
-on the server with:
-```bash
-sudo rm -r /usr/lib/ckan/msl_ckan_core
-```
-
-Followed by creating a symlink to the shared mount:
-```bash
-sudo ln -s /media/sf_ckanext-msl_ckan /usr/lib/ckan/msl_ckan_core
-```
+## MSL-API operations
 
 ### Seeding test admin panel account(s)
 
-The msl_api project contains a specific seeder for adding test admin accounts. Contents can be adjusted to add or
-adjust accounts within /database/seeders/AdminUserSeeder.php. Add the account(s) by running the following command:
+The MSL-API component contains a specific seeder for adding admin accounts. The account credentials can be
+adjusted using the `epos_msl_admin_account_data` Ansible parameter. You need to run the UserSeeder to import
+these accounts into MSL-API:
 
 ```bash
-sudo -u www-data /usr/bin/php8.0 artisan db:seed --class=AdminUserSeeder
+docker exec -it mslapi_web /bin/bash
+cd /var/www/msl_api
+sudo -u www-data php artisan db:seed --class=UserSeeder
 ```
 
 You should now be able to login to the admin panel.
 
 
-### Upgrading EPOS-MSL instance
-Upgrading the EPOS-MSL development instance to the latest version can be done by running the Ansible playbooks again.
-
-On a Windows host first SSH into the Ansible controller virtual machine (skip this step on GNU/Linux or macOS):
-```bash
-vagrant ssh epos-msl-controller
-cd ~/epos-msl
-```
-
-Upgrade Ansible scripts:
-```bash
-git pull
-```
-
-Upgrade EPOS-MSL instance:
-```bash
-ansible-playbook playbook.yml
-```
-
-### Create and set CKAN apikey for msl_api connections
-
-An API key needs to be generated within CKAN to be used by msl-api for transferring data.
-
-1. Navigate to: https://epos-msl.ckan.test/user/login and sign in in with the following credentials:
-
-```
-   Username: ckanadmin
-   Password: testtest
-```
-
-2. Navigate to: https://epos-msl.ckan.test/user/edit/ckanadmin and click 'Regenerate API key'
-3. Copy the API Key displayed in the bottom left
-4. Paste the value within the .env file of msl-api for the 'CKAN_API_TOKEN' key
-
 ### Restarting the queue processor
 
-After changing settings in the .env file or making changes to the code used by queue processing jobs the queue needs to
-be restarted using:
+After changing settings in the MSL-API .env file, please reload the configuration an restart the queue worker:
 
 ```bash
-sudo -u www-data /usr/bin/php8.0 artisan queue:restart
+docker exec -it mslapi_web /bin/bash
+cd /var/www/msl_api
+sudo -u www-data php artisan config:cache
+sudo -u www-data php artisan queue:restart
 ```
 
-## Updating the MSL API app key
+### Sending a test email
 
-If you have deployed the server using the default empty MSL API app key, generate
-a random one:
-
-```
-sudo -u www-data /usr/bin/php8.0 artisan key:generate
-sudo -u www-data /usr/bin/php8.0 artisan config:cache
-```
-
-Then copy this key from `APP_KEY` in `/var/www/msl_api/.env` to the Ansible configuration of
-the server.
-
-## Database creation/seeding for the MSL API
-
-You currently need to manually trigger creation and seeding of the MSL API database, as well as linking its storage
-space.
-
-Run the following commands in /var/www/msl\_api after deploying the application using Ansible:
+In order to test the email settings, you can send a test email from MSL-API:
 
 ```bash
-sudo -u www-data /usr/bin/php8.0 artisan migrate
-sudo -u www-data /usr/bin/php8.0 artisan db:seed
-sudo -u www-data /usr/bin/php8.0 artisan storage:link
+docker exec -it mslapi_web /bin/bash
+cd /var/www/msl_api
+sudo -u www-data php artisan app:test-mail some.email.address@organization.com
 ```
 
-## Connecting to the mysql database from local machine
+## Deploying the application to a server
 
-To connect from the host machine to the mysql database used by msl_api use the following command:
+In order to deploy the application to a server, create a custom Ansible configuration and
+provide settings for the parameters listed in the section below.
 
-```
-vagrant ssh epos-msl -- -L 3306:127.0.0.1:3306 -N epos-msl
-```
+### Configuration parameters
 
-While running, you can connect to the database using the default credentials.
+The main Ansible configuration parameters are:
 
-## Configuration
-
-The main configuration settings are:
-
-|Settingi       | Meaning       |
-| ------------- |:-------------:|
-|epos_msl_fqdn             | fully qualified domain name (FQDN) of the catalog, e.g. epos-catalog.mydomain.nl |
-|ckan_database_password    | password for the CKAN database (can be randomly generated with e.g. pwgen -n 16) |
-|ckan_admin_password       | password for the ckanadmin account (can be randomly generated with e.g. pwgen -n 16) |
-|msl_api_database_password | password for the MSL API database (can be randomly generated with e.g. pwgen -n 16) |
-|msl_api_app_url           | application URL for the MSL API web service, e.g. https://epos-catalog.mydomain.nl/webservice |
-|msl_api_asset_url         | asset URL for the MSL API web service, e.g. https://epos-catalog.mydomain.nl/webservice |
-|ckan_api_token            | the MSL API uses this value to authenticate to the CKAN API. this should currently be the API key (not API token!) of the ckanadmin account. The current way to use this field is: deploy the catalog using a dummy value for this parameter, log in on CKAN using the ckanadmin account, generate an API key, replace the dummy value in the host\_vars file with the real API key, and run the playbook a second time.
-|msl_api_app_key           | the MSL API application key. The current way to configure this is to deploy the application, generate the app key by running `sudo -u www-data /usr/bin/php8.0 artisan key:generate && sudo -u www-data /usr/bin/php8.0 artisan config:cache` in /var/www/msl\_api. Finally copy the generated key in /var/www/msl\_api/.env to the host\_vars file.
-| ckan_install_spatial_plugin | whether to install the ckanext-spatial plugin (default: false) |
-| ckan_spatial_plugin_repo    | Github repository to use for the ckanext-spatial plugin |
-| ckan_spatial_plugin_version | Branch or tag to use for the ckanext-spatial plugin |
-| ckan_plugins_editable_mode  | Whether to install CKAN plugins in editable mode. This is convenient for development and testing purposes. Enabled on development environment; default value is `false`. |
-
-## CKAN catalog
-
-EPOS-MSL is based on [CKAN](https://www.ckan.org). It uses several modules / extensions to customize CKAN for the EPOS catalog.
-
-### MSL CKAN extension
-
-The [MSL CKAN core extension](https://github.com/UtrechtUniversity/msl_ckan_core) contains specific settings and configuration
-for the EPOS MSL catalog.
-
-### MSL CKAN Util extension
-
-The [MSL CKAN util extension](https://github.com/UtrechtUniversity/msl_ckan_util) contains functionality used in the EPOS catalog
-that can be reused in other catalogs, specifically custom facets and repeating fields.
+|Setting                                 | Meaning                                                              |
+|----------------------------------------|----------------------------------------------------------------------|
+|epos_msl_ckan_database_password         | CKAN database password                                               |
+|epos_msl_host_name                      | Hostname of the application that users connect to                    |
+|epos_msl_host_ip                        | IP address that the application will run on                          |
+|epos_msl_host_port                      | TCP port that the application will run on                            |
+|epos_msl_mysql_root_password            | MySQL root password (MySQL is used for the MSL-API database)         |
+|epos_msl_mslapi_db_password             | MSL-API database password                                            |
+|epos_msl_fast_api_token                 | FastAPI token for MSL-API                                            |
+|epos_msl_mta_role                       | Type of MTA: use mailpit for local setup; postfix for production     |
+|epos_msl_postfix_relayhost_fqdn         | Postfix relay mail server name                                       |
+|epos_msl_postfix_relayhost_port         | Postfix: TCP port of mail server to use                              |
+|epos_msl_postfix_relayhost_username     | Postfix: username on relay mail server (if authentication enabled)   |
+|epos_msl_postfix_relayhost_password     | Postfix: password on relay mail server (if authentication enabled)   |
+|epos_msl_postfix_relayhost_auth_enabled | Postfix: enable authentication (yes/no, default: yes)                |
+|epos_msl_postfix_relayhost_tls_enabled  | Postfix: whether to use TLS (yes/no, default: yes)                   |
+|epos_msl_postfix_myhostname             | Postfix: own server name to send in EHLO/HELO messages               |
+|epos_msl_postfix_origin                 | Postfix: origin domain                                               |
+|epos_msl_mail_from_address              | Sender address to use for mail messages                              |
+|epos_msl_cert_mode                      | Currently supported modes: selfsigned or static                      |
+|epos_msl_static_cert                    | TLS certificate for reverse proxy (if static mode is selected)       |
+|epos_msl_static_cert_key                | TLS certificate key for rev proxy (if static mode is selected)       |
+|epos_msl_admin_account_data             | MSL-API admin accounts, in CSV format (name;email;password hash)     |
 
 ## License
+
 This project is licensed under the GPL-v3 license.
 The full license can be found in [LICENSE](LICENSE).
