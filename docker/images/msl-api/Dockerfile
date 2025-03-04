@@ -2,7 +2,7 @@
 
 # See CKAN docs on installation from Docker Compose on usage
 FROM ubuntu:jammy
-MAINTAINER Yoda team
+LABEL org.opencontainers.image.authors="Yoda team"
 
 # Need bash to get nvm/npm to work with default init files
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
