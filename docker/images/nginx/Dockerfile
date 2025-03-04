@@ -1,7 +1,7 @@
 # Image for Nginx reverse proxy configured for CKAN
 
 FROM nginx:1.27
-MAINTAINER Yoda team
+LABEL org.opencontainers.image.authors="Yoda team"
 
 RUN apt update && \
     apt install -y git vim \

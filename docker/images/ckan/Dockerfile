@@ -2,7 +2,7 @@
 
 # See CKAN docs on installation from Docker Compose on usage
 FROM ubuntu:jammy
-MAINTAINER Yoda team
+LABEL org.opencontainers.image.authors="Yoda team"
 
 # Set timezone
 ENV TZ=UTC
