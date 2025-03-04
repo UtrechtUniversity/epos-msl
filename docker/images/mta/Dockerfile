@@ -2,7 +2,7 @@
 
 # See CKAN docs on installation from Docker Compose on usage
 FROM ubuntu:noble
-MAINTAINER Yoda team
+LABEL org.opencontainers.image.authors="Yoda team"
 
 ENV MAILPIT_VERSION=v1.21.8
 

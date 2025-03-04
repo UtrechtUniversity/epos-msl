@@ -1,7 +1,7 @@
 # Image for Solr configured for CKAN
 
 FROM solr:8.11
-MAINTAINER Yoda team
+LABEL org.opencontainers.image.authors="Yoda team"
 
 ENV SOLR_CONFIG_DIR="/opt/solr/server/solr/configsets"
 

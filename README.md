@@ -69,7 +69,7 @@ docker compose up
 ```
 
 Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
-[https://epos-msl.ckan](https://epos-msl.ckan) in your browser. The development VM runs with
+https://epos-msl.ckan in your browser. The development VM runs with
 self-signed certificates, so you'll need to accept the security warning in your browser.
 
 ## Local development VM
