@@ -102,7 +102,7 @@ services:
     container_name: solr
     image: ghcr.io/utrechtuniversity/epos-msl-cat-solr:latest
     volumes:
-      - solr_data:/opt/solr/server/solr/ckan/data
+      - solr_data:/var/solr/data
 
   redis:
     container_name: redis
