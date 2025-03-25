@@ -11,6 +11,7 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
+  mslapi_db_data:
   mslapi_dir:
   mslapi_signal:
   mslapi_storage:
@@ -74,7 +75,9 @@ services:
     container_name: mslapi_db
     image: mysql:8.0.39-debian
     environment:
-      -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mslapi_db_data:/var/lib/mysql
 
   # In this Docker Compose setup, the web server container runs both
   # the MSL-API web application and the queue worker.
