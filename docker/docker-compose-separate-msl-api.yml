@@ -11,6 +11,7 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
+  mslapi_db_data:
   mslapi_webserver_env:
   mslapi_worker_env:
   mslapi_signal:
@@ -74,7 +75,9 @@ services:
     container_name: mslapi_db
     image: mysql:8.0.39-debian
     environment:
-      -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mslapi_db_data:/var/lib/mysql
 
   mslapi_webserver:
     container_name: mslapi_web
