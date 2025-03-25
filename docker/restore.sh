@@ -4,6 +4,8 @@
 
 STAGINGDIR="$1"
 
+source ./.env
+
 if [ -z "$STAGINGDIR" ]
 then echo "No staging dir provided. Setting it to current working directory."
      STAGINGDIR="."
@@ -25,9 +27,9 @@ docker exec mslapi_web /bin/bash -c "cd /var/www/msl_api && php artisan queue:re
 echo "Restoring MSL-API database ..."
 gunzip -c "${STAGINGDIR}/msl-api-db.sql.gz" | docker exec -i mslapi_web /bin/bash -c "mysql -h mslapi_db -u msl \"-p\${MSLAPI_DB_PASSWORD}\" mslapi"
 echo "Restoring MSL-API database user account ..."
-docker exec -i mslapi_web /bin/bash -c "mysql -u root \"-p\$MYSQL_ROOT_PASSWORD\" -h mslapi_db -e \"CREATE USER 'msl'@'%' IDENTIFIED BY '$MSLAPI_DB_PASSWORD';\""
-docker exec -i mslapi_web /bin/bash -c "mysql -u root \"-p\$MYSQL_ROOT_PASSWORD\" -h mslapi_db -e \"GRANT ALL PRIVILEGES ON mslapi.* TO 'msl'@'%';\""
-docker exec -i mslapi_web /bin/bash -c "mysql -u root \"-p\$MYSQL_ROOT_PASSWORD\" -h mslapi_db -e \"FLUSH PRIVILEGES;\""
+docker exec -i mslapi_web /bin/bash -c "mysql -u root \"-p$MYSQL_ROOT_PASSWORD\" -h mslapi_db -e \"CREATE USER 'msl'@'%' IDENTIFIED BY '$MSLAPI_DB_PASSWORD';\""
+docker exec -i mslapi_web /bin/bash -c "mysql -u root \"-p$MYSQL_ROOT_PASSWORD\" -h mslapi_db -e \"GRANT ALL PRIVILEGES ON mslapi.* TO 'msl'@'%';\""
+docker exec -i mslapi_web /bin/bash -c "mysql -u root \"-p$MYSQL_ROOT_PASSWORD\" -h mslapi_db -e \"FLUSH PRIVILEGES;\""
 echo "Restoring CKAN local settings ..."
 gunzip -c "${STAGINGDIR}/ckan-settings.tar.gz" | docker exec -i ckan /bin/bash -c "tar xv -C /etc/ckan"
 echo "Restoring CKAN database ..."
