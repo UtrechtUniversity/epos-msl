@@ -12,8 +12,9 @@ server {
 
 server {
 
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
 
     ssl_certificate /etc/certificates/epos-msl.pem;
     ssl_certificate_key /etc/certificates/epos-msl.key;
