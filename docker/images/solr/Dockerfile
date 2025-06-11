@@ -4,6 +4,7 @@ FROM solr:8.11
 LABEL org.opencontainers.image.authors="Yoda team"
 
 ENV SOLR_CONFIG_DIR="/opt/solr/server/solr/configsets"
+ENV MSL_CKAN_CORE_VERSION=1.5.0
 
 # Create a CKAN configset based on the default one
 USER root
@@ -17,7 +18,10 @@ RUN apt update && \
 
 # Download the EPOS-MSL core plugin (for the schema)
 RUN cd /usr/lib && \
-    git clone https://github.com/UtrechtUniversity/msl_ckan_core.git
+    git clone https://github.com/UtrechtUniversity/msl_ckan_core.git && \
+    cd msl_ckan_core && \
+    git checkout "$MSL_CKAN_CORE_VERSION"
+
 
 # Change the CKAN configset to use the EPOS-MSL schema, and enable Query Elevation
 USER root
