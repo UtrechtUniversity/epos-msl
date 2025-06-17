@@ -7,6 +7,10 @@ LABEL org.opencontainers.image.authors="Yoda team"
 # Need bash to get nvm/npm to work with default init files
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# Settings
+
+ENV MSL_API_VERSION=1.6.0
+
 # Set timezone
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -69,8 +73,10 @@ ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh
 
 RUN cd /var/www && \
-    git clone https://github.com/utrechtUniversity/msl_api --branch development && \
-    chown -R www-data:www-data msl_api
+    git clone https://github.com/utrechtUniversity/msl_api &&  \
+    cd msl_api && \
+    git checkout "$MSL_API_VERSION" && \
+    chown -R www-data:www-data .
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env
 ADD supervisord.conf /var/www/msl-api-supervisord.conf
