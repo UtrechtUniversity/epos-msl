@@ -69,7 +69,7 @@ ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh
 
 RUN cd /var/www && \
-    git clone https://github.com/utrechtUniversity/msl_api --branch development && \
+    git clone https://github.com/utrechtUniversity/msl_api --branch master && \
     chown -R www-data:www-data msl_api
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env

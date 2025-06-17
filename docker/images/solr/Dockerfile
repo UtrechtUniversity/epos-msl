@@ -4,7 +4,7 @@ FROM solr:8.11
 LABEL org.opencontainers.image.authors="Yoda team"
 
 ENV SOLR_CONFIG_DIR="/opt/solr/server/solr/configsets"
-ENV MSL_CKAN_CORE_VERSION=1.5.0
+ENV MSL_CKAN_CORE_VERSION=1.6.0
 
 # Create a CKAN configset based on the default one
 USER root
