@@ -1,9 +1,12 @@
 exclude_paths:
-  - ./.github
-  - ./docker
+  - .github/
+  - docker/
+
 skip_list:
   - no-changed-when  # Commands should not change things if nothing needs doing
   - no-handler  # Tasks that run when changed should likely be handlers
   - experimental  # all rules tagged as experimental
   - var-naming[no-role-prefix]
   - schema[meta]
+
+parseable: true
