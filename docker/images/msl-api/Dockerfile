@@ -82,7 +82,7 @@ ADD msl-api.env /var/www/msl_api/.env
 ADD supervisord.conf /var/www/msl-api-supervisord.conf
 ADD supervisord-webserver-only.conf /var/www/msl-api-supervisord-webserver-only.conf
 RUN cd /var/www/msl_api && \
-    /usr/bin/php8.3 /usr/local/bin/composer2 install && \
+    /usr/bin/php8.3 /usr/local/bin/composer2 install --no-dev && \
     source /var/www/.nvm/nvm.sh  && \
     npm install && \
     npm run build
