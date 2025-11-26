@@ -48,6 +48,8 @@ services:
   nginx:
     container_name: nginx
     image: ghcr.io/utrechtuniversity/epos-msl-cat-nginx:latest
+    depends_on:
+      - mslapi_webserver
     environment:
       - EPOS_MSL_HOST=${EPOS_MSL_HOST}
       - EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
