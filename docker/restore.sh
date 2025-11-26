@@ -28,6 +28,9 @@ FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'msl';
 EOF
 
+set -e
+set -x
+
 echo "Restoring MSL-API local storage and configuration data ..."
 gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv -C /var/www/msl_api"
 
