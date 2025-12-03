@@ -79,6 +79,7 @@ RUN cd /var/www && \
     chown -R www-data:www-data .
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env
+ADD php.ini /etc/php/8.3/fpm/php.ini
 ADD supervisord.conf /var/www/msl-api-supervisord.conf
 ADD supervisord-webserver-only.conf /var/www/msl-api-supervisord-webserver-only.conf
 RUN cd /var/www/msl_api && \
