@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 # Temporary directory to store downloaded files.
-zabbix_agent_package_dir: /tmp
+zabbix_package_dir: /tmp
 
 zabbix_server: 192.168.2.22
 zabbix_timeout: 15               # in seconds (range: 1-30)

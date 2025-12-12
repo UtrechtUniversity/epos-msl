@@ -2,7 +2,7 @@
 # copyright Utrecht University
 
 galaxy_info:
-  author: Leonidas Triantafyllou
+  author: Leonidas Triantafyllou and Sietse Snel
   description: Install and configure Zabbix system monitoring
   license: GPLv3
   min_ansible_version: '2.11'
@@ -10,4 +10,4 @@ galaxy_info:
     - name: EL
       version: 9
     - name: Ubuntu
-      version: focal
+      version: noble
