@@ -24,7 +24,7 @@ jobs:
       id: extract_branch
 
     - name: Check out EPOS-MSL catalog repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: epos-msl
         repository: UtrechtUniversity/epos-msl
