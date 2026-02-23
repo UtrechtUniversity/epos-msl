@@ -91,13 +91,13 @@ RUN ckan-pip3 install -U pip && \
     ckan-pip3 install --upgrade pip && \
     ckan-pip3 install wheel && \
     ckan-pip3 install setuptools-scm==7.1.0 && \
-    ckan-pip3 install -e "git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}#egg=ckan[requirements]" && \
+    ckan-pip3 install -e "ckan[requirements] @ git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}" && \
     ckan-pip3 install uwsgi && \
-    ckan-pip3 install -e "git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}#egg=ckanext-scheming" && \
-    ckan-pip3 install -e "git+https://github.com/ckan/ckanext-spatial@${CKAN_SPATIAL_VERSION}#egg=ckanext-spatial" && \
+    ckan-pip3 install -e "ckanext-scheming @ git+https://github.com/ckan/ckanext-scheming@${CKAN_SCHEMING_VERSION}" && \
+    ckan-pip3 install -e "ckanext-spatial @ git+https://github.com/ckan/ckanext-spatial@${CKAN_SPATIAL_VERSION}" && \
     ckan-pip3 install -r /usr/lib/ckan/default/src/ckanext-spatial/requirements.txt && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_core@${CKAN_MSL_CORE_VERSION}#egg=ckanext-msl_ckan" && \
-    ckan-pip3 install -e "git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}#egg=ckanext-msl_ckan_util" && \
+    ckan-pip3 install -e "ckanext-msl_ckan @ git+https://github.com/UtrechtUniversity/msl_ckan_core@${CKAN_MSL_CORE_VERSION}" && \
+    ckan-pip3 install -e "ckanext-msl_ckan_util @ git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
     rm /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
