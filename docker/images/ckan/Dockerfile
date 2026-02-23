@@ -87,9 +87,8 @@ ENV CKAN_MSLAPI_PASSWORD="testtest"
 
 # Install CKAN and plugins
 # Newer versions of setuptools-scm don't work with current version of CKAN because of setuptools version dependency
-RUN ckan-pip3 install -U pip && \
-    ckan-pip3 install --upgrade pip && \
-    ckan-pip3 install wheel && \
+RUN ckan-pip3 install -U pip==26.0.1 && \
+    ckan-pip3 install wheel==0.46.3 && \
     ckan-pip3 install setuptools-scm==7.1.0 && \
     ckan-pip3 install -e "ckan[requirements] @ git+https://github.com/ckan/ckan@ckan-${CKAN_VERSION}" && \
     ckan-pip3 install uwsgi && \
