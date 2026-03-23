@@ -69,7 +69,7 @@ docker compose up
 ```
 
 Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
-https://epos-msl.ckan in your browser. The development VM runs with
+<https://epos-msl.ckan:18443> in your browser. The development setup runs with
 self-signed certificates, so you'll need to accept the security warning in your browser.
 
 ## Local development VM
@@ -95,6 +95,11 @@ Add the following host to /etc/hosts (GNU/Linux or macOS) or %SystemRoot%\System
 ```
 192.168.60.10 epos-msl.ckan.test
 ```
+
+Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
+<https://epos-msl.ckan.test> in your browser. The development setup runs with
+self-signed certificates, so you'll need to accept the security warning in your browser.
+
 
 ## MSL-API operations
 
