@@ -93,7 +93,7 @@ ansible-playbook playbook.yml
 
 Add the following host to /etc/hosts (GNU/Linux or macOS) or %SystemRoot%\System32\drivers\etc\hosts (Windows):
 ```
-192.168.60.10 epos-msl.ckan
+192.168.60.10 epos-msl.ckan.test
 ```
 
 ## MSL-API operations
