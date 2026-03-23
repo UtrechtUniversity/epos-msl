@@ -171,6 +171,10 @@ The main Ansible configuration parameters are:
 |epos_msl_static_cert                    | TLS certificate for reverse proxy (if static mode is selected)       |
 |epos_msl_static_cert_key                | TLS certificate key for rev proxy (if static mode is selected)       |
 |epos_msl_admin_account_data             | MSL-API admin accounts, in CSV format (name;email;password hash)     |
+|epos_msl_tracking_enabled               | Boolean value that indicates whether page view tracking using Matomo has been enabled (default: false) |
+|epos_msl_tracking_matomo_host           | Hostname of Matomo server for page view tracking                     |
+|epos_msl_tracking_matomo_site_id        | Site ID of EPOS-MSL catalog in Matomo (default 1)                    |
+|epos_msl_tracking_matomo_token          | API token for Matomo                                                 |
 
 ## License
 
