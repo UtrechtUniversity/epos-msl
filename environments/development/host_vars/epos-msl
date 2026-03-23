@@ -13,5 +13,6 @@ commons_use_google_dns: true
 # EPOS-MSL configuration
 #########################
 
+epos_msl_host_name: epos-msl.ckan.test
 epos_msl_host_ip: 192.168.60.10
 epos_msl_host_port: 443
