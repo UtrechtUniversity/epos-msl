@@ -4,7 +4,7 @@ name: "Build Nginx image and push it to registry"
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - '.github/workflows/build-push-image-nginx.yml'
       - 'docker/images/nginx/**'

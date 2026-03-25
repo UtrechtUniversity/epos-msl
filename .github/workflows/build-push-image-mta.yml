@@ -4,7 +4,7 @@ name: "Build EPOS-MSL MTA image and push it to registry"
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - '.github/workflows/build-push-image-mta.yml'
       - 'docker/images/mta/**'

@@ -4,7 +4,7 @@ name: "Build Solr image and push it to registry"
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - '.github/workflows/build-push-image-solr.yml'
       - 'docker/images/solr/**'
