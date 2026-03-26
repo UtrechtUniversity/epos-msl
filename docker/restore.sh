@@ -1,6 +1,17 @@
 #!/bin/bash
 #
 # This script restores data from the containerized EPOS-MSL catalog
+#
+# Usage: restore.sh [--no-config-restore] [BACKUPDIRECTORY]
+#
+# If no backup directory provided, the current directory is used.
+
+if [ "$1" = "--no-config-restore" ]
+then shift
+     CONFIGRESTORE="0"
+else
+     CONFIGRESTORE="1"
+fi
 
 STAGINGDIR="$1"
 
@@ -31,8 +42,12 @@ EOF
 set -e
 set -x
 
-echo "Restoring MSL-API local storage and configuration data ..."
-gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv -C /var/www/msl_api"
+if [ "$CONFIGRESTORE" = 1 ]
+then    echo "Restoring MSL-API local storage and configuration data ..."
+        gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv -C /var/www/msl_api"
+else    echo "Restoring MSL-API local storage (without configuration data) ..."
+	gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv --exclude .env -C /var/www/msl_api"
+fi
 
 echo "Reloading MSL-API configuration into cache ..."
 docker exec mslapi_web /bin/bash -c "cd /var/www/msl_api && php artisan config:cache"
