@@ -96,6 +96,10 @@ services:
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
       -  MSLAPI_ROLE=BOTH
       -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      -  TRACKING_ENABLED=${TRACKING_ENABLED}
+      -  MATOMO_HOST=${MATOMO_HOST}
+      -  MATOMO_SITE_ID=${MATOMO_SITE_ID}
+      -  MATOMO_TOKEN=${MATOMO_TOKEN}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_dir:/var/www/msl_api
