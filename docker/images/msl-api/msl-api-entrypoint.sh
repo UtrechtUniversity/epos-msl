@@ -62,6 +62,12 @@ FLUSH PRIVILEGES;
 	 perl -pi.bak -e '$mail_from_address=$ENV{MSLAPI_MAIL_FROM_ADDRESS}; s/PUT_MAIL_FROM_ADDRESS_HERE/"$mail_from_address"/ge' \
 		 /var/www/msl_api/.env
 
+         # Configure Matomo parameters
+         for PARAM in TRACKING_ENABLED MATOMO_HOST MATOMO_SITE_ID MATOMO_TOKEN
+         do echo "Replacing $PARAM in config: value ${!PARAM} ..."
+            sed -i "s@${PARAM}_HERE @ ${!PARAM} @" /var/www/msl_api/.env
+         done
+
 	 # Configure App URL
 	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
          then export MSLAPI_APP_URL="https://${EPOS_MSL_HOST}"

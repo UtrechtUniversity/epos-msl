@@ -90,6 +90,10 @@ services:
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
       -  MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      -  TRACKING_ENABLED=${TRACKING_ENABLED}
+      -  MATOMO_HOST=${MATOMO_HOST}
+      -  MATOMO_SITE_ID=${MATOMO_SITE_ID}
+      -  MATOMO_TOKEN=${MATOMO_TOKEN}
     ports:
       - "80"
     volumes:
@@ -110,6 +114,10 @@ services:
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
       -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      -  TRACKING_ENABLED=${TRACKING_ENABLED}
+      -  MATOMO_HOST=${MATOMO_HOST}
+      -  MATOMO_SITE_ID=${MATOMO_SITE_ID}
+      -  MATOMO_TOKEN=${MATOMO_TOKEN}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_worker_env:/var/www/msl_api/.env
