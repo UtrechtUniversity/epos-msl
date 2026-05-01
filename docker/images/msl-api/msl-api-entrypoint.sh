@@ -103,6 +103,15 @@ FLUSH PRIVILEGES;
     fi
 fi
 
+# We are rebuilding front-end code here because it currently needs to be rebuilt after
+# MSL-API configuration changes, and build artifacts are not persisted by default.
+# This step is meant as a workaround until the configuration parameters can be extracted from
+# the front-end code.
+if [ "$MSLAPI_ROLE" == "WEBSERVER" ] || [ "$MSLAPI_ROLE" == "BOTH" ]
+then echo "Rebuilding front-end code ..."
+     sudo -u www-data bash -c 'cd /var/www/msl_api && source /var/www/.nvm/nvm.sh && npm run build'
+fi
+
 ## Run main process
 if [ "$MSLAPI_ROLE" == "QUEUE_WORKER" ]
 then while true
