@@ -89,6 +89,7 @@ services:
     ports:
       - "80"
     environment:
+      -  DEVELOPMENT_MODE=True
       -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
@@ -102,7 +103,7 @@ services:
       -  MATOMO_TOKEN=${MATOMO_TOKEN}
     volumes:
       -  ckan_api_key:/ckan_api_key
-      -  ./../../msl_api:/var/www/msl_api
+      -  ./../../msl_api_new:/var/www/msl_api
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data

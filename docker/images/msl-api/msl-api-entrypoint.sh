@@ -68,6 +68,12 @@ FLUSH PRIVILEGES;
             sed -i "s@${PARAM}_HERE@${!PARAM}@" /var/www/msl_api/.env
          done
 
+	 if [ "$DEVELOPMENT_MODE" == "True" ]
+	 then echo "Development mode active"
+	 else echo "Development mode not active"
+	 fi
+
+
 	 # Configure App URL
 	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
          then export MSLAPI_APP_URL="https://${EPOS_MSL_HOST}"
