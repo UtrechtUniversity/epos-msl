@@ -89,6 +89,7 @@ services:
     ports:
       - "80"
     environment:
+      -  WWW_USERID=1000
       -  DEVELOPMENT_MODE=True
       -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

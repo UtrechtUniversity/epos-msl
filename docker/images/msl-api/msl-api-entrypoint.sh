@@ -70,11 +70,12 @@ FLUSH PRIVILEGES;
 
 	 if [ "$DEVELOPMENT_MODE" == "True" ]
 	 then echo "Development mode active"
-	      # reinstall packages since we are working with a fresh checkout at this stage
 	      cd /var/www/msl_api
+	      # Set uid of www-data to prevent permission issues in WSL mount
+	      sudo usermod -u "$WWW_USERID" www-data
+	      # Reinstall php and node packages due to fresh codebase
 	      /usr/bin/php8.3 /usr/local/bin/composer2 install
 	      sudo -u www-data bash -c 'cd /var/www/msl_api && source /var/www/.nvm/nvm.sh && npm install'
-	      chown -R www-data:www-data /var/www/msl_api
 	 else echo "Development mode not active"
 	 fi
 
