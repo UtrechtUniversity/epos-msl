@@ -38,6 +38,29 @@ If you use Windows, ensure that core.autocrlf is set to false in your git client
 repository: _git config --global core.autocrlf false_ Otherwise the Docker images may not work due to line
 ending changes.
 
+### Local mount setup
+
+To easily develop locally the development docker compose setup uses a local mount for the msl_api repository. To enable this and other development specific settings a specific development docker compose file is used. Before proceeding with the docker setup the following steps have to be completed:
+
+In the local msl_api checkout
+Copy the .env file 
+```
+cp .env.development .env
+```
+
+Changes in the docker-compose.dev.yml file
+
+In the mslapi_webserver configuration set the following setting to reflect your local setup.
+Environment setting `WWW_USERID`should contain the UID of the user you work with in WSL. To see this UID run the following command:
+```
+id -u
+```
+
+In the volumed list your local directory should be mapped to the internal location of msl_api. The default setting is:
+```
+./../../msl_api_new:/var/www/msl_api
+```
+
 ### Building the images
 
 If you want to test any local updates, you need to re-build the images:
