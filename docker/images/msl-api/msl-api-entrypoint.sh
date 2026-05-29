@@ -41,6 +41,16 @@ GRANT ALL PRIVILEGES ON mslapi.* TO 'msl'@'%';
 FLUSH PRIVILEGES;
 "
 
+    if [ "$DEVELOPMENT_MODE" == "True" ]
+    then # Initialize the MSL-API testing database
+         mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
+CREATE DATABASE testing;
+CREATE USER 'msl'@'%' IDENTIFIED BY '$MSLAPI_DB_PASSWORD';
+GRANT ALL PRIVILEGES ON testing.* TO 'msl'@'%';
+FLUSH PRIVILEGES;
+"
+    fi
+
          # Wait until CKAN API key has been generated, then
          # add it to the config.
          CKAN_API_KEY_FILE="/ckan_api_key/api.key"
