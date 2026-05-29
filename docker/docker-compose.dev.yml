@@ -76,6 +76,8 @@ services:
   mslapi_db:
     container_name: mslapi_db
     image: mysql:8.0.39-debian
+    ports:
+      - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
