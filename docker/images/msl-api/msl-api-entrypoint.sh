@@ -45,7 +45,6 @@ FLUSH PRIVILEGES;
     then # Initialize the MSL-API testing database
          mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
 CREATE DATABASE testing;
-CREATE USER 'msl'@'%' IDENTIFIED BY '$MSLAPI_DB_PASSWORD';
 GRANT ALL PRIVILEGES ON testing.* TO 'msl'@'%';
 FLUSH PRIVILEGES;
 "
