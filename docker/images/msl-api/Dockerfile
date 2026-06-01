@@ -59,7 +59,10 @@ RUN apt-get -q -y update \
        -O  /usr/local/bin/composer2
 
 # Install NVM for MSL-API
-RUN chown www-data /var/www
+ADD bashprofile.sh /var/www/.bash_profile
+RUN chown www-data /var/www && \
+    chmod +x  /var/www/.bash_profile&& \
+    chsh www-data -s /bin/bash
 USER www-data
 RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && \
     source /var/www/.nvm/nvm.sh && \
