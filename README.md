@@ -50,13 +50,13 @@ cp .env.development .env
 
 Changes in the docker-compose.dev.yml file
 
-In the mslapi_webserver configuration set the following setting to reflect your local setup.
+In the mslapi_webserver configuration set the following settings to reflect your local setup.
 Environment setting `WWW_USERID`should contain the UID of the user you work with in WSL. To see this UID run the following command:
 ```
 id -u
 ```
 
-In the volumed list your local directory should be mapped to the internal location of msl_api. The default setting is:
+In the volumes list your local directory should be mapped to the internal location of msl_api. The default setting is:
 ```
 ./../../msl_api_new:/var/www/msl_api
 ```
