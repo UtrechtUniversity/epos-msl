@@ -83,7 +83,7 @@ FLUSH PRIVILEGES;
 	      # Set uid of www-data to prevent permission issues in WSL mount
 	      sudo usermod -u "$WWW_USERID" www-data
 	      # Reinstall php and node packages due to fresh codebase
-	      /usr/bin/php8.3 /usr/local/bin/composer2 install
+	      sudo -u www-data bash -c '/usr/bin/php8.3 /usr/local/bin/composer2 install'
 	      sudo -u www-data bash -c 'cd /var/www/msl_api && source /var/www/.nvm/nvm.sh && npm install'
 	 else echo "Development mode not active"
 	 fi
