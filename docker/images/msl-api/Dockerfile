@@ -72,6 +72,9 @@ USER root
 ADD msl-api.site /etc/nginx/sites-enabled/msl-api
 RUN rm /etc/nginx/sites-enabled/default
 
+ADD update-api-token.sh /update-api-token.sh
+RUN chmod +x /update-api-token.sh
+
 ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh
 
