@@ -104,6 +104,12 @@ services:
   mslapi_webserver:
     container_name: mslapi_web
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    links:
+      - mslapi_db
+      - mslapi_redis
+    depends_on:
+      - mslapi_db
+      - mslapi_redis
     ports:
       - "80"
     environment:
@@ -124,6 +130,12 @@ services:
   mslapi_worker:
     container_name: mslapi_worker
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    links:
+       - mslapi_db
+       - mslapi_redis
+    depends_on:
+       - mslapi_db
+       - mslapi_redis
     environment:
       -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
