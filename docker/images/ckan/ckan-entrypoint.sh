@@ -30,7 +30,7 @@ check_port db 5432
 check_port solr 8983
 
 ## Check Redis up
-check_port redis 6379
+check_port redis_ckan 6379
 
 ## Initialize CKAN config, database and admin account
 CKAN_CONFIG_FILE=/etc/ckan/default/ckan.ini

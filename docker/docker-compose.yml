@@ -57,17 +57,17 @@ services:
      links:
        - db
        - solr
-       - redis
+       - ckan_redis
      depends_on:
        - db
        - solr
-       - redis
+       - ckan_redis
      ports:
        - "5000"
      environment:
        - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan_default
        - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-       - CKAN_REDIS_URL=redis://redis:6379/1
+       - CKAN_REDIS_URL=redis://ckan_redis:6379/1
        - CKAN_SITE_URL=${CKAN_SITE_URL}
        - CKAN_DATABASE_PASSWORD=${CKAN_DATABASE_PASSWORD}
        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -95,8 +95,8 @@ services:
     volumes:
       - solr_data:/var/solr/data
 
-  redis:
-    container_name: redis
+  ckan_redis:
+    container_name: ckan_redis
     image: redis:6.2
 
   # MSL-API services
