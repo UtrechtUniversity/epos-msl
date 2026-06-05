@@ -15,6 +15,7 @@ volumes:
   mslapi_dir:
   mslapi_signal:
   mslapi_storage:
+  mslapi_worker_dir:
   ckan_api_key:
 
 services:
@@ -100,9 +101,6 @@ services:
     image: redis:6.2
 
   # MSL-API services
-
-  # In this Docker Compose setup, the web server container runs both
-  # the MSL-API web application and the queue worker.
   mslapi_webserver:
     container_name: mslapi_web
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
@@ -114,11 +112,29 @@ services:
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
-      -  MSLAPI_ROLE=BOTH
+      -  MSLAPI_ROLE=WEBSERVER
       -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_dir:/var/www/msl_api
+      -  mslapi_signal:/signal
+      -  mslapi_storage:/storage
+      -  ./import-msl-api-seed-data:/var/msl-api-seed-data
+
+  mslapi_worker:
+    container_name: mslapi_worker
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    environment:
+      -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
+      -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
+      -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
+      -  MSLAPI_ROLE=QUEUE_WORKER
+      -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+    volumes:
+      -  ckan_api_key:/ckan_api_key
+      -  mslapi_worker_dir:/var/www/msl_api
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
