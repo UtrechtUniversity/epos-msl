@@ -48,9 +48,7 @@ Copy the .env file
 cp .env.development .env
 ```
 
-Changes in the docker-compose.dev.yml file
-
-In the mslapi_webserver configuration set the following settings to reflect your local setup.
+In the .env file, set the following settings to reflect your local setup.
 Environment setting `WWW_USERID`should contain the UID of the user you work with in WSL. To see this UID run the following command:
 ```
 id -u
@@ -180,6 +178,8 @@ The main Ansible configuration parameters are:
 |epos_msl_mysql_root_password            | MySQL root password (MySQL is used for the MSL-API database)         |
 |epos_msl_mslapi_db_password             | MSL-API database password                                            |
 |epos_msl_fast_api_token                 | FastAPI token for MSL-API                                            |
+|epos_msl_development_mode               | Whether to enable development mode (see local mount setup section) - True or False |
+|epos_msl_www_userid                     | UID of local MSL-API development user - only relevant if development mode is enabled |
 |epos_msl_mta_role                       | Type of MTA: use mailpit for local setup; postfix for production     |
 |epos_msl_postfix_relayhost_fqdn         | Postfix relay mail server name                                       |
 |epos_msl_postfix_relayhost_port         | Postfix: TCP port of mail server to use                              |
