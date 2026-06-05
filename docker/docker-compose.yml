@@ -146,3 +146,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - mslapi_db_data:/var/lib/mysql
+
+  mslapi_redis:
+    container_name: mslapi_redis
+    image: redis:6.2
