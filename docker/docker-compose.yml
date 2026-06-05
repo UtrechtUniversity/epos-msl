@@ -18,6 +18,39 @@ volumes:
   ckan_api_key:
 
 services:
+  # Common services - (potentially) shared between CKAN and MSL-API
+  nginx:
+    container_name: nginx
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-nginx:latest
+    environment:
+      - EPOS_MSL_HOST=${EPOS_MSL_HOST}
+      - EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
+      - MTA_ROLE=${MTA_ROLE}
+    ports:
+      - "${EPOS_MSL_HOST_IP}:${EPOS_MSL_HOST_PORT}:443"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
+    volumes:
+      - nginx_config:/etc/nginx/conf.d
+      - ./import-certificates:/etc/import-certificates
+
+  mta:
+    container_name: mta
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-mta:latest
+    environment:
+      -  MTA_ROLE=${MTA_ROLE}
+      -  POSTFIX_RELAYHOST_FQDN=${POSTFIX_RELAYHOST_FQDN}
+      -  POSTFIX_RELAYHOST_PORT=${POSTFIX_RELAYHOST_PORT}
+      -  POSTFIX_RELAYHOST_USERNAME=${POSTFIX_RELAYHOST_USERNAME}
+      -  POSTFIX_RELAYHOST_PASSWORD=${POSTFIX_RELAYHOST_PASSWORD}
+      -  POSTFIX_RELAYHOST_AUTH_ENABLED=${POSTFIX_RELAYHOST_AUTH_ENABLED}
+      -  POSTFIX_RELAYHOST_TLS_ENABLED=${POSTFIX_RELAYHOST_TLS_ENABLED}
+      -  POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}
+      -  POSTFIX_ORIGIN=${POSTFIX_ORIGIN}
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
+
+  # CKAN services
   ckan:
      container_name: ckan
      image: ghcr.io/utrechtuniversity/epos-msl-cat-ckan:latest
@@ -45,21 +78,6 @@ services:
        - ckan_storage:/var/lib/ckan
        - ckan_coveragedata:/coverage
 
-  nginx:
-    container_name: nginx
-    image: ghcr.io/utrechtuniversity/epos-msl-cat-nginx:latest
-    environment:
-      - EPOS_MSL_HOST=${EPOS_MSL_HOST}
-      - EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
-      - MTA_ROLE=${MTA_ROLE}
-    ports:
-      - "${EPOS_MSL_HOST_IP}:${EPOS_MSL_HOST_PORT}:443"
-    sysctls:
-      net.ipv4.ip_unprivileged_port_start: 0
-    volumes:
-      - nginx_config:/etc/nginx/conf.d
-      - ./import-certificates:/etc/import-certificates
-
   db:
     container_name: db
     image: postgres:12.20
@@ -71,13 +89,17 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
-  mslapi_db:
-    container_name: mslapi_db
-    image: mysql:8.0.39-debian
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  solr:
+    container_name: solr
+    image: ghcr.io/utrechtuniversity/epos-msl-cat-solr:latest
     volumes:
-      - mslapi_db_data:/var/lib/mysql
+      - solr_data:/var/solr/data
+
+  redis:
+    container_name: redis
+    image: redis:6.2
+
+  # MSL-API services
 
   # In this Docker Compose setup, the web server container runs both
   # the MSL-API web application and the queue worker.
@@ -101,28 +123,10 @@ services:
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
 
-  solr:
-    container_name: solr
-    image: ghcr.io/utrechtuniversity/epos-msl-cat-solr:latest
-    volumes:
-      - solr_data:/var/solr/data
-
-  redis:
-    container_name: redis
-    image: redis:6.2
-
-  mta:
-    container_name: mta
-    image: ghcr.io/utrechtuniversity/epos-msl-cat-mta:latest
+  mslapi_db:
+    container_name: mslapi_db
+    image: mysql:8.0.39-debian
     environment:
-      -  MTA_ROLE=${MTA_ROLE}
-      -  POSTFIX_RELAYHOST_FQDN=${POSTFIX_RELAYHOST_FQDN}
-      -  POSTFIX_RELAYHOST_PORT=${POSTFIX_RELAYHOST_PORT}
-      -  POSTFIX_RELAYHOST_USERNAME=${POSTFIX_RELAYHOST_USERNAME}
-      -  POSTFIX_RELAYHOST_PASSWORD=${POSTFIX_RELAYHOST_PASSWORD}
-      -  POSTFIX_RELAYHOST_AUTH_ENABLED=${POSTFIX_RELAYHOST_AUTH_ENABLED}
-      -  POSTFIX_RELAYHOST_TLS_ENABLED=${POSTFIX_RELAYHOST_TLS_ENABLED}
-      -  POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}
-      -  POSTFIX_ORIGIN=${POSTFIX_ORIGIN}
-    sysctls:
-      net.ipv4.ip_unprivileged_port_start: 0
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mslapi_db_data:/var/lib/mysql
