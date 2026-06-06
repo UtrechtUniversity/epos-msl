@@ -106,7 +106,7 @@ services:
       -  MATOMO_TOKEN=${MATOMO_TOKEN}
     volumes:
       -  ckan_api_key:/ckan_api_key
-      -  ../../../msl_api_new:/var/www/msl_api
+      -  ./../../msl_api_new:/var/www/msl_api
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data

@@ -48,7 +48,7 @@ Copy the .env file
 cp .env.development .env
 ```
 
-In the .env file, set the following settings to reflect your local setup.
+In the .env (found in the docker directy) file, set the following settings to reflect your local setup.
 Environment setting `WWW_USERID`should contain the UID of the user you work with in WSL. To see this UID run the following command:
 ```
 id -u
@@ -86,7 +86,7 @@ docker compose pull
 
 Then start the Docker Compose setup:
 ```
-docker compose up
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
