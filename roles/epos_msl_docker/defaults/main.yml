@@ -17,6 +17,9 @@ epos_msl_mysql_root_password: testtest
 epos_msl_mslapi_db_password: testtest
 epos_msl_fast_api_token: notokenspecified
 
+epos_msl_development_mode: "False"
+epos_msl_www_userid: 1000
+
 # MTA role can be either "mailpit" or "postfix"
 epos_msl_mta_role: mailpit
 

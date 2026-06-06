@@ -38,6 +38,27 @@ If you use Windows, ensure that core.autocrlf is set to false in your git client
 repository: _git config --global core.autocrlf false_ Otherwise the Docker images may not work due to line
 ending changes.
 
+### Local mount setup
+
+To easily develop locally the development docker compose setup uses a local mount for the msl_api repository. To enable this and other development specific settings a specific development docker compose file is used. Before proceeding with the docker setup the following steps have to be completed:
+
+In the local msl_api checkout
+Copy the .env file 
+```
+cp .env.development .env
+```
+
+In the .env (found in the docker directy) file, set the following settings to reflect your local setup.
+Environment setting `WWW_USERID`should contain the UID of the user you work with in WSL. To see this UID run the following command:
+```
+id -u
+```
+
+In the volumes list your local directory should be mapped to the internal location of msl_api. The default setting is:
+```
+./../../msl_api_new:/var/www/msl_api
+```
+
 ### Building the images
 
 If you want to test any local updates, you need to re-build the images:
@@ -65,7 +86,7 @@ docker compose pull
 
 Then start the Docker Compose setup:
 ```
-docker compose up
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
@@ -157,6 +178,8 @@ The main Ansible configuration parameters are:
 |epos_msl_mysql_root_password            | MySQL root password (MySQL is used for the MSL-API database)         |
 |epos_msl_mslapi_db_password             | MSL-API database password                                            |
 |epos_msl_fast_api_token                 | FastAPI token for MSL-API                                            |
+|epos_msl_development_mode               | Whether to enable development mode (see local mount setup section) - True or False |
+|epos_msl_www_userid                     | UID of local MSL-API development user - only relevant if development mode is enabled |
 |epos_msl_mta_role                       | Type of MTA: use mailpit for local setup; postfix for production     |
 |epos_msl_postfix_relayhost_fqdn         | Postfix relay mail server name                                       |
 |epos_msl_postfix_relayhost_port         | Postfix: TCP port of mail server to use                              |
