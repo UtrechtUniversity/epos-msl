@@ -37,3 +37,5 @@ epos_msl_static_cert_key: notset
 
 epos_msl_admin_account_data: |
   username;email;passwordhash
+
+epos_msl_shared_storage_path: ./shared_storage

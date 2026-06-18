@@ -126,6 +126,7 @@ services:
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
+      -  ${EPOS_MSL_SHARED_STORAGE_PATH}:/var/www/msp_api/storage/app/shared_storage
 
   mslapi_worker:
     container_name: mslapi_worker
@@ -150,6 +151,7 @@ services:
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
+      -  ${EPOS_MSL_SHARED_STORAGE_PATH}:/var/www/msp_api/storage/app/shared_storage
 
   mslapi_db:
     container_name: mslapi_db
