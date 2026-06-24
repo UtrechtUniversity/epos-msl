@@ -75,18 +75,20 @@ FLUSH PRIVILEGES;
 	 fi
          perl -pi.bak -e '$app_url=$ENV{MSLAPI_APP_URL}; s/PUT_APP_URL_HERE/"$app_url"/ge' "/var/www/msl_api/.env"
 
-	 # Import admin account credentials for MSL-API seeder, as configured via Ansible.
-	 if [ -f "/var/msl-api-seed-data/admin-passwd.csv" ]
-	 then cp /var/msl-api-seed-data/admin-passwd.csv /var/www/msl_api/admin-passwd.csv
-	      cd /var/www/msl_api
-	      sudo -u www-data /usr/bin/php8.3 artisan db:seed --force --class=UserSeeder
-         fi
-
          cd /var/www/msl_api
 	 # Initialize the MSL-API application
 	 set -x
 	 sudo -u www-data /usr/bin/php8.3 artisan key:generate
 	 sudo -u www-data /usr/bin/php8.3 artisan config:cache
+	 sudo -u www-data /usr/bin/php8.3 artisan optimize:clear
+
+         # Import admin account credentials for MSL-API seeder, as configured via Ansible.
+         if [ -f "/var/msl-api-seed-data/admin-passwd.csv" ]
+         then cp /var/msl-api-seed-data/admin-passwd.csv /var/www/msl_api/admin-passwd.csv
+              cd /var/www/msl_api
+              sudo -u www-data /usr/bin/php8.3 artisan db:seed --force --class=UserSeeder
+         fi
+
          sudo -u www-data /usr/bin/php8.3 artisan migrate --force
          sudo -u www-data /usr/bin/php8.3 artisan db:seed --force
          sudo -u www-data /usr/bin/php8.3 artisan storage:link
