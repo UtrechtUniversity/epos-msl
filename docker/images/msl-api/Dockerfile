@@ -9,7 +9,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Settings
 
-ENV MSL_API_VERSION=1.11.0
+ENV MSL_API_VERSION=1.11.1
 
 # Set timezone
 ENV TZ=UTC
