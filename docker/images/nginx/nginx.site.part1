@@ -53,4 +53,8 @@ server {
         proxy_cache_key $host$scheme$proxy_host$request_uri;
         # In emergency comment out line to force caching
         # proxy_ignore_headers X-Accel-Expires Expires Cache-Control;
+
+        location ^~ /web.config {
+            return 404;
+        }
     }
