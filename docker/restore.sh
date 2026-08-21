@@ -80,4 +80,8 @@ docker exec -it ckan /bin/bash -c "/usr/lib/ckan/default/bin/ckan -c /etc/ckan/d
 echo "Restarting the application ..."
 docker compose restart
 
+echo "Clearing MSL-API caches ..."
+docker exec mslapi_web /bin/bash -c "cd /var/www/msl_api && php artisan optimize:clear"
+docker exec mslapi_web /bin/bash -c "cd /var/www/msl_api && php artisan config:cache"
+
 echo "Done."
