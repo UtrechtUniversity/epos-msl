@@ -4,7 +4,9 @@
 
 source ./.env
 
-STAGINGDIR="$1"
+set -euo pipefail
+
+STAGINGDIR="${1:-}"
 
 if [ -z "$STAGINGDIR" ]
 then echo "No staging dir provided. Setting it to current working directory."
