@@ -93,12 +93,14 @@ FLUSH PRIVILEGES;
          sudo -u www-data /usr/bin/php8.3 artisan db:seed --force
          sudo -u www-data /usr/bin/php8.3 artisan storage:link
 	 set +x
-	 touch "$SIGNALFILE"
+	 cp /var/www/msl_api/.env "$SIGNALFILE"
     elif [ "$MSLAPI_ROLE" == "QUEUE_WORKER" ]
     then while ! [ -f "$SIGNALFILE" ]
 	 do echo "Waiting for web server to initialize MSL-API application ..."
             sleep 2
 	 done
+	 # Copy the configuration from the web server
+	 cp "$SIGNALFILE" /var/www/msl_api/.env
 	 echo "MSL-API application initialized. Proceeding ..."
     else echo "Error: unknown MSL API role: $MSLAPI_ROLE"
          exit 1
