@@ -29,7 +29,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO public;
 EOF
 
-read -r -d '' RESET_MSLAPI_DB <<'EOF'
+read -r -d '' RESET_MSLAPI_DB <<EOF
 DROP DATABASE mslapi;
 CREATE DATABASE mslapi;
 DROP USER IF EXISTS msl;
