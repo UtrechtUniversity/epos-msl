@@ -44,9 +44,9 @@ set -x
 
 if [ "$CONFIGRESTORE" = 1 ]
 then    echo "Restoring MSL-API local storage and configuration data ..."
-        gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv -C /var/www/msl_api"
+        gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv --anchored --exclude storage/app -C /var/www/msl_api"
 else    echo "Restoring MSL-API local storage (without configuration data) ..."
-	gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv --exclude .env -C /var/www/msl_api"
+	gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv --anchored --exclude storage/app --exclude .env -C /var/www/msl_api"
 fi
 
 echo "Clearing MSL-API caches ..."
