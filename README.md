@@ -49,7 +49,7 @@ cp .env.development .env
 ```
 
 In the .env (found in the docker directy) file, set the following settings to reflect your local setup.
-Environment setting `WWW_USERID`should contain the UID of the user you work with in WSL. To see this UID run the following command:
+Environment setting `WWW_USERID` should contain the UID of the user you work with in WSL. To see this UID run the following command:
 ```
 id -u
 ```
