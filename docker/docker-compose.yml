@@ -100,6 +100,8 @@ services:
       -  MATOMO_HOST=${MATOMO_HOST}
       -  MATOMO_SITE_ID=${MATOMO_SITE_ID}
       -  MATOMO_TOKEN=${MATOMO_TOKEN}
+      -  WWW_USERID=${WWW_USERID}
+      -  DEVELOPMENT_MODE=False
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  mslapi_dir:/var/www/msl_api

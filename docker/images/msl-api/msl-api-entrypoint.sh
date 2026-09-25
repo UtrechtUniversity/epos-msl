@@ -41,6 +41,15 @@ GRANT ALL PRIVILEGES ON mslapi.* TO 'msl'@'%';
 FLUSH PRIVILEGES;
 "
 
+    if [ "$DEVELOPMENT_MODE" == "True" ]
+    then # Initialize the MSL-API testing database
+         mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
+CREATE DATABASE testing;
+GRANT ALL PRIVILEGES ON testing.* TO 'msl'@'%';
+FLUSH PRIVILEGES;
+"
+    fi
+
          # Wait until CKAN API key has been generated, then
          # add it to the config.
          CKAN_API_KEY_FILE="/ckan_api_key/api.key"
@@ -67,6 +76,18 @@ FLUSH PRIVILEGES;
          do echo "Replacing $PARAM in config: value ${!PARAM} ..."
             sed -i "s@${PARAM}_HERE@${!PARAM}@" /var/www/msl_api/.env
          done
+
+	 if [ "$DEVELOPMENT_MODE" == "True" ]
+	 then echo "Development mode active"
+	      cd /var/www/msl_api
+	      # Set uid of www-data to prevent permission issues in WSL mount
+	      sudo usermod -u "$WWW_USERID" www-data
+	      # Reinstall php and node packages due to fresh codebase
+	      sudo -u www-data bash -c '/usr/bin/php8.3 /usr/local/bin/composer2 install'
+	      sudo -u www-data bash -c 'cd /var/www/msl_api && source /var/www/.nvm/nvm.sh && npm install'
+	 else echo "Development mode not active"
+	 fi
+
 
 	 # Configure App URL
 	 if [ "$EPOS_MSL_HOST_PORT" -eq "443" ]
