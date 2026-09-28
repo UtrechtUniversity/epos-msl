@@ -82,9 +82,15 @@ cd docker
 docker compose pull
 ```
 
-Then start the Docker Compose setup:
+
+To start the containers for testing purposes:
 ```
-docker compose -f docker-compose.dev.yml up -d
+docker compose up
+```
+
+To start the containers in development mode:
+```
+docker compose -f docker-compose.dev.yml up
 ```
 
 Then wait until CKAN and MSL-API have started. This may take a couple of minutes. Navigate to
