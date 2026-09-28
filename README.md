@@ -54,10 +54,8 @@ Environment setting `WWW_USERID` should contain the UID of the user you work wit
 id -u
 ```
 
-In the volumes list your local directory should be mapped to the internal location of msl_api. The default setting is:
-```
-./../../msl_api_new:/var/www/msl_api
-```
+If you run the development setup, the path to your local clone of the `msl_api` source code should be configured
+using the `DEV_MSLAPI_DIR` parameter in the `.env` file. The default setting is: `./../../msl_api_new`
 
 ### Building the images
 
