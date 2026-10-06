@@ -72,7 +72,7 @@ FLUSH PRIVILEGES;
 		 /var/www/msl_api/.env
 
          # Configure Matomo parameters
-         for PARAM in TRACKING_ENABLED MATOMO_HOST MATOMO_SITE_ID MATOMO_TOKEN
+         for PARAM in TRACKING_ENABLED MATOMO_HOST MATOMO_SITE_ID MATOMO_TOKEN ALLOW_INDEXING
          do echo "Replacing $PARAM in config: value ${!PARAM} ..."
             sed -i "s@${PARAM}_HERE@${!PARAM}@" /var/www/msl_api/.env
          done

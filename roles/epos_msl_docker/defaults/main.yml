@@ -44,3 +44,5 @@ epos_msl_tracking_enabled: false
 epos_msl_tracking_matomo_host: www.matomo.test
 epos_msl_tracking_matomo_site_id: 1
 epos_msl_tracking_matomo_token: changeme
+
+epos_msl_allow_indexing: "true"
