@@ -55,7 +55,7 @@ id -u
 ```
 
 If you run the development setup, the path to your local clone of the `msl_api` source code should be configured
-using the `DEV_MSLAPI_DIR` parameter in the `.env` file. The default setting is: `./../../msl_api_new`
+using the `DEV_MSLAPI_DIR` parameter in the `.env` file. The default setting is: `./../../msl_api`
 
 ### Building the images
 

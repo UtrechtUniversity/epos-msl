@@ -53,11 +53,13 @@ FLUSH PRIVILEGES;
          # Wait until CKAN API key has been generated, then
          # add it to the config.
          CKAN_API_KEY_FILE="/ckan_api_key/api.key"
-         while ! [ -f "$CKAN_API_KEY_FILE" ]
+         while ! [ -s "$CKAN_API_KEY_FILE" ]
          do echo "Waiting for CKAN API key to be available ..."
                  sleep 1
          done
          export CKAN_API_KEY=$(cat "$CKAN_API_KEY_FILE")
+        
+
          perl -pi.bak -e '$ckan_api_key=$ENV{CKAN_API_KEY}; s/PUT_API_TOKEN_HERE/"$ckan_api_key"/ge' "/var/www/msl_api/.env"
 
 	 # Also configure the FAST-API key, which is passed via an environment variable
