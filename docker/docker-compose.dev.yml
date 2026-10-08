@@ -104,6 +104,7 @@ services:
       -  MATOMO_HOST=${MATOMO_HOST}
       -  MATOMO_SITE_ID=${MATOMO_SITE_ID}
       -  MATOMO_TOKEN=${MATOMO_TOKEN}
+      -  ALLOW_INDEXING=false
     volumes:
       -  ckan_api_key:/ckan_api_key
       -  ${DEV_MSLAPI_DIR}:/var/www/msl_api

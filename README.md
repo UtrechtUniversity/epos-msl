@@ -201,6 +201,7 @@ The main Ansible configuration parameters are:
 |epos_msl_tracking_matomo_host           | Hostname of Matomo server for page view tracking                     |
 |epos_msl_tracking_matomo_site_id        | Site ID of EPOS-MSL catalog in Matomo (default 1)                    |
 |epos_msl_tracking_matomo_token          | API token for Matomo                                                 |
+|epos_msl_allow_indexing                 | Whether to tell crawlers that indexing catalog contents is permitted ("true"/"false", default: "true") |
 
 ## License
 
