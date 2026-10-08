@@ -53,7 +53,7 @@ FLUSH PRIVILEGES;
          # Wait until CKAN API key has been generated, then
          # add it to the config.
          CKAN_API_KEY_FILE="/ckan_api_key/api.key"
-         while ! [ -f "$CKAN_API_KEY_FILE" ]
+         while ! [ -s "$CKAN_API_KEY_FILE" ]
          do echo "Waiting for CKAN API key to be available ..."
                  sleep 1
          done
