@@ -9,6 +9,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Settings
 
+ENV PHP_VERSION=8.5
 ENV MSL_API_VERSION=1.12.2
 
 # Set timezone
@@ -41,16 +42,16 @@ RUN apt-get -q -y update \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
     && apt-get -q -y install \
-       php8.3 \
-       php8.3-bcmath \
-       php8.3-common \
-       php8.3-curl \
-       php8.3-fpm \
-       php8.3-gd \
-       php8.3-mbstring \
-       php8.3-mysql \
-       php8.3-xml \
-       php8.3-zip \
+       php${PHP_VERSION} \
+       php${PHP_VERSION}-bcmath \
+       php${PHP_VERSION}-common \
+       php${PHP_VERSION}-curl \
+       php${PHP_VERSION}-fpm \
+       php${PHP_VERSION}-gd \
+       php${PHP_VERSION}-mbstring \
+       php${PHP_VERSION}-mysql \
+       php${PHP_VERSION}-xml \
+       php${PHP_VERSION}-zip \
        mysql-client \
        supervisor \
     && apt-get -q clean \
@@ -85,11 +86,11 @@ RUN cd /var/www && \
     chown -R www-data:www-data .
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env
-ADD php.ini /etc/php/8.3/fpm/php.ini
+ADD php.ini /etc/php/${PHP_VERSION}/fpm/php.ini
 ADD supervisord.conf /var/www/msl-api-supervisord.conf
 ADD supervisord-webserver-only.conf /var/www/msl-api-supervisord-webserver-only.conf
 RUN cd /var/www/msl_api && \
-    /usr/bin/php8.3 /usr/local/bin/composer2 install --no-dev && \
+    /usr/bin/php${PHP_VERSION} /usr/local/bin/composer2 install --no-dev && \
     source /var/www/.nvm/nvm.sh  && \
     npm install && \
     npm run build
