@@ -40,17 +40,18 @@ RUN apt-get -q -y update \
        vim \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
+    && apt satisfy -y --no-install-recommends \
+       "php8.3 (>= 8.3.36)" \
+       "php8.3-bcmath (>= 8.3.36)" \
+       "php8.3-common (>= 8.3.36)" \
+       "php8.3-curl (>= 8.3.36)" \
+       "php8.3-fpm (>= 8.3.36)" \
+       "php8.3-gd (>= 8.3.36)" \
+       "php8.3-mbstring (>= 8.3.36)" \
+       "php8.3-mysql (>= 8.3.36)" \
+       "php8.3-xml (>= 8.3.36)" \
+       "php8.3-zip (>= 8.3.36)" \
     && apt-get -q -y install \
-       php8.3 \
-       php8.3-bcmath \
-       php8.3-common \
-       php8.3-curl \
-       php8.3-fpm \
-       php8.3-gd \
-       php8.3-mbstring \
-       php8.3-mysql \
-       php8.3-xml \
-       php8.3-zip \
        mysql-client \
        supervisor \
     && apt-get -q clean \
