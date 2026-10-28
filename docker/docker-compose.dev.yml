@@ -30,7 +30,7 @@ services:
        - solr
        - redis
      ports:
-       - "5000"
+       - "8080"
      environment:
        - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan_default
        - CKAN_SOLR_URL=http://solr:8983/solr/ckan
