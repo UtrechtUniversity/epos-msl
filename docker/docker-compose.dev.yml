@@ -89,7 +89,7 @@ services:
     container_name: mslapi_web
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
     ports:
-      - "80"
+      - "8000:80"
     environment:
       -  WWW_USERID=${WWW_USERID}
       -  DEVELOPMENT_MODE=True
