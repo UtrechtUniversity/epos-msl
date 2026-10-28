@@ -26,7 +26,7 @@ RUN update-locale LANG=${LC_ALL}
 # Install required system packages
 USER root
 ENV COMPOSER_VERSION=2.5.4
-RUN apt-get -q -y update \
+RUN    apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
     && apt-get -q -y install \
        nginx \
@@ -49,6 +49,7 @@ RUN apt-get -q -y update \
        "php8.3-gd (>= 8.3.36)" \
        "php8.3-mbstring (>= 8.3.36)" \
        "php8.3-mysql (>= 8.3.36)" \
+       "php8.3-redis (>= 6.3.0)" \
        "php8.3-xml (>= 8.3.36)" \
        "php8.3-zip (>= 8.3.36)" \
     && apt-get -q -y install \
@@ -75,6 +76,9 @@ RUN rm /etc/nginx/sites-enabled/default
 
 ADD update-api-token.sh /update-api-token.sh
 RUN chmod +x /update-api-token.sh
+
+ADD configure-redis.sh /configure-redis.sh
+RUN chmod +x /configure-redis.sh
 
 ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh

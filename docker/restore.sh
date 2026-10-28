@@ -49,6 +49,9 @@ else    echo "Restoring MSL-API local storage (without configuration data) ..."
 	gunzip -c "${STAGINGDIR}/msl-api-data.tar.gz" | docker exec -i mslapi_web /bin/bash -c "tar xv --anchored --exclude storage/app --exclude .env -C /var/www/msl_api"
 fi
 
+echo "Ensuring MSL-API uses Redis for its queue and cache ..."
+docker exec -u www-data mslapi_web /configure-redis.sh
+
 echo "Clearing MSL-API caches ..."
 docker exec mslapi_web /bin/bash -c "cd /var/www/msl_api && php artisan optimize:clear"
 docker exec mslapi_web /bin/bash -c "cd /var/www/msl_api && php artisan config:cache"

@@ -23,8 +23,9 @@ check_port() {
     done
 }
 
-## Check DB up
+## Check DB and Redis up
 check_port mslapi_db 3306
+check_port mslapi_redis 6379
 
 # The web server container initializes the database and application
 # The queue worker container waits for the web server to finish initialization
@@ -124,6 +125,15 @@ FLUSH PRIVILEGES;
     else echo "Error: unknown MSL API role: $MSLAPI_ROLE"
          exit 1
     fi
+fi
+
+# Ensure Redis is used for the queue and cache, also for existing installations whose
+# .env file predates the Redis setup. The queue worker uses the same application
+# directory, so it picks up this configuration as well.
+if [ "$MSLAPI_ROLE" == "WEBSERVER" ] || [ "$MSLAPI_ROLE" == "BOTH" ]
+then echo "Configuring Redis settings ..."
+     sudo -u www-data MSLAPI_QUEUE_RETRY_AFTER="$MSLAPI_QUEUE_RETRY_AFTER" /configure-redis.sh
+     sudo -u www-data bash -c 'cd /var/www/msl_api && /usr/bin/php8.3 artisan config:cache'
 fi
 
 # We are rebuilding front-end code here because it currently needs to be rebuilt after
