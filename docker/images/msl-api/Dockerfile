@@ -26,7 +26,7 @@ RUN update-locale LANG=${LC_ALL}
 # Install required system packages
 USER root
 ENV COMPOSER_VERSION=2.5.4
-RUN apt-get -q -y update \
+RUN    apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
     && apt-get -q -y install \
        nginx \
@@ -40,6 +40,12 @@ RUN apt-get -q -y update \
        vim \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
+    && install -d /usr/share/postgresql-common/pgdg \
+    && curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+       https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt jammy-pgdg main" \
+       > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get -q -y update \
     && apt satisfy -y --no-install-recommends \
        "php8.3 (>= 8.3.36)" \
        "php8.3-bcmath (>= 8.3.36)" \
@@ -48,11 +54,12 @@ RUN apt-get -q -y update \
        "php8.3-fpm (>= 8.3.36)" \
        "php8.3-gd (>= 8.3.36)" \
        "php8.3-mbstring (>= 8.3.36)" \
-       "php8.3-mysql (>= 8.3.36)" \
+       "php8.3-pgsql (>= 8.3.36)" \
+       "php8.3-redis (>= 6.3.0)" \
        "php8.3-xml (>= 8.3.36)" \
        "php8.3-zip (>= 8.3.36)" \
     && apt-get -q -y install \
-       mysql-client \
+       postgresql-client-18 \
        supervisor \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -75,6 +82,12 @@ RUN rm /etc/nginx/sites-enabled/default
 
 ADD update-api-token.sh /update-api-token.sh
 RUN chmod +x /update-api-token.sh
+
+ADD configure-redis.sh /configure-redis.sh
+RUN chmod +x /configure-redis.sh
+
+ADD configure-database.sh /configure-database.sh
+RUN chmod +x /configure-database.sh
 
 ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh
