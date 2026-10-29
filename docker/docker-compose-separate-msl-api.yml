@@ -12,8 +12,8 @@ volumes:
   solr_data:
   nginx_config:
   mslapi_db_data:
-  mslapi_webserver_env:
-  mslapi_worker_env:
+  mslapi_redis_data:
+  mslapi_dir:
   mslapi_signal:
   mslapi_storage:
   ckan_api_key:
@@ -48,6 +48,8 @@ services:
   nginx:
     container_name: nginx
     image: ghcr.io/utrechtuniversity/epos-msl-cat-nginx:latest
+    depends_on:
+      - mslapi_webserver
     environment:
       - EPOS_MSL_HOST=${EPOS_MSL_HOST}
       - EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
@@ -79,17 +81,23 @@ services:
     volumes:
       - mslapi_db_data:/var/lib/mysql
 
+  # The web server and queue worker share the application directory, so that they
+  # use the same configuration and local storage. Jobs are passed via Redis.
   mslapi_webserver:
     container_name: mslapi_web
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    depends_on:
+      - mslapi_db
+      - mslapi_redis
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=WEBSERVER
-      -  FAST_API_TOKEN=${FAST_API_TOKEN}
+      -  MSLAPI_QUEUE_RETRY_AFTER=${MSLAPI_QUEUE_RETRY_AFTER:-660}
+      -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
-      -  MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+      -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
       -  TRACKING_ENABLED=${TRACKING_ENABLED}
       -  MATOMO_HOST=${MATOMO_HOST}
       -  MATOMO_SITE_ID=${MATOMO_SITE_ID}
@@ -101,7 +109,7 @@ services:
       - "80"
     volumes:
       -  ckan_api_key:/ckan_api_key
-      -  mslapi_webserver_env:/var/www/msl_api/.env
+      -  mslapi_dir:/var/www/msl_api
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
@@ -109,6 +117,10 @@ services:
   mslapi_worker:
     container_name: mslapi_worker
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    depends_on:
+      - mslapi_db
+      - mslapi_redis
+      - mslapi_webserver
     environment:
       -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       -  MSLAPI_ROLE=QUEUE_WORKER
@@ -126,10 +138,17 @@ services:
       -  ALLOW_INDEXING=${ALLOW_INDEXING}
     volumes:
       -  ckan_api_key:/ckan_api_key
-      -  mslapi_worker_env:/var/www/msl_api/.env
+      -  mslapi_dir:/var/www/msl_api
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
+
+  mslapi_redis:
+    container_name: mslapi_redis
+    image: redis:6.2
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - mslapi_redis_data:/data
 
   solr:
     container_name: solr

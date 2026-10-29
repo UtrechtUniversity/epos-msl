@@ -128,6 +128,15 @@ self-signed certificates, so you'll need to accept the security warning in your 
 
 ## MSL-API operations
 
+### Queue worker
+
+MSL-API uses Redis (container `mslapi_redis`) for its job queue and cache. By default (`docker-compose.yml`),
+the MSL-API web server and queue worker run in the same container (`mslapi_web`). The alternative setup in
+`docker-compose-separate-msl-api.yml` runs the queue worker in a separate container (`mslapi_worker`). Both
+containers share the MSL-API application directory, including its configuration and local storage.
+When deploying with Ansible, the separate setup can be enabled using the `epos_msl_mslapi_separate_worker`
+parameter.
+
 ### Seeding test admin panel account(s)
 
 The MSL-API component contains a specific seeder for adding admin accounts. The account credentials can be
@@ -202,6 +211,8 @@ The main Ansible configuration parameters are:
 |epos_msl_tracking_matomo_site_id        | Site ID of EPOS-MSL catalog in Matomo (default 1)                    |
 |epos_msl_tracking_matomo_token          | API token for Matomo                                                 |
 |epos_msl_allow_indexing                 | Whether to tell crawlers that indexing catalog contents is permitted ("true"/"false", default: "true") |
+|epos_msl_mslapi_separate_worker         | Whether to run the MSL-API queue worker in a separate container (default: false) |
+|epos_msl_mslapi_queue_retry_after       | Seconds after which MSL-API retries a queued job that is still being processed. Should be larger than the longest job timeout of 600 seconds (default: 660) |
 
 ## License
 
