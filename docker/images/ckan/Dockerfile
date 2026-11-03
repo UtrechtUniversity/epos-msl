@@ -98,7 +98,6 @@ RUN ckan-pip3 install -U pip==26.0.1 && \
     ckan-pip3 install -e "ckanext-msl_ckan @ git+https://github.com/UtrechtUniversity/msl_ckan_core@${CKAN_MSL_CORE_VERSION}" && \
     ckan-pip3 install -e "ckanext-msl_ckan_util @ git+https://github.com/UtrechtUniversity/msl_ckan_util@${CKAN_MSL_UTIL_VERSION}" && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
-    chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH $COVERAGE_DIR && \
     rm /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
     ln -sf /usr/lib/ckan/default/src/ckanext-msl-ckan/ckanext/msl_ckan/config/solr/schema.xml /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml && \
     perl -n -i.bak -e 'print unless /defaultSearchField/ or /solrQueryParser/' /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml
