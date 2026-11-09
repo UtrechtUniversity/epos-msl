@@ -26,7 +26,7 @@ RUN update-locale LANG=${LC_ALL}
 
 # Install required system packages
 USER root
-ENV COMPOSER_VERSION=2.5.4
+ENV COMPOSER_VERSION=2.11.1
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
     && apt-get -q -y install \

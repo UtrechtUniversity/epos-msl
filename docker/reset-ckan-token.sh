@@ -19,4 +19,4 @@ docker exec -it ckan /bin/bash -c '/usr/lib/ckan/default/bin/ckan -c /etc/ckan/d
 docker exec -it mslapi_web /bin/bash -c '/update-api-token.sh $(cat /ckan_api_key/api.key)'
 
 ## Reload MSL-API configuration
-docker exec -it mslapi_web /bin/bash -c 'cd /var/www/msl_api ; sudo -u www-data /usr/bin/php8.3 artisan config:clear'
+docker exec -it mslapi_web /bin/bash -c 'cd /var/www/msl_api ; sudo -u www-data /usr/bin/php8.5 artisan config:clear'

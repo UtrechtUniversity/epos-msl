@@ -83,8 +83,8 @@ FLUSH PRIVILEGES;
 	      # Set uid of www-data to prevent permission issues in WSL mount
 	      sudo usermod -u "$WWW_USERID" www-data
 	      # Reinstall php and node packages due to fresh codebase
-	      sudo -u www-data bash -c '/usr/bin/php8.3 /usr/local/bin/composer2 install'
-	      sudo -u www-data bash -c 'cd /var/www/msl_api && source /var/www/.nvm/nvm.sh && npm install'
+	      sudo -u www-data bash -c "/usr/bin/php${PHP_VERSION} /usr/local/bin/composer2 install"
+	      sudo -u www-data bash -c "cd /var/www/msl_api && source /var/www/.nvm/nvm.sh && npm install"
 	 else echo "Development mode not active"
 	 fi
 
@@ -99,20 +99,20 @@ FLUSH PRIVILEGES;
          cd /var/www/msl_api
 	 # Initialize the MSL-API application
 	 set -x
-	 sudo -u www-data /usr/bin/php8.3 artisan key:generate
-	 sudo -u www-data /usr/bin/php8.3 artisan config:cache
-	 sudo -u www-data /usr/bin/php8.3 artisan optimize:clear
+	 sudo -u www-data /usr/bin/php${PHP_VERSION} artisan key:generate
+	 sudo -u www-data /usr/bin/php${PHP_VERSION} artisan config:cache
+	 sudo -u www-data /usr/bin/php${PHP_VERSION} artisan optimize:clear
 
          # Import admin account credentials for MSL-API seeder, as configured via Ansible.
          if [ -f "/var/msl-api-seed-data/admin-passwd.csv" ]
          then cp /var/msl-api-seed-data/admin-passwd.csv /var/www/msl_api/admin-passwd.csv
               cd /var/www/msl_api
-              sudo -u www-data /usr/bin/php8.3 artisan db:seed --force --class=UserSeeder
+              sudo -u www-data /usr/bin/php${PHP_VERSION} artisan db:seed --force --class=UserSeeder
          fi
 
-         sudo -u www-data /usr/bin/php8.3 artisan migrate --force
-         sudo -u www-data /usr/bin/php8.3 artisan db:seed --force
-         sudo -u www-data /usr/bin/php8.3 artisan storage:link
+         sudo -u www-data /usr/bin/php${PHP_VERSION} artisan migrate --force
+         sudo -u www-data /usr/bin/php${PHP_VERSION} artisan db:seed --force
+         sudo -u www-data /usr/bin/php${PHP_VERSION} artisan storage:link
 	 set +x
 	 touch "$SIGNALFILE"
     elif [ "$MSLAPI_ROLE" == "QUEUE_WORKER" ]
@@ -139,7 +139,7 @@ fi
 if [ "$MSLAPI_ROLE" == "QUEUE_WORKER" ]
 then while true
      do echo "Starting MSL-API queue worker ..."
-	sudo -u www-data /usr/bin/php8.3 /var/www/msl_api/artisan queue:work  --rest=1 --tries=3 --timeout=300
+	sudo -u www-data /usr/bin/php${PHP_VERSION}  /var/www/msl_api/artisan queue:work  --rest=1 --tries=3 --timeout=300
 	sleep 3
 	echo "Restarting queue worker after exit..."
      done

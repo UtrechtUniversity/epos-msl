@@ -16,7 +16,7 @@ server {
 	try_files /index.php =404;
         root /var/www/msl_api/public;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.5-fpm.sock;
         fastcgi_index index.php;
 
         include fastcgi_params;
@@ -28,7 +28,7 @@ server {
         try_files /index.php =404;
         root /var/www/msl_api/public;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.5-fpm.sock;
         fastcgi_index index.php;
 
         include fastcgi_params;
