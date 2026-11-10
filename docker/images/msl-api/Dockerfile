@@ -11,6 +11,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV PHP_VERSION=8.5
 ENV MSL_API_VERSION=1.12.2
+ENV NPM_VERSION=12.2.0
 
 # Set timezone
 ENV TZ=UTC
@@ -54,6 +55,7 @@ RUN apt-get -q -y update \
        php${PHP_VERSION}-zip \
        mysql-client \
        supervisor \
+       libatomic1 \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
     && wget "https://getcomposer.org/download/$COMPOSER_VERSION/composer.phar" \
@@ -65,9 +67,11 @@ RUN chown www-data /var/www && \
     chmod +x  /var/www/.bash_profile&& \
     chsh www-data -s /bin/bash
 USER www-data
-RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && \
+RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash && \
     source /var/www/.nvm/nvm.sh && \
-    nvm install v18
+    nvm install v26 && \
+    npm install -g npm@${NPM_VERSION} 
+
 
 USER root
 ADD msl-api.site /etc/nginx/sites-enabled/msl-api
