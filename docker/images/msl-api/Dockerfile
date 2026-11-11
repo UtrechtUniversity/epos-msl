@@ -11,6 +11,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV PHP_VERSION=8.5
 ENV MSL_API_VERSION=1.12.2
+ENV NVM_VERSION=0.41.0
 ENV NPM_VERSION=12.2.0
 
 # Set timezone
@@ -67,7 +68,7 @@ RUN chown www-data /var/www && \
     chmod +x  /var/www/.bash_profile&& \
     chsh www-data -s /bin/bash
 USER www-data
-RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash && \
+RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash && \
     source /var/www/.nvm/nvm.sh && \
     nvm install v26 && \
     npm install -g npm@${NPM_VERSION} 
