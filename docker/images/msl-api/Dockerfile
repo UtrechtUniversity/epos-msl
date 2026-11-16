@@ -44,16 +44,20 @@ RUN apt-get -q -y update \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
     && apt-get -q -y install \
-       php${PHP_VERSION} \
-       php${PHP_VERSION}-bcmath \
-       php${PHP_VERSION}-common \
-       php${PHP_VERSION}-curl \
-       php${PHP_VERSION}-fpm \
-       php${PHP_VERSION}-gd \
-       php${PHP_VERSION}-mbstring \
-       php${PHP_VERSION}-mysql \
-       php${PHP_VERSION}-xml \
-       php${PHP_VERSION}-zip \
+       mysql-client \
+       supervisor \
+       libatomic1 \
+    && apt satisfy -y --no-install-recommends \
+       "php${PHP_VERSION} (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-bcmath (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-common (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-curl (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-fpm (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-gd (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-mbstring (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-mysql (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-xml (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-zip (>= ${PHP_MIN_MINOR_VERSION})" \
        mysql-client \
        supervisor \
        libatomic1 \
