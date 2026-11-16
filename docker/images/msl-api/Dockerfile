@@ -71,7 +71,7 @@ USER www-data
 RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash && \
     source /var/www/.nvm/nvm.sh && \
     nvm install v26 && \
-    npm install -g npm@${NPM_VERSION} 
+    npm install -g npm@${NPM_VERSION}
 
 
 USER root
