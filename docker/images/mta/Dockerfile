@@ -28,7 +28,7 @@ RUN apt -y install curl golang git libatomic1
 RUN   curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash && \
     source /root/.nvm/nvm.sh && \
     nvm install v26 && \
-    npm install -g npm@${NPM_VERSION} 
+    npm install -g npm@${NPM_VERSION}
 
 
 ### Install Mailpit
