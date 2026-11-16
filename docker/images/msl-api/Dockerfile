@@ -58,9 +58,6 @@ RUN apt-get -q -y update \
        "php${PHP_VERSION}-mysql (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-xml (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-zip (>= ${PHP_MIN_MINOR_VERSION})" \
-       mysql-client \
-       supervisor \
-       libatomic1 \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
     && wget "https://getcomposer.org/download/$COMPOSER_VERSION/composer.phar" \
