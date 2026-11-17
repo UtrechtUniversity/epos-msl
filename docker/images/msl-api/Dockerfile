@@ -9,7 +9,14 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Settings
 
+# Note that the PHP version is also hard-coded in the following files:
+# - msl-api.site
+# - reset-ckan-token.sh
+# - supervisord.conf
+# - supervisord-webserver-only.conf
 ENV PHP_VERSION=8.5
+# Minimum patch release of PHP
+ENV PHP_MIN_MINOR_VERSION=8.5.12
 ENV MSL_API_VERSION=1.12.2
 ENV NVM_VERSION=0.41.0
 ENV NPM_VERSION=12.2.2
