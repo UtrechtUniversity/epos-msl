@@ -1,6 +1,6 @@
 # Image for Nginx reverse proxy configured for CKAN
 
-FROM nginx:1.27
+FROM nginx:1.31.9
 LABEL org.opencontainers.image.authors="Yoda team"
 
 RUN apt update && \
