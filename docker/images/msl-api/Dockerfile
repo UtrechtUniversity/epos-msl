@@ -9,17 +9,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Settings
 
-# Note that the PHP version is also hard-coded in the following files:
-# - msl-api.site
-# - reset-ckan-token.sh
-# - supervisord.conf
-# - supervisord-webserver-only.conf
-ENV PHP_VERSION=8.5
-# Minimum patch release of PHP
-ENV PHP_MIN_MINOR_VERSION=8.5.12
 ENV MSL_API_VERSION=1.12.2
-ENV NVM_VERSION=0.41.0
-ENV NPM_VERSION=12.2.2
 
 # Set timezone
 ENV TZ=UTC
@@ -35,7 +25,7 @@ RUN update-locale LANG=${LC_ALL}
 
 # Install required system packages
 USER root
-ENV COMPOSER_VERSION=2.11.1
+ENV COMPOSER_VERSION=2.5.4
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
     && apt-get -q -y install \
@@ -64,18 +54,6 @@ RUN apt-get -q -y update \
     && apt-get -q -y install \
        mysql-client \
        supervisor \
-       libatomic1 \
-    && apt satisfy -y --no-install-recommends \
-       "php${PHP_VERSION} (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-bcmath (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-common (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-curl (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-fpm (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-gd (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-mbstring (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-mysql (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-xml (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-zip (>= ${PHP_MIN_MINOR_VERSION})" \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/* \
     && wget "https://getcomposer.org/download/$COMPOSER_VERSION/composer.phar" \
@@ -87,11 +65,9 @@ RUN chown www-data /var/www && \
     chmod +x  /var/www/.bash_profile&& \
     chsh www-data -s /bin/bash
 USER www-data
-RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash && \
+RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && \
     source /var/www/.nvm/nvm.sh && \
-    nvm install v26 && \
-    npm install -g npm@${NPM_VERSION}
-
+    nvm install v18
 
 USER root
 ADD msl-api.site /etc/nginx/sites-enabled/msl-api
@@ -110,11 +86,11 @@ RUN cd /var/www && \
     chown -R www-data:www-data .
 USER www-data
 ADD msl-api.env /var/www/msl_api/.env
-ADD php.ini /etc/php/${PHP_VERSION}/fpm/php.ini
+ADD php.ini /etc/php/8.3/fpm/php.ini
 ADD supervisord.conf /var/www/msl-api-supervisord.conf
 ADD supervisord-webserver-only.conf /var/www/msl-api-supervisord-webserver-only.conf
 RUN cd /var/www/msl_api && \
-    /usr/bin/php${PHP_VERSION} /usr/local/bin/composer2 install --no-dev && \
+    /usr/bin/php8.3 /usr/local/bin/composer2 install --no-dev && \
     source /var/www/.nvm/nvm.sh  && \
     npm install && \
     npm run build

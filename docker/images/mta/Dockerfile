@@ -5,7 +5,6 @@ FROM ubuntu:noble
 LABEL org.opencontainers.image.authors="Yoda team"
 
 ENV MAILPIT_VERSION=v1.21.8
-ENV NPM_VERSION=12.2.2
 
 # Need bash to get nvm/npm to work with default init files
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -23,13 +22,10 @@ RUN dpkg-reconfigure --frontend=noninteractive locales
 RUN update-locale LANG=${LC_ALL}
 
 # Install common dependencies
-RUN apt update
-RUN apt -y install curl golang git libatomic1
-RUN   curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash && \
+RUN apt -y install curl golang git && \
+    curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && \
     source /root/.nvm/nvm.sh && \
-    nvm install v26 && \
-    npm install -g npm@${NPM_VERSION}
-
+    nvm install v18
 
 ### Install Mailpit
 RUN cd / && \
