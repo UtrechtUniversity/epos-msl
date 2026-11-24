@@ -69,7 +69,8 @@ RUN apt-get -q -y update \
        "php${PHP_VERSION}-fpm (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-gd (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-mbstring (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-mysql (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-pgsql (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-redis (>= 6.3.0)" \
        "php${PHP_VERSION}-xml (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-zip (>= ${PHP_MIN_MINOR_VERSION})" \
     && apt-get -q clean \
