@@ -23,8 +23,36 @@ check_port() {
     done
 }
 
-## Check DB up
-check_port mslapi_db 3306
+## Check DB and Redis up
+check_port mslapi_db 5432
+check_port mslapi_redis 6379
+
+# Ensure the MSL-API database and database user exist. This is idempotent, so that
+# it also works for existing installations and after the database volume has been
+# recreated. The password of the database user is (re)set to MSLAPI_DB_PASSWORD.
+setup_database() {
+    local dbname="$1"
+    echo "Ensuring MSL-API database $dbname exists ..."
+    PGPASSWORD="$MSLAPI_DB_ADMIN_PASSWORD" psql -h mslapi_db -U postgres -d postgres \
+        -v ON_ERROR_STOP=1 -v pw="$MSLAPI_DB_PASSWORD" -v dbname="$dbname" <<'EOF'
+SELECT 'CREATE ROLE msl LOGIN' WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'msl')\gexec
+ALTER ROLE msl WITH LOGIN PASSWORD :'pw';
+SELECT format('CREATE DATABASE %I OWNER msl', :'dbname') WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = :'dbname')\gexec
+EOF
+}
+
+if [ "$MSLAPI_ROLE" == "WEBSERVER" ] || [ "$MSLAPI_ROLE" == "BOTH" ]
+then setup_database mslapi
+     if [ "$DEVELOPMENT_MODE" == "True" ]
+     then # Testing database for the MSL-API test suite
+          setup_database testing
+     else # Remove the MSL-API production env, because otherwise it would
+	  # take priority and overwrite the database configuration we're
+	  # setting here, which would result in MSL-API failing to communicate
+	  # with its database.
+	  rm /var/www/msl_api/.env.production
+     fi
+fi
 
 # The web server container initializes the database and application
 # The queue worker container waits for the web server to finish initialization
@@ -33,24 +61,7 @@ if [ -f "$SIGNALFILE" ]
 then echo "MSL-API already initialized. Proceeding with starting $MSLAPI_ROLE ..."
 else
     if [ "$MSLAPI_ROLE" == "WEBSERVER" ] || [ "$MSLAPI_ROLE" == "BOTH" ]
-    then # Initialize the MSL-API database
-	 mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
-CREATE DATABASE mslapi;
-CREATE USER 'msl'@'%' IDENTIFIED BY '$MSLAPI_DB_PASSWORD';
-GRANT ALL PRIVILEGES ON mslapi.* TO 'msl'@'%';
-FLUSH PRIVILEGES;
-"
-
-    if [ "$DEVELOPMENT_MODE" == "True" ]
-    then # Initialize the MSL-API testing database
-         mysql -u root "-p$MYSQL_ROOT_PASSWORD" -h mslapi_db -e "
-CREATE DATABASE testing;
-GRANT ALL PRIVILEGES ON testing.* TO 'msl'@'%';
-FLUSH PRIVILEGES;
-"
-    fi
-
-         # Wait until CKAN API key has been generated, then
+    then # Wait until CKAN API key has been generated, then
          # add it to the config.
          CKAN_API_KEY_FILE="/ckan_api_key/api.key"
          while ! [ -s "$CKAN_API_KEY_FILE" ]
@@ -64,7 +75,7 @@ FLUSH PRIVILEGES;
 	 perl -pi.bak -e '$fast_api_token=$ENV{MSLAPI_FAST_API_TOKEN}; s/PUT_FASTAPI_TOKEN_HERE/"$fast_api_token"/ge' "/var/www/msl_api/.env"
 
 	 # Configure MSL-API DB password here
-	 perl -pi.bak -e '$mslapi_db_password=$ENV{MSLAPI_DB_PASSWORD}; s/PUT_MYSQL_PASSWORD_HERE/"$mslapi_db_password"/ge' \
+	 perl -pi.bak -e '$mslapi_db_password=$ENV{MSLAPI_DB_PASSWORD}; s/PUT_DB_PASSWORD_HERE/"$mslapi_db_password"/ge' \
 		 "/var/www/msl_api/.env"
 
 	 # Configure email sender address
@@ -124,6 +135,18 @@ FLUSH PRIVILEGES;
     else echo "Error: unknown MSL API role: $MSLAPI_ROLE"
          exit 1
     fi
+fi
+
+# Ensure PostgreSQL is used for the database and Redis for the queue and cache, also
+# for existing installations whose .env file predates the PostgreSQL or Redis setup.
+# The queue worker uses the same application directory, so it picks up this
+# configuration as well.
+if [ "$MSLAPI_ROLE" == "WEBSERVER" ] || [ "$MSLAPI_ROLE" == "BOTH" ]
+then echo "Configuring database settings ..."
+     sudo -u www-data /configure-database.sh
+     echo "Configuring Redis settings ..."
+     sudo -u www-data MSLAPI_QUEUE_RETRY_AFTER="$MSLAPI_QUEUE_RETRY_AFTER" /configure-redis.sh
+     sudo -u www-data bash -c 'cd /var/www/msl_api && /usr/bin/php8.3 artisan config:cache'
 fi
 
 # We are rebuilding front-end code here because it currently needs to be rebuilt after

@@ -35,6 +35,7 @@ RUN update-locale LANG=${LC_ALL}
 
 # Install required system packages
 USER root
+
 ENV COMPOSER_VERSION=2.11.1
 RUN apt-get -q -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
@@ -50,19 +51,14 @@ RUN apt-get -q -y update \
        vim \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
-    && apt satisfy -y --no-install-recommends \
-       "php8.3 (>= 8.3.36)" \
-       "php8.3-bcmath (>= 8.3.36)" \
-       "php8.3-common (>= 8.3.36)" \
-       "php8.3-curl (>= 8.3.36)" \
-       "php8.3-fpm (>= 8.3.36)" \
-       "php8.3-gd (>= 8.3.36)" \
-       "php8.3-mbstring (>= 8.3.36)" \
-       "php8.3-mysql (>= 8.3.36)" \
-       "php8.3-xml (>= 8.3.36)" \
-       "php8.3-zip (>= 8.3.36)" \
+    && install -d /usr/share/postgresql-common/pgdg \
+    && curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+       https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt jammy-pgdg main" \
+       > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get -q -y update \
     && apt-get -q -y install \
-       mysql-client \
+       postgresql-client-18 \
        supervisor \
        libatomic1 \
     && apt satisfy -y --no-install-recommends \
@@ -73,7 +69,8 @@ RUN apt-get -q -y update \
        "php${PHP_VERSION}-fpm (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-gd (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-mbstring (>= ${PHP_MIN_MINOR_VERSION})" \
-       "php${PHP_VERSION}-mysql (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-pgsql (>= ${PHP_MIN_MINOR_VERSION})" \
+       "php${PHP_VERSION}-redis (>= 6.3.0)" \
        "php${PHP_VERSION}-xml (>= ${PHP_MIN_MINOR_VERSION})" \
        "php${PHP_VERSION}-zip (>= ${PHP_MIN_MINOR_VERSION})" \
     && apt-get -q clean \
@@ -99,6 +96,12 @@ RUN rm /etc/nginx/sites-enabled/default
 
 ADD update-api-token.sh /update-api-token.sh
 RUN chmod +x /update-api-token.sh
+
+ADD configure-redis.sh /configure-redis.sh
+RUN chmod +x /configure-redis.sh
+
+ADD configure-database.sh /configure-database.sh
+RUN chmod +x /configure-database.sh
 
 ADD msl-api-entrypoint.sh /msl-api-entrypoint.sh
 RUN chmod +x /msl-api-entrypoint.sh

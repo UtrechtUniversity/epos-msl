@@ -11,7 +11,8 @@ volumes:
   pg_data:
   solr_data:
   nginx_config:
-  mslapi_db_data:
+  mslapi_pg_data:
+  mslapi_redis_data:
   mslapi_dir:
   mslapi_signal:
   mslapi_storage:
@@ -75,26 +76,30 @@ services:
 
   mslapi_db:
     container_name: mslapi_db
-    image: mysql:8.0.39-debian
+    image: postgres:18.6-trixie
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - POSTGRES_PASSWORD=${MSLAPI_DB_ADMIN_PASSWORD}
     volumes:
-      - mslapi_db_data:/var/lib/mysql
+      - mslapi_pg_data:/var/lib/postgresql
 
   # In this Docker Compose setup, the web server container runs both
   # the MSL-API web application and the queue worker.
   mslapi_webserver:
     container_name: mslapi_web
     image: ghcr.io/utrechtuniversity/epos-msl-cat-mslapi:latest
+    depends_on:
+      - mslapi_db
+      - mslapi_redis
     ports:
       - "80"
     environment:
       -  MSLAPI_FAST_API_TOKEN=${FAST_API_TOKEN}
-      -  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      -  MSLAPI_DB_ADMIN_PASSWORD=${MSLAPI_DB_ADMIN_PASSWORD}
       -  EPOS_MSL_HOST=${EPOS_MSL_HOST}
       -  EPOS_MSL_HOST_PORT=${EPOS_MSL_HOST_PORT}
       -  MSLAPI_DB_PASSWORD=${MSLAPI_DB_PASSWORD}
       -  MSLAPI_ROLE=BOTH
+      -  MSLAPI_QUEUE_RETRY_AFTER=${MSLAPI_QUEUE_RETRY_AFTER:-660}
       -  MSLAPI_MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
       -  TRACKING_ENABLED=${TRACKING_ENABLED}
       -  MATOMO_HOST=${MATOMO_HOST}
@@ -109,6 +114,13 @@ services:
       -  mslapi_signal:/signal
       -  mslapi_storage:/storage
       -  ./import-msl-api-seed-data:/var/msl-api-seed-data
+
+  mslapi_redis:
+    container_name: mslapi_redis
+    image: redis:6.2
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - mslapi_redis_data:/data
 
   solr:
     container_name: solr
