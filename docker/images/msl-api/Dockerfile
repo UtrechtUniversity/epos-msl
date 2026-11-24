@@ -41,16 +41,16 @@ RUN apt-get -q -y update \
        software-properties-common \
     && apt-add-repository ppa:ondrej/php \
     && apt satisfy -y --no-install-recommends \
-       "php8.3 (>= 8.3.36)" \
-       "php8.3-bcmath (>= 8.3.36)" \
-       "php8.3-common (>= 8.3.36)" \
-       "php8.3-curl (>= 8.3.36)" \
-       "php8.3-fpm (>= 8.3.36)" \
-       "php8.3-gd (>= 8.3.36)" \
-       "php8.3-mbstring (>= 8.3.36)" \
-       "php8.3-mysql (>= 8.3.36)" \
-       "php8.3-xml (>= 8.3.36)" \
-       "php8.3-zip (>= 8.3.36)" \
+       "php8.3 (>= 8.3.37)" \
+       "php8.3-bcmath (>= 8.3.37)" \
+       "php8.3-common (>= 8.3.37)" \
+       "php8.3-curl (>= 8.3.37)" \
+       "php8.3-fpm (>= 8.3.37)" \
+       "php8.3-gd (>= 8.3.37)" \
+       "php8.3-mbstring (>= 8.3.37)" \
+       "php8.3-mysql (>= 8.3.37)" \
+       "php8.3-xml (>= 8.3.37)" \
+       "php8.3-zip (>= 8.3.37)" \
     && apt-get -q -y install \
        mysql-client \
        supervisor \
