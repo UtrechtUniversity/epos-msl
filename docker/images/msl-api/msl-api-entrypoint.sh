@@ -146,7 +146,7 @@ then echo "Configuring database settings ..."
      sudo -u www-data /configure-database.sh
      echo "Configuring Redis settings ..."
      sudo -u www-data MSLAPI_QUEUE_RETRY_AFTER="$MSLAPI_QUEUE_RETRY_AFTER" /configure-redis.sh
-     sudo -u www-data bash -c 'cd /var/www/msl_api && /usr/bin/php8.3 artisan config:cache'
+     sudo -u www-data bash -c "cd /var/www/msl_api && /usr/bin/php$PHP_VERSION artisan config:cache"
 fi
 
 # We are rebuilding front-end code here because it currently needs to be rebuilt after
